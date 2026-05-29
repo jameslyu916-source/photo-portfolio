@@ -1,0 +1,11 @@
+---
+import { t, type Locale } from "../../lib/i18n";
+
+const locale = (Astro.currentLocale ?? "en") as Locale;
+---
+
+<footer class="border-t border-border py-8 mt-24">
+  <div class="max-w-7xl mx-auto px-6 text-center text-sm text-muted">
+    <p>&copy; {new Date().getFullYear()} James Lyu. {t(locale, "footer.copyright")}</p>
+  </div>
+</footer>

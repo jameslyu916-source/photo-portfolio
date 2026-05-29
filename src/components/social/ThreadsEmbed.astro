@@ -1,0 +1,17 @@
+---
+interface Props {
+  postUrl: string;
+}
+
+const { postUrl } = Astro.props;
+---
+
+<div class="threads-embed flex justify-center">
+  <blockquote
+    class="threads-post"
+    data-post-url={postUrl}
+  >
+    <a href={postUrl}>View on Threads</a>
+  </blockquote>
+  <script async src="https://www.threads.net/embed.js" is:inline></script>
+</div>

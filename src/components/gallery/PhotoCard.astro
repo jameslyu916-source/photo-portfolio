@@ -1,0 +1,41 @@
+---
+import type { Photo } from "../../lib/photos";
+import LazyImage from "./LazyImage.astro";
+
+interface Props {
+  photo: Photo;
+  index: number;
+}
+
+const { photo, index } = Astro.props;
+const { image, title, location, category } = photo.data;
+---
+
+<a
+  href={`?photo=${photo.id.split("/").pop()?.replace(".md", "")}`}
+  class="group relative block overflow-hidden bg-muted/20 cursor-zoom-in"
+  data-photo-id={photo.id.split("/").pop()?.replace(".md", "")}
+  data-category={category ?? "all"}
+  style={`aspect-ratio: ${index % 5 === 0 ? "4/3" : index % 3 === 0 ? "3/4" : "1/1"};`}
+>
+  <div class="absolute inset-0 z-20">
+    <LazyImage
+      image={image}
+      alt={title}
+      widths={[400, 800, 1200]}
+      class="group-hover:scale-105 transition-transform duration-500 ease-out"
+    />
+  </div>
+
+  <!-- Hover overlay -->
+  <div
+    class="absolute inset-0 z-30 bg-gradient-to-t from-black/60 via-transparent to-transparent
+                opacity-0 group-hover:opacity-100 transition-opacity duration-300
+                flex flex-col justify-end p-4"
+  >
+    <h3 class="text-white text-sm font-medium leading-tight">{title}</h3>
+    {location && (
+      <p class="text-white/70 text-xs mt-0.5">{location}</p>
+    )}
+  </div>
+</a>

@@ -1,0 +1,61 @@
+---
+import { categoryLabels, type Photo } from "../../lib/photos";
+import type { Locale } from "../../lib/i18n";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const categories = Object.entries(categoryLabels);
+---
+
+<div class="flex flex-wrap gap-2 mb-8" id="filter-bar">
+  {categories.map(([key, label]) => (
+    <button
+      data-filter={key}
+      class={`px-4 py-1.5 rounded-full text-sm transition-colors border
+        ${key === "all"
+          ? "bg-ink text-paper border-ink"
+          : "bg-transparent text-muted border-border hover:text-ink hover:border-ink"
+        }`}
+    >
+      {label[locale]}
+    </button>
+  ))}
+</div>
+
+<script>
+  const filterBar = document.getElementById("filter-bar");
+  if (filterBar) {
+    filterBar.addEventListener("click", (e) => {
+      const btn = (e.target as HTMLElement).closest("[data-filter]");
+      if (!btn) return;
+
+      // Update active button
+      filterBar.querySelectorAll("[data-filter]").forEach((b) => {
+        b.className = b.className.replace(
+          /bg-ink text-paper border-ink/,
+          "bg-transparent text-muted border-border"
+        );
+      });
+      btn.className = btn.className.replace(
+        /bg-transparent text-muted border-border/,
+        "bg-ink text-paper border-ink"
+      );
+
+      // Filter cards
+      const filter = btn.dataset.filter;
+      const cards = document.querySelectorAll("[data-category]");
+      cards.forEach((card) => {
+        const cat = (card as HTMLElement).dataset.category;
+        if (filter === "all" || cat === filter) {
+          (card as HTMLElement).style.display = "";
+        } else {
+          (card as HTMLElement).style.display = "none";
+        }
+      });
+    });
+  }
+</script>

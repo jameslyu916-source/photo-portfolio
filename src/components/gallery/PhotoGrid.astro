@@ -1,0 +1,22 @@
+---
+import type { Photo } from "../../lib/photos";
+import PhotoCard from "./PhotoCard.astro";
+
+interface Props {
+  photos: Photo[];
+}
+
+const { photos } = Astro.props;
+---
+
+<div class="grid-gallery" id="photo-grid">
+  {
+    photos.length === 0 ? (
+      <div class="col-span-full text-center py-20 text-muted">
+        <p>No photos yet. Check back soon.</p>
+      </div>
+    ) : (
+      photos.map((photo, i) => <PhotoCard photo={photo} index={i} />)
+    )
+  }
+</div>

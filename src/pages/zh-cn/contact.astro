@@ -1,0 +1,29 @@
+---
+import BaseLayout from "../../components/layout/BaseLayout.astro";
+import { t } from "../../lib/i18n";
+---
+
+<BaseLayout title="联系 — James Lyu">
+  <section class="max-w-3xl mx-auto px-6 pt-24 pb-16">
+    <h1 class="text-3xl md:text-4xl font-light tracking-tight text-ink mb-8">
+      {t("zh-cn", "contact.title")}
+    </h1>
+    <p class="text-muted leading-relaxed mb-8 max-w-xl">
+      {t("zh-cn", "contact.content")}
+    </p>
+    <div class="space-y-4 text-muted">
+      <p>
+        邮箱：
+        <a href="mailto:hello@jameslyu.com" class="text-ink underline underline-offset-2 hover:text-accent ml-2">
+          hello@jameslyu.com
+        </a>
+      </p>
+      <p>
+        Instagram：
+        <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" class="text-ink underline underline-offset-2 hover:text-accent ml-2">
+          @yourhandle
+        </a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>

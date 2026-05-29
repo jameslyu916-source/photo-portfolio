@@ -1,0 +1,51 @@
+---
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { t, type Locale } from "../../lib/i18n";
+import LanguageSwitcher from "../ui/LanguageSwitcher.astro";
+
+const currentPath = Astro.url.pathname;
+const locale = (Astro.currentLocale ?? "en") as Locale;
+
+const navItems: { key: import("../../lib/i18n").UIStringKey; path: string }[] = [
+  { key: "nav.home", path: "" },
+  { key: "nav.gallery", path: "gallery" },
+  { key: "nav.social", path: "social" },
+  { key: "nav.about", path: "about" },
+  { key: "nav.contact", path: "contact" },
+];
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-sm bg-paper/80 border-b border-border">
+  <nav class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+    <a
+      href={getRelativeLocaleUrl(locale, "")}
+      class="text-lg font-semibold tracking-tight text-ink hover:text-accent transition-colors"
+    >
+      James Lyu
+    </a>
+
+    <div class="flex items-center gap-6">
+      <ul class="hidden md:flex items-center gap-6 text-sm">
+        {navItems.map((item) => {
+          const href = getRelativeLocaleUrl(locale, item.path);
+          const isActive =
+            (item.path === "" && currentPath === href) ||
+            (item.path !== "" && currentPath.startsWith(href));
+          return (
+            <li>
+              <a
+                href={href}
+                class={`transition-colors hover:text-accent ${
+                  isActive ? "text-accent font-medium" : "text-muted"
+                }`}
+              >
+                {t(locale, item.key)}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+      <LanguageSwitcher currentLocale={locale} currentPath={currentPath} />
+    </div>
+  </nav>
+</header>

@@ -1,0 +1,32 @@
+---
+import BaseLayout from "../../components/layout/BaseLayout.astro";
+import { t } from "../../lib/i18n";
+---
+
+<BaseLayout title="About — James Lyu">
+  <section class="max-w-3xl mx-auto px-6 pt-24 pb-16">
+    <h1 class="text-3xl md:text-4xl font-light tracking-tight text-ink mb-8">
+      {t("en", "about.title")}
+    </h1>
+    <div class="prose prose-lg text-muted leading-relaxed space-y-6">
+      <p>
+        {t("en", "about.content")}
+      </p>
+      <p>
+        Photography, for me, is not just about the final image — it's about the
+        moment of discovery. The way light falls on a quiet street at dusk, the
+        geometry of shadows on a building facade, or the unguarded expression on
+        a stranger's face. These are the moments I chase.
+      </p>
+      <p>
+        This portfolio is a curated selection of my work across landscapes,
+        street photography, architecture, and more. Each image tells a story of
+        a place, a time, and a feeling.
+      </p>
+      <p>
+        I shoot primarily with a Sony mirrorless system and have a deep
+        appreciation for natural light and candid composition.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

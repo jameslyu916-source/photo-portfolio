@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Astro generated
+.astro/
+
+# Environment
+.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Large raw photos (should be pre-optimized before committing)
+src/assets/images/photos/*.tiff
+src/assets/images/photos/*.TIFF
+src/assets/images/photos/*.raw
+src/assets/images/photos/*.RAW
+src/assets/images/photos/*.png
+src/assets/images/photos/*.PNG

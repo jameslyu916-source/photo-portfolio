@@ -1,0 +1,31 @@
+---
+interface Props {
+  platform: string;
+  url: string;
+  description: string;
+  icon: string;
+}
+
+const { platform, url, description, icon } = Astro.props;
+---
+
+<a
+  href={url}
+  target="_blank"
+  rel="noopener noreferrer"
+  class="block p-6 rounded-xl border border-border bg-white
+         hover:shadow-md hover:border-muted transition-all duration-200 group"
+>
+  <div class="flex items-center gap-4">
+    <div
+      class="w-12 h-12 flex items-center justify-center rounded-full bg-muted/10
+                  text-2xl group-hover:scale-110 transition-transform"
+    >
+      {icon}
+    </div>
+    <div>
+      <h3 class="font-medium text-ink">{platform}</h3>
+      <p class="text-sm text-muted mt-0.5">{description}</p>
+    </div>
+  </div>
+</a>

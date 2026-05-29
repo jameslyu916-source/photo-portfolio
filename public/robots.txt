@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jameslyu.github.io/sitemap-index.xml

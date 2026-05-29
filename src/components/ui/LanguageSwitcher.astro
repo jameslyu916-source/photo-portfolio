@@ -1,0 +1,28 @@
+---
+import type { Locale } from "../../lib/i18n";
+
+interface Props {
+  currentLocale: Locale;
+  currentPath: string;
+}
+
+const { currentLocale, currentPath } = Astro.props;
+
+const targetLocale: Locale = currentLocale === "en" ? "zh-cn" : "en";
+const targetLabel = targetLocale === "zh-cn" ? "中文" : "EN";
+
+// Swap locale in the current path — keeps the base prefix intact
+const targetHref = currentPath.replace(
+  /\/(en|zh-cn)(\/|$)/,
+  `/${targetLocale}$2`,
+);
+---
+
+<a
+  href={targetHref}
+  class="text-xs font-medium px-2.5 py-1 rounded-full border border-border
+         text-muted hover:text-ink hover:border-ink transition-colors"
+  hreflang={targetLocale === "zh-cn" ? "zh-CN" : "en"}
+>
+  {targetLabel}
+</a>

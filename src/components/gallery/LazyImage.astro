@@ -1,0 +1,47 @@
+---
+import { getImage, type ImageMetadata } from "astro:assets";
+
+interface Props {
+  image: ImageMetadata;
+  alt: string;
+  widths?: number[];
+  class?: string;
+}
+
+const { image, alt, widths = [400, 800, 1200], class: className } = Astro.props;
+
+const optimized = await getImage({
+  src: image,
+  width: widths,
+  format: "webp",
+});
+
+const placeholder = await getImage({
+  src: image,
+  width: 16,
+  format: "webp",
+});
+---
+
+<div class="overflow-hidden relative" style="background-color: #e5e5e0;">
+  <img
+    src={placeholder.src}
+    alt={alt}
+    width={optimized.attributes.width}
+    height={optimized.attributes.height}
+    class={`blur-up w-full h-full object-cover absolute inset-0 ${className ?? ""}`}
+    aria-hidden="true"
+  />
+  <img
+    src={optimized.src}
+    srcset={optimized.srcset}
+    sizes="(max-width: 640px) 100vw, (max-width: 1200px) 50vw, 33vw"
+    alt={alt}
+    width={optimized.attributes.width}
+    height={optimized.attributes.height}
+    loading="lazy"
+    decoding="async"
+    class={`w-full h-full object-cover relative z-10 ${className ?? ""}`}
+    onload="this.previousElementSibling.classList.add('loaded')"
+  />
+</div>
