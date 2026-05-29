@@ -3,7 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 import sitemap from "@astrojs/sitemap";
 
 export default defineConfig({
-  site: "https://jameslyu.github.io",
+  site: "https://jameslyu916-source.github.io",
   base: "/photo-portfolio",
 
   i18n: {
