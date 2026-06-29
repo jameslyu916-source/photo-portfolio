@@ -21,8 +21,13 @@ const showcase = featured.slice(0, 5);
         J
       </span>
 
-      <!-- 3 cycling handwriting x's -->
-      <span class="absolute -top-1 -right-4 md:-right-8 text-[4rem] md:text-[5.5rem] leading-none select-none pointer-events-none">
+      <!-- 3 cycling handwriting x's — clickable -->
+      <span
+        id="hero-x"
+        class="x-cycle-container absolute -top-1 -right-4 md:-right-8 text-[4rem] md:text-[5.5rem] leading-none select-none cursor-pointer"
+        role="button"
+        aria-label="Bounce the x"
+      >
         <span class="absolute inset-0 x-cycle-1" style="font-family: 'Caveat', cursive;">x</span>
         <span class="absolute inset-0 x-cycle-2" style="font-family: 'Waiting for the Sunrise', cursive;">x</span>
         <span class="absolute inset-0 x-cycle-3" style="font-family: 'Nothing You Could Do', cursive;">x</span>
@@ -68,3 +73,17 @@ const showcase = featured.slice(0, 5);
     )
   }
 </BaseLayout>
+
+<script>
+  const heroX = document.getElementById("hero-x");
+  if (heroX) {
+    heroX.addEventListener("click", () => {
+      heroX.classList.remove("x-bounce");
+      void heroX.offsetWidth; // force reflow
+      heroX.classList.add("x-bounce");
+      heroX.addEventListener("animationend", () => {
+        heroX.classList.remove("x-bounce");
+      }, { once: true });
+    });
+  }
+</script>
