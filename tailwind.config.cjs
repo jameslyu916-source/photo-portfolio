@@ -4,15 +4,15 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        ink: "#1c1c1c",
-        paper: "#f9f7f2",
-        muted: "#78716c",
-        border: "#e7e3da",
-        accent: "#c44900",
+        ink: "#2d2d2d",
+        paper: "#fafaf9",
+        muted: "#8c8c8c",
+        border: "#e8e8e4",
+        accent: "#7d9b76",
       },
       fontFamily: {
-        sans: ['"Inter"', "system-ui", "-apple-system", "sans-serif"],
-        serif: ['"Playfair Display"', '"Noto Serif SC"', "Georgia", "serif"],
+        sans: ['"Zen Kaku Gothic New"', '"Noto Sans SC"', "system-ui", "sans-serif"],
+        display: ['"Zen Maru Gothic"', '"M PLUS Rounded 1c"', "system-rounded", "sans-serif"],
       },
     },
   },

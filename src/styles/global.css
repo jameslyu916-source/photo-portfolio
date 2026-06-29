@@ -4,35 +4,29 @@
 
 @layer base {
   html {
-    font-family: "Inter", system-ui, -apple-system, sans-serif;
-    color: #1c1c1c;
-    background-color: #f9f7f2;
+    font-family: "Zen Kaku Gothic New", "Noto Sans SC", system-ui, sans-serif;
+    color: #2d2d2d;
+    background-color: #fafaf9;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
   }
 
-  :lang(zh-cn) {
-    font-family: "Inter", "Noto Sans SC", system-ui, -apple-system, sans-serif;
-  }
-
   h1, h2, h3 {
-    font-family: "Playfair Display", "Noto Serif SC", Georgia, serif;
+    font-family: "Zen Maru Gothic", "M PLUS Rounded 1c", system-rounded, sans-serif;
     font-weight: 400;
-    line-height: 1.15;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+    text-wrap: balance;
   }
 
   h1 {
     font-weight: 500;
   }
 
-  h1, h2, h3 {
-    text-wrap: balance;
-  }
-
   ::selection {
-    background: rgba(196, 73, 0, 0.12);
-    color: #1c1c1c;
+    background: rgba(125, 155, 118, 0.18);
+    color: #2d2d2d;
   }
 
   html {
@@ -44,53 +38,31 @@
     margin: 0;
   }
 
-  /* Keep content above vignette */
   body > header,
   body > main,
   body > footer {
     position: relative;
     z-index: 1;
   }
+
+  /* Vercel: respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
 
 @layer components {
-  /* Film grain overlay */
-  .grain {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    pointer-events: none;
-    opacity: 0.035;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    background-repeat: repeat;
-    background-size: 256px 256px;
-  }
-
-  /* Warm vignette */
-  .vignette {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0.3;
-    background: radial-gradient(ellipse at 50% 30%, transparent 40%, rgba(120, 100, 80, 0.15) 100%);
-  }
-
-  .text-link {
-    transition: opacity 0.2s ease;
-  }
-  .text-link:hover {
-    opacity: 0.65;
-  }
-
   .grid-gallery {
     column-count: 3;
-    column-gap: 0.2rem;
+    column-gap: 0.25rem;
   }
 
   .grid-gallery > * {
     break-inside: avoid;
-    margin-bottom: 0.2rem;
+    margin-bottom: 0.25rem;
     opacity: 0;
     transform: translateY(24px);
     animation: fade-up 0.6s ease-out forwards;
@@ -99,10 +71,10 @@
   @media (max-width: 900px) {
     .grid-gallery {
       column-count: 2;
-      column-gap: 0.15rem;
+      column-gap: 0.2rem;
     }
     .grid-gallery > * {
-      margin-bottom: 0.15rem;
+      margin-bottom: 0.2rem;
     }
   }
 
@@ -117,20 +89,21 @@
   }
 
   .hero-rule {
-    width: 3rem;
-    height: 1px;
-    background: #c44900;
+    width: 2.5rem;
+    height: 1.5px;
+    background: #7d9b76;
+    border-radius: 1px;
   }
 }
 
 @layer utilities {
   .blur-up {
-    filter: blur(20px) saturate(1.5);
+    filter: blur(24px);
     transform: scale(1.05);
     transition: filter 0.5s ease-out, opacity 0.3s ease-out;
   }
   .blur-up.loaded {
-    filter: blur(0) saturate(1);
+    filter: blur(0);
     transform: scale(1);
     opacity: 0;
   }
@@ -149,24 +122,16 @@
 }
 
 ::view-transition-old(root) {
-  animation: 0.25s ease-out both fade-out-vt;
+  animation: 0.2s ease-out both fade-out-vt;
 }
 ::view-transition-new(root) {
-  animation: 0.4s ease-out 0.05s both fade-in-up-vt;
+  animation: 0.35s ease-out 0.05s both fade-in-up-vt;
 }
 
 @keyframes fade-out-vt {
   to { opacity: 0; }
 }
 @keyframes fade-in-up-vt {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
-}
-
-/* Respect reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
 }
