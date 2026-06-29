@@ -9,17 +9,31 @@ const featured = await getFeaturedPhotos(locale);
 ---
 
 <BaseLayout title="JTimes — 摄影" description="光，乘以时间。JTimes 摄影作品。">
-  <section class="max-w-7xl mx-auto px-6 pt-32 pb-16 md:pt-48 md:pb-20">
-    <p class="text-8xl md:text-9xl lg:text-[10rem] font-display text-ink leading-none tracking-tight select-none">
-      J&times;
-    </p>
-    <p class="mt-6 md:mt-8 text-base md:text-lg text-muted max-w-lg leading-relaxed font-light">
+  <section class="max-w-7xl mx-auto px-6 pt-32 pb-16 md:pt-48 md:pb-24">
+    <div class="relative inline-block">
+      <span
+        class="text-[14rem] md:text-[18rem] leading-none font-light italic select-none"
+        style="font-family: 'Cormorant Garamond', serif; font-weight: 300;"
+      >
+        J
+      </span>
+      <span
+        class="absolute -top-2 -right-6 md:-right-8 text-[3.5rem] md:text-[5rem] leading-none select-none"
+        style="font-family: 'Klee One', cursive;"
+      >
+        x
+      </span>
+    </div>
+
+    <div class="hero-rule mt-12 md:mt-16 mb-6 md:mb-8"></div>
+    <p class="text-sm md:text-base text-muted max-w-md leading-relaxed font-light">
       光，乘以時間
     </p>
+
     <a
       href={getRelativeLocaleUrl("zh-cn", "gallery")}
-      class="inline-block mt-8 px-5 py-2.5 text-sm text-muted
-             border border-border/60 rounded-full
+      class="inline-block mt-10 px-5 py-2.5 text-sm text-muted/80
+             border border-border/50 rounded-full
              hover:text-accent hover:border-accent/40 transition-colors"
     >
       瀏覽作品 &rarr;
