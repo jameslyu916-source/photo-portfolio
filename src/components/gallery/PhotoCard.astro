@@ -20,26 +20,26 @@ const slug = photo.id.split("/").pop()?.replace(".md", "");
   style={`animation-delay: ${delay}ms;`}
 >
   <div
-    class="relative overflow-hidden bg-muted/10"
+    class="relative overflow-hidden"
     style={`aspect-ratio: ${image.width} / ${image.height};`}
   >
     <LazyImage
       image={image}
       alt={title}
       widths={[400, 800, 1200]}
-      class="group-hover:scale-105 transition-transform duration-700 ease-out"
+      class="group-hover:scale-105 transition-transform duration-700 ease-out will-change-transform backface-hidden"
     />
 
     <div
-      class="absolute inset-0 bg-gradient-to-b from-ink/5 via-transparent to-ink/30
+      class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/50 to-transparent
                   opacity-0 group-hover:opacity-100 transition-opacity duration-500
-                  flex flex-col justify-end p-5 z-20"
+                  flex flex-col justify-end p-5 pt-12 z-20 will-change-[opacity]"
     >
       {title && (
-        <h3 class="text-white/90 text-sm font-medium leading-snug">{title}</h3>
+        <h3 class="text-white text-sm font-medium leading-snug">{title}</h3>
       )}
       {location && (
-        <p class="text-white/60 text-xs mt-0.5 font-light">{location}</p>
+        <p class="text-white/70 text-xs mt-0.5 font-light">{location}</p>
       )}
     </div>
   </div>
