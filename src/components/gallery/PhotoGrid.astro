@@ -17,9 +17,7 @@ const { photos } = Astro.props;
       </div>
     ) : (
       photos.map((photo, i) => (
-        <div style={`animation-delay: ${i * 50}ms`}>
-          <PhotoCard photo={photo} />
-        </div>
+        <PhotoCard photo={photo} delay={i * 50} />
       ))
     )
   }
