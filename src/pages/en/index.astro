@@ -1,46 +1,14 @@
 ---
-import { getRelativeLocaleUrl } from "astro:i18n";
 import BaseLayout from "../../components/layout/BaseLayout.astro";
 import PhotoGrid from "../../components/gallery/PhotoGrid.astro";
-import { getFeaturedPhotos } from "../../lib/photos";
-import { t } from "../../lib/i18n";
+import { getPhotos } from "../../lib/photos";
 
 const locale = "en";
-const featuredPhotos = await getFeaturedPhotos(locale);
+const photos = await getPhotos(locale);
 ---
 
-<BaseLayout title="James Lyu — Photography Portfolio" description="Personal photography portfolio exploring streets, landscapes, and the beauty in between. Based in Hong Kong and Japan.">
-  <!-- Hero -->
-  <section class="max-w-7xl mx-auto px-6 pt-32 pb-20 md:pt-48 md:pb-32">
-    <div class="hero-rule mb-8 md:mb-10"></div>
-    <h1 class="text-5xl md:text-7xl lg:text-8xl font-light tracking-tight text-ink leading-none">
-      {t("en", "home.heroTitle")}
-    </h1>
-    <p class="mt-8 md:mt-10 text-base md:text-lg text-muted max-w-xl leading-relaxed font-light">
-      {t("en", "home.heroSubtitle")}
-    </p>
-    <a
-      href={getRelativeLocaleUrl("en", "gallery")}
-      class="inline-block mt-10 px-6 py-3 text-sm font-medium text-muted
-             border border-border rounded-full
-             hover:text-accent hover:border-accent transition-colors"
-    >
-      {t("en", "home.viewGallery")} &rarr;
-    </a>
+<BaseLayout title="James Lyu — Photography" description="Personal photography portfolio. Hong Kong, Japan, and beyond.">
+  <section class="pt-16">
+    <PhotoGrid photos={photos} />
   </section>
-
-  <!-- Featured Works -->
-  {
-    featuredPhotos.length > 0 && (
-      <section class="max-w-7xl mx-auto px-6 pb-32">
-        <div class="flex items-center gap-3 mb-10">
-          <span class="text-xs font-medium text-muted uppercase tracking-[0.2em]">
-            {t("en", "home.featured")}
-          </span>
-          <span class="flex-1 h-px bg-border"></span>
-        </div>
-        <PhotoGrid photos={featuredPhotos} />
-      </section>
-    )
-  }
 </BaseLayout>

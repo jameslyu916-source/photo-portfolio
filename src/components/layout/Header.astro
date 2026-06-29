@@ -19,7 +19,8 @@ const navItems: { key: import("../../lib/i18n").UIStringKey; path: string }[] = 
   <nav class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
     <a
       href={getRelativeLocaleUrl(locale, "")}
-      class="text-lg font-light tracking-wide text-ink hover:text-accent transition-colors"
+      class="text-lg tracking-wide text-ink hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent rounded-sm"
+      style="font-family: 'Playfair Display', serif; font-weight: 500;"
     >
       James Lyu
     </a>
@@ -35,7 +36,7 @@ const navItems: { key: import("../../lib/i18n").UIStringKey; path: string }[] = 
             <li>
               <a
                 href={href}
-                class={`transition-colors hover:text-accent ${
+                class={`transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent rounded-sm ${
                   isActive ? "text-accent font-medium" : "text-muted"
                 }`}
               >

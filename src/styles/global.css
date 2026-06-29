@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ink: #1a1a1a;
-  --color-paper: #fafaf8;
-  --color-muted: #6b6b6b;
-  --color-border: #e5e5e0;
+  --color-ink: #1c1c1c;
+  --color-paper: #f9f7f2;
+  --color-muted: #78716c;
+  --color-border: #e7e3da;
   --color-accent: #c44900;
 }
 
@@ -22,9 +22,19 @@
     font-family: "Inter", "Noto Sans SC", system-ui, -apple-system, sans-serif;
   }
 
-  h1, h2, h3, h4 {
-    font-weight: 300;
+  h1, h2, h3 {
+    font-family: "Playfair Display", "Noto Serif SC", "Georgia", serif;
+    font-weight: 400;
     line-height: 1.15;
+  }
+
+  h1 {
+    font-weight: 500;
+  }
+
+  /* Vercel: text-wrap balance for headings */
+  h1, h2, h3 {
+    text-wrap: balance;
   }
 
   ::selection {
@@ -32,27 +42,43 @@
     color: var(--color-ink);
   }
 
-  /* Subtle dot-grid background texture */
+  /* Film grain overlay */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 256px 256px;
+  }
+
+  /* Subtle warm vignette on body */
   body::before {
     content: "";
     position: fixed;
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    opacity: 0.25;
-    background-image: radial-gradient(circle, var(--color-ink) 0.5px, transparent 0.5px);
-    background-size: 24px 24px;
+    opacity: 0.3;
+    background: radial-gradient(ellipse at 50% 30%, transparent 40%, rgba(120, 100, 80, 0.15) 100%);
   }
 
-  /* Make sure content sits above the texture */
   body > * {
     position: relative;
     z-index: 1;
   }
+
+  /* Vercel: touch optimization */
+  html {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
 }
 
 @layer components {
-  /* Text links only — no effect on image cards */
   .text-link {
     transition: opacity 0.2s ease;
   }
@@ -62,20 +88,24 @@
 
   .grid-gallery {
     column-count: 3;
-    column-gap: 0.25rem;
+    column-gap: 0.2rem;
   }
 
   .grid-gallery > * {
     break-inside: avoid;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.2rem;
     opacity: 0;
     transform: translateY(24px);
-    animation: fade-up 0.7s ease-out forwards;
+    animation: fade-up 0.6s ease-out forwards;
   }
 
   @media (max-width: 900px) {
     .grid-gallery {
       column-count: 2;
+      column-gap: 0.15rem;
+    }
+    .grid-gallery > * {
+      margin-bottom: 0.15rem;
     }
   }
 
@@ -98,12 +128,12 @@
 
 @layer utilities {
   .blur-up {
-    filter: blur(20px);
+    filter: blur(20px) saturate(1.5);
     transform: scale(1.05);
     transition: filter 0.5s ease-out, opacity 0.3s ease-out;
   }
   .blur-up.loaded {
-    filter: blur(0);
+    filter: blur(0) saturate(1);
     transform: scale(1);
     opacity: 0;
   }
@@ -122,16 +152,24 @@
 }
 
 ::view-transition-old(root) {
-  animation: 0.3s ease-out both fade-out;
+  animation: 0.25s ease-out both fade-out;
 }
 ::view-transition-new(root) {
-  animation: 0.5s ease-out 0.1s both fade-in-up;
+  animation: 0.4s ease-out 0.05s both fade-in-up;
 }
 
 @keyframes fade-out {
-  to { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 0; }
 }
 @keyframes fade-in-up {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* Vercel Guidelines: Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
