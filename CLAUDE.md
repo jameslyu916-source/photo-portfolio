@@ -50,6 +50,20 @@ npm run new-photo    # Interactive CLI to scaffold photo .md files
 - Blur placeholder showing: → removed hover scale from placeholder img
 - Font glitch on hover: → removed animation-play-state pause
 
+## Deployment
+
+**Currently deployed to GitHub Pages** (temporary):
+- URL: `https://jameslyu916-source.github.io/photo-portfolio`
+- Config: `base: "/photo-portfolio"`, `site: "https://jameslyu916-source.github.io"`
+- Auto-deploys on push to main via `.github/workflows/deploy.yml`
+
+**When switching to custom domain + Vercel**:
+1. Change `base` to `"/"` in `astro.config.mjs`
+2. Update `site` to the custom domain URL
+3. Update `public/robots.txt` sitemap URL
+4. Delete `.github/workflows/deploy.yml` (Vercel handles deploy natively)
+5. Connect repo to Vercel, add custom domain in Vercel dashboard
+
 ## Next Up
 - Add more photo series (Japan, landscapes, film, etc.)
 - Replace generic photo titles with real descriptions
