@@ -1,51 +1,46 @@
 ---
 import BaseLayout from "../../components/layout/BaseLayout.astro";
-import { t } from "../../lib/i18n";
 ---
 
-<BaseLayout title="关于 — James Lyu">
+<BaseLayout title="关于 — JTimes">
   <section class="max-w-2xl mx-auto px-6 pt-24 pb-16">
-    <div class="hero-rule mb-6"></div>
-    <h1 class="text-4xl md:text-5xl font-light tracking-tight text-ink mb-12">
-      {t("zh-cn", "about.title")}
-    </h1>
+    <div class="hero-rule mb-10"></div>
 
     <div class="space-y-10 text-muted leading-relaxed font-light">
-      <p class="text-lg text-ink/80 leading-relaxed">
-        我是一名常駐香港與日本的攝影愛好者，被日常生活中那些安靜的美所吸引——
-        黃昏時分灑落在街頭的光影、老舊建築立面上的幾何構成、雪山的靜謐與莊嚴。
+      <p class="text-xl text-ink/80 leading-relaxed">
+        光乘以時間。這就是攝影。
       </p>
 
       <p>
-        我的作品涵蓋街拍、自然風光與膠片攝影。我特別著迷於老舊物體的表面質感——
-        生鏽的金屬、剝落的油漆、時間留下的痕跡。破損與衰敗之中，有一種新的東西無法複製的真實感。
+        我收集那些夾縫中的片刻&mdash;&mdash;那些如果不抓住就會消散的東西。
+        老牆上折疊的陰影，廢棄金屬上綻放的鏽跡，
+        黎明時雪峰之上，沉默的重量。
       </p>
 
       <p>
-        這個作品集記錄了我在香港、日本、新疆、西藏等地的拍攝足跡。
-        每一處風景都在改變我對光影、構圖的理解。
+        在香港與日本之間，在快門的脆響與之後的寂靜之間，我拾起這些碎片。
+        不是為了留住它們，只是為了證明它們存在過。
+      </p>
+
+      <p>
+        有人稱之為攝影。<br />
+        我叫它借來的時間。
       </p>
     </div>
 
     <hr class="my-16 border-border" />
 
-    <div class="grid sm:grid-cols-2 gap-8 text-sm">
-      <div>
-        <h3 class="text-xs font-medium text-muted uppercase tracking-[0.2em] mb-3">所在地</h3>
-        <p class="text-ink/70 font-light">香港 &amp; 日本</p>
-      </div>
-      <div>
-        <h3 class="text-xs font-medium text-muted uppercase tracking-[0.2em] mb-3">拍攝主題</h3>
-        <p class="text-ink/70 font-light">街拍、自然、膠片、質感</p>
-      </div>
-      <div>
-        <h3 class="text-xs font-medium text-muted uppercase tracking-[0.2em] mb-3">聯絡方式</h3>
-        <p class="text-ink/70 font-light">james.lyu916@gmail.com</p>
-      </div>
-      <div>
-        <h3 class="text-xs font-medium text-muted uppercase tracking-[0.2em] mb-3">社交媒體</h3>
-        <p class="text-ink/70 font-light">@jtimes.visual</p>
-      </div>
+    <div class="space-y-2 text-sm text-muted/70">
+      <p>
+        <a href="https://www.instagram.com/jtimes.visual/" target="_blank" rel="noopener noreferrer"
+           class="hover:text-accent transition-colors">Instagram</a>
+        &nbsp;&middot;&nbsp;
+        <a href="https://www.threads.net/@jtimes.visual" target="_blank" rel="noopener noreferrer"
+           class="hover:text-accent transition-colors">Threads</a>
+        &nbsp;&middot;&nbsp;
+        <a href="https://github.com/jameslyu916-source" target="_blank" rel="noopener noreferrer"
+           class="hover:text-accent transition-colors">GitHub</a>
+      </p>
     </div>
   </section>
 </BaseLayout>

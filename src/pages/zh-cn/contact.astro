@@ -3,7 +3,7 @@ import BaseLayout from "../../components/layout/BaseLayout.astro";
 import { t } from "../../lib/i18n";
 ---
 
-<BaseLayout title="联系 — James Lyu">
+<BaseLayout title="联系 — JTimes">
   <section class="max-w-2xl mx-auto px-6 pt-24 pb-16">
     <div class="hero-rule mb-6"></div>
     <h1 class="text-4xl md:text-5xl font-light tracking-tight text-ink mb-4">
@@ -65,6 +65,25 @@ import { t } from "../../lib/i18n";
         <div class="flex-1 min-w-0">
           <h3 class="text-sm font-medium text-ink group-hover:text-accent transition-colors">Threads</h3>
           <p class="text-xs text-muted mt-0.5">@jtimes.visual</p>
+        </div>
+        <span class="text-muted/40 text-xs group-hover:text-accent group-hover:translate-x-0.5 transition-all duration-300 hidden sm:inline">&rarr;</span>
+      </a>
+
+      <a
+        href="https://github.com/jameslyu916-source"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="group flex items-center gap-5 p-5 border border-border/60 rounded-sm
+               hover:border-accent/30 transition-colors duration-300"
+      >
+        <div class="w-10 h-10 flex items-center justify-center rounded-full
+                    bg-muted/5 text-muted group-hover:text-accent group-hover:bg-accent/5
+                    transition-colors duration-300">
+          <span class="text-xs font-medium tracking-widest uppercase">GH</span>
+        </div>
+        <div class="flex-1 min-w-0">
+          <h3 class="text-sm font-medium text-ink group-hover:text-accent transition-colors">GitHub</h3>
+          <p class="text-xs text-muted mt-0.5">jameslyu916-source</p>
         </div>
         <span class="text-muted/40 text-xs group-hover:text-accent group-hover:translate-x-0.5 transition-all duration-300 hidden sm:inline">&rarr;</span>
       </a>
