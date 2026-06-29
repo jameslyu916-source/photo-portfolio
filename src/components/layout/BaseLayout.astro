@@ -36,7 +36,9 @@ const canonicalPath = Astro.url.pathname;
     />
     <ViewTransitions />
   </head>
-  <body class="min-h-screen flex flex-col">
+  <body class="min-h-screen flex flex-col bg-paper text-ink">
+    <div class="vignette" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
     <Header />
     <main class="flex-1 pt-16">
       <slot />

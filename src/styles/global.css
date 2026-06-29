@@ -1,18 +1,12 @@
-@import "tailwindcss";
-
-@theme {
-  --color-ink: #1c1c1c;
-  --color-paper: #f9f7f2;
-  --color-muted: #78716c;
-  --color-border: #e7e3da;
-  --color-accent: #c44900;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @layer base {
   html {
     font-family: "Inter", system-ui, -apple-system, sans-serif;
-    color: var(--color-ink);
-    background-color: var(--color-paper);
+    color: #1c1c1c;
+    background-color: #f9f7f2;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
@@ -23,7 +17,7 @@
   }
 
   h1, h2, h3 {
-    font-family: "Playfair Display", "Noto Serif SC", "Georgia", serif;
+    font-family: "Playfair Display", "Noto Serif SC", Georgia, serif;
     font-weight: 400;
     line-height: 1.15;
   }
@@ -32,19 +26,36 @@
     font-weight: 500;
   }
 
-  /* Vercel: text-wrap balance for headings */
   h1, h2, h3 {
     text-wrap: balance;
   }
 
   ::selection {
     background: rgba(196, 73, 0, 0.12);
-    color: var(--color-ink);
+    color: #1c1c1c;
   }
 
+  html {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    margin: 0;
+  }
+
+  /* Keep content above vignette */
+  body > header,
+  body > main,
+  body > footer {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+@layer components {
   /* Film grain overlay */
-  body::after {
-    content: "";
+  .grain {
     position: fixed;
     inset: 0;
     z-index: 9999;
@@ -55,9 +66,8 @@
     background-size: 256px 256px;
   }
 
-  /* Subtle warm vignette on body */
-  body::before {
-    content: "";
+  /* Warm vignette */
+  .vignette {
     position: fixed;
     inset: 0;
     z-index: 0;
@@ -66,19 +76,6 @@
     background: radial-gradient(ellipse at 50% 30%, transparent 40%, rgba(120, 100, 80, 0.15) 100%);
   }
 
-  body > * {
-    position: relative;
-    z-index: 1;
-  }
-
-  /* Vercel: touch optimization */
-  html {
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-  }
-}
-
-@layer components {
   .text-link {
     transition: opacity 0.2s ease;
   }
@@ -122,7 +119,7 @@
   .hero-rule {
     width: 3rem;
     height: 1px;
-    background: var(--color-accent);
+    background: #c44900;
   }
 }
 
@@ -152,21 +149,21 @@
 }
 
 ::view-transition-old(root) {
-  animation: 0.25s ease-out both fade-out;
+  animation: 0.25s ease-out both fade-out-vt;
 }
 ::view-transition-new(root) {
-  animation: 0.4s ease-out 0.05s both fade-in-up;
+  animation: 0.4s ease-out 0.05s both fade-in-up-vt;
 }
 
-@keyframes fade-out {
+@keyframes fade-out-vt {
   to { opacity: 0; }
 }
-@keyframes fade-in-up {
+@keyframes fade-in-up-vt {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Vercel Guidelines: Respect reduced motion */
+/* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

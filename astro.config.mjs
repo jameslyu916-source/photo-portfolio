@@ -1,5 +1,5 @@
 import { defineConfig } from "astro/config";
-import tailwindcss from "@tailwindcss/vite";
+import tailwind from "@astrojs/tailwind";
 import sitemap from "@astrojs/sitemap";
 
 export default defineConfig({
@@ -24,5 +24,5 @@ export default defineConfig({
     breakpoints: [400, 800, 1200, 2400],
   },
 
-  integrations: [tailwindcss(), sitemap()],
+  integrations: [tailwind(), sitemap()],
 });
