@@ -12,11 +12,15 @@ const { photos } = Astro.props;
 <div class="grid-gallery" id="photo-grid">
   {
     photos.length === 0 ? (
-      <div class="col-span-full text-center py-20 text-muted">
+      <div class="text-center py-20 text-muted">
         <p>No photos yet. Check back soon.</p>
       </div>
     ) : (
-      photos.map((photo) => <PhotoCard photo={photo} />)
+      photos.map((photo, i) => (
+        <div style={`animation-delay: ${i * 50}ms`}>
+          <PhotoCard photo={photo} />
+        </div>
+      ))
     )
   }
 </div>

@@ -4,8 +4,9 @@ import { t, type Locale } from "../../lib/i18n";
 const locale = (Astro.currentLocale ?? "en") as Locale;
 ---
 
-<footer class="border-t border-border py-8 mt-24">
-  <div class="max-w-7xl mx-auto px-6 text-center text-sm text-muted">
-    <p>&copy; {new Date().getFullYear()} James Lyu. {t(locale, "footer.copyright")}</p>
+<footer class="border-t border-border py-10 mt-32">
+  <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted/70 font-light">
+    <p>&copy; {new Date().getFullYear()} James Lyu</p>
+    <p>{t(locale, "footer.copyright")}</p>
   </div>
 </footer>
