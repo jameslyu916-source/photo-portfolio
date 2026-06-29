@@ -13,10 +13,11 @@ const series = getSeriesFromPhotos(photos);
 
 <BaseLayout title="Gallery — James Lyu" description="Browse photography by series — Hong Kong, Japan, and beyond.">
   <section class="max-w-7xl mx-auto px-6 pt-24 pb-16">
-    <h1 class="text-3xl md:text-4xl font-light tracking-tight text-ink">
+    <div class="hero-rule mb-6"></div>
+    <h1 class="text-4xl md:text-5xl font-light tracking-tight text-ink">
       {t("en", "nav.gallery")}
     </h1>
-    <div class="mt-8">
+    <div class="mt-10">
       <FilterBar locale="en" series={series} />
       <PhotoGrid photos={photos} />
       <Lightbox photos={photos} />

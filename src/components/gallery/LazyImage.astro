@@ -42,6 +42,6 @@ const placeholder = await getImage({
     loading="lazy"
     decoding="async"
     class={`w-full h-full object-cover relative z-10 ${className ?? ""}`}
-    onload="this.previousElementSibling.classList.add('loaded')"
+    onload="this.previousElementSibling.classList.add('loaded')" onerror="this.previousElementSibling.remove()"
   />
 </div>
