@@ -78,11 +78,11 @@ const showcase = featured.slice(0, 5);
   const heroX = document.getElementById("hero-x");
   if (heroX) {
     heroX.addEventListener("click", () => {
-      heroX.classList.remove("x-bounce");
+      heroX.classList.remove("x-pop");
       void heroX.offsetWidth; // force reflow
-      heroX.classList.add("x-bounce");
+      heroX.classList.add("x-pop");
       heroX.addEventListener("animationend", () => {
-        heroX.classList.remove("x-bounce");
+        heroX.classList.remove("x-pop");
       }, { once: true });
     });
   }
