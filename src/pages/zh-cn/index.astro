@@ -1,11 +1,12 @@
 ---
 import { getRelativeLocaleUrl } from "astro:i18n";
 import BaseLayout from "../../components/layout/BaseLayout.astro";
-import PhotoGrid from "../../components/gallery/PhotoGrid.astro";
+import PhotoCard from "../../components/gallery/PhotoCard.astro";
 import { getFeaturedPhotos } from "../../lib/photos";
 
 const locale = "zh-cn";
 const featured = await getFeaturedPhotos(locale);
+const showcase = featured.slice(0, 5);
 ---
 
 <BaseLayout title="JTimes — 摄影" description="光，乘以时间。JTimes 摄影作品。">
@@ -19,7 +20,7 @@ const featured = await getFeaturedPhotos(locale);
       </span>
       <span
         class="absolute -top-2 -right-6 md:-right-8 text-[3.5rem] md:text-[5rem] leading-none select-none"
-        style="font-family: 'Klee One', cursive;"
+        style="font-family: 'Yuji Syuku', serif;"
       >
         x
       </span>
@@ -41,9 +42,23 @@ const featured = await getFeaturedPhotos(locale);
   </section>
 
   {
-    featured.length > 0 && (
+    showcase.length > 0 && (
       <section class="max-w-7xl mx-auto px-6 pb-32">
-        <PhotoGrid photos={featured} />
+        {showcase.slice(0, 2).length > 0 && (
+          <div class="grid grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
+            {showcase.slice(0, 2).map((photo) => (
+              <PhotoCard photo={photo} />
+            ))}
+          </div>
+        )}
+
+        {showcase.slice(2, 5).length > 0 && (
+          <div class="grid grid-cols-3 gap-4 md:gap-6">
+            {showcase.slice(2, 5).map((photo) => (
+              <PhotoCard photo={photo} />
+            ))}
+          </div>
+        )}
       </section>
     )
   }
