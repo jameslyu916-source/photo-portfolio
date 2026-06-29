@@ -22,13 +22,13 @@ export async function getFeaturedPhotos(
   return photos.filter((p) => p.data.featured);
 }
 
-export async function getPhotosByCategory(
+export async function getPhotosBySeries(
   locale: string,
-  category: string,
+  series: string,
 ): Promise<Photo[]> {
   const photos = await getPhotos(locale);
-  if (category === "all") return photos;
-  return photos.filter((p) => p.data.category === category);
+  if (series === "all") return photos;
+  return photos.filter((p) => p.data.series === series);
 }
 
 export async function getPhotoBySlug(
@@ -39,14 +39,10 @@ export async function getPhotoBySlug(
   return photos.find((p) => p.id === `${locale}/${slug}.md`);
 }
 
-export const categoryLabels: Record<string, { en: string; "zh-cn": string }> =
-  {
-    all: { en: "All", "zh-cn": "全部" },
-    landscape: { en: "Landscape", "zh-cn": "风光" },
-    street: { en: "Street", "zh-cn": "街拍" },
-    portrait: { en: "Portrait", "zh-cn": "人像" },
-    nature: { en: "Nature", "zh-cn": "自然" },
-    architecture: { en: "Architecture", "zh-cn": "建筑" },
-    abstract: { en: "Abstract", "zh-cn": "抽象" },
-    "black-and-white": { en: "Black & White", "zh-cn": "黑白" },
-  };
+export function getSeriesFromPhotos(photos: Photo[]): string[] {
+  const seriesSet = new Set<string>();
+  for (const p of photos) {
+    if (p.data.series) seriesSet.add(p.data.series);
+  }
+  return Array.from(seriesSet);
+}

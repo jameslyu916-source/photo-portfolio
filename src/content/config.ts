@@ -11,17 +11,7 @@ const photoCollection = defineCollection({
       lens: z.string().optional(),
       settings: z.string().optional(),
       location: z.string().optional(),
-      category: z
-        .enum([
-          "landscape",
-          "street",
-          "portrait",
-          "nature",
-          "architecture",
-          "abstract",
-          "black-and-white",
-        ])
-        .optional(),
+      series: z.string().optional(),
       tags: z.array(z.string()).optional(),
       featured: z.boolean().default(false),
       date: z.date(),
@@ -32,15 +22,6 @@ const photoCollection = defineCollection({
     }),
 });
 
-const pageCollection = defineCollection({
-  type: "content",
-  schema: z.object({
-    title: z.string(),
-    description: z.string().optional(),
-  }),
-});
-
 export const collections = {
   photos: photoCollection,
-  pages: pageCollection,
 };

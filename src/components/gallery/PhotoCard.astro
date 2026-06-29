@@ -4,19 +4,18 @@ import LazyImage from "./LazyImage.astro";
 
 interface Props {
   photo: Photo;
-  index: number;
 }
 
-const { photo, index } = Astro.props;
-const { image, title, location, category } = photo.data;
+const { photo } = Astro.props;
+const { image, title, location, series } = photo.data;
 ---
 
 <a
   href={`?photo=${photo.id.split("/").pop()?.replace(".md", "")}`}
   class="group relative block overflow-hidden bg-muted/20 cursor-zoom-in"
   data-photo-id={photo.id.split("/").pop()?.replace(".md", "")}
-  data-category={category ?? "all"}
-  style={`aspect-ratio: ${index % 5 === 0 ? "4/3" : index % 3 === 0 ? "3/4" : "1/1"};`}
+  data-series={series ?? ""}
+  style={`aspect-ratio: ${image.width} / ${image.height};`}
 >
   <div class="absolute inset-0 z-20">
     <LazyImage

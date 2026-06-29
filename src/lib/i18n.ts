@@ -7,13 +7,6 @@ export type UIStringKey =
   | "nav.social"
   | "nav.contact"
   | "gallery.filterAll"
-  | "gallery.filterLandscape"
-  | "gallery.filterStreet"
-  | "gallery.filterPortrait"
-  | "gallery.filterNature"
-  | "gallery.filterArchitecture"
-  | "gallery.filterAbstract"
-  | "gallery.filterBlackAndWhite"
   | "gallery.viewMore"
   | "home.heroTitle"
   | "home.heroSubtitle"
@@ -38,13 +31,6 @@ const translations: Record<Locale, Record<UIStringKey, string>> = {
     "nav.social": "Social",
     "nav.contact": "Contact",
     "gallery.filterAll": "All",
-    "gallery.filterLandscape": "Landscape",
-    "gallery.filterStreet": "Street",
-    "gallery.filterPortrait": "Portrait",
-    "gallery.filterNature": "Nature",
-    "gallery.filterArchitecture": "Architecture",
-    "gallery.filterAbstract": "Abstract",
-    "gallery.filterBlackAndWhite": "Black & White",
     "gallery.viewMore": "View Gallery",
     "home.heroTitle": "Capturing Light",
     "home.heroSubtitle":
@@ -71,13 +57,6 @@ const translations: Record<Locale, Record<UIStringKey, string>> = {
     "nav.social": "社交媒体",
     "nav.contact": "联系",
     "gallery.filterAll": "全部",
-    "gallery.filterLandscape": "风光",
-    "gallery.filterStreet": "街拍",
-    "gallery.filterPortrait": "人像",
-    "gallery.filterNature": "自然",
-    "gallery.filterArchitecture": "建筑",
-    "gallery.filterAbstract": "抽象",
-    "gallery.filterBlackAndWhite": "黑白",
     "gallery.viewMore": "浏览作品集",
     "home.heroTitle": "捕捉光影",
     "home.heroSubtitle": "个人摄影作品集，探索风景、街头与光影之间的故事。",

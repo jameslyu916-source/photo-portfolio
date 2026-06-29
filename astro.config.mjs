@@ -3,8 +3,8 @@ import tailwindcss from "@tailwindcss/vite";
 import sitemap from "@astrojs/sitemap";
 
 export default defineConfig({
-  site: "https://jameslyu916-source.github.io",
-  base: "/photo-portfolio",
+  site: "https://jameslyu916.com",
+  base: "/",
 
   i18n: {
     defaultLocale: "en",

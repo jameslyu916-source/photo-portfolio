@@ -16,7 +16,7 @@ const { photos } = Astro.props;
         <p>No photos yet. Check back soon.</p>
       </div>
     ) : (
-      photos.map((photo, i) => <PhotoCard photo={photo} index={i} />)
+      photos.map((photo) => <PhotoCard photo={photo} />)
     )
   }
 </div>

@@ -15,10 +15,8 @@ const {
   canonicalPath,
 } = Astro.props;
 
-const site = Astro.site ?? "https://jameslyu916-source.github.io";
+const site = Astro.site ?? "https://jameslyu916.com";
 
-// Swap locale in the path. Locale appears after the base prefix:
-// e.g., /photo-portfolio/en/gallery/ → /photo-portfolio/zh-cn/gallery/
 const swapLocale = (target: string) =>
   canonicalPath.replace(/\/(en|zh-cn)(\/|$)/, `/${target}$2`);
 
@@ -46,3 +44,17 @@ const ogImage = image
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={ogImage} />
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "James Lyu",
+    "url": {site},
+    "jobTitle": "Photographer",
+    "sameAs": [
+      "https://www.instagram.com/jtimes.visual/",
+      "https://www.threads.net/@jtimes.visual"
+    ]
+  }
+</script>
