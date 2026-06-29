@@ -1,4 +1,5 @@
 ---
+import { ViewTransitions } from "astro:transitions";
 import Header from "./Header.astro";
 import Footer from "./Footer.astro";
 import SEO from "./SEO.astro";
@@ -33,6 +34,7 @@ const canonicalPath = Astro.url.pathname;
       locale={locale}
       canonicalPath={canonicalPath}
     />
+    <ViewTransitions />
   </head>
   <body class="min-h-screen flex flex-col">
     <Header />

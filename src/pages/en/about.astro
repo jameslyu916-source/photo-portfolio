@@ -4,29 +4,53 @@ import { t } from "../../lib/i18n";
 ---
 
 <BaseLayout title="About — James Lyu">
-  <section class="max-w-3xl mx-auto px-6 pt-24 pb-16">
-    <h1 class="text-3xl md:text-4xl font-light tracking-tight text-ink mb-8">
+  <section class="max-w-2xl mx-auto px-6 pt-24 pb-16">
+    <div class="hero-rule mb-6"></div>
+    <h1 class="text-4xl md:text-5xl font-light tracking-tight text-ink mb-12">
       {t("en", "about.title")}
     </h1>
-    <div class="prose prose-lg text-muted leading-relaxed space-y-6">
-      <p>
-        {t("en", "about.content")}
+
+    <div class="space-y-10 text-muted leading-relaxed font-light">
+      <p class="text-lg text-ink/80 leading-relaxed">
+        I'm a photographer based between Hong Kong and Japan, drawn to the
+        quiet beauty of everyday moments — the way light falls on a street at
+        dusk, the geometry of weathered facades, the stillness of snow-capped
+        mountains.
       </p>
+
       <p>
-        Photography, for me, is not just about the final image — it's about the
-        moment of discovery. The way light falls on a quiet street at dusk, the
-        geometry of shadows on a building facade, or the unguarded expression on
-        a stranger's face. These are the moments I chase.
+        My work spans street photography, nature landscapes, and film
+        photography. I'm particularly drawn to the textures of aging
+        surfaces — rusted metal, peeling paint, the marks time leaves behind.
+        There is something honest in decay that new things cannot replicate.
       </p>
+
       <p>
-        This portfolio is a curated selection of my work across landscapes,
-        street photography, architecture, and more. Each image tells a story of
-        a place, a time, and a feeling.
+        This portfolio is a growing collection of moments I've chased across
+        Hong Kong, Japan, Xinjiang, Tibet, and beyond. Each place leaves its
+        own imprint on how I see light, shadow, and composition.
       </p>
-      <p>
-        I shoot primarily with a Sony mirrorless system and have a deep
-        appreciation for natural light and candid composition.
-      </p>
+    </div>
+
+    <hr class="my-16 border-border" />
+
+    <div class="grid sm:grid-cols-2 gap-8 text-sm">
+      <div>
+        <h3 class="text-xs font-medium text-muted uppercase tracking-[0.2em] mb-3">Location</h3>
+        <p class="text-ink/70 font-light">Hong Kong &amp; Japan</p>
+      </div>
+      <div>
+        <h3 class="text-xs font-medium text-muted uppercase tracking-[0.2em] mb-3">Focus</h3>
+        <p class="text-ink/70 font-light">Street, Nature, Film, Texture</p>
+      </div>
+      <div>
+        <h3 class="text-xs font-medium text-muted uppercase tracking-[0.2em] mb-3">Contact</h3>
+        <p class="text-ink/70 font-light">james.lyu916@gmail.com</p>
+      </div>
+      <div>
+        <h3 class="text-xs font-medium text-muted uppercase tracking-[0.2em] mb-3">Social</h3>
+        <p class="text-ink/70 font-light">@jtimes.visual</p>
+      </div>
     </div>
   </section>
 </BaseLayout>

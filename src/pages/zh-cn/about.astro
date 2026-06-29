@@ -4,26 +4,48 @@ import { t } from "../../lib/i18n";
 ---
 
 <BaseLayout title="关于 — James Lyu">
-  <section class="max-w-3xl mx-auto px-6 pt-24 pb-16">
-    <h1 class="text-3xl md:text-4xl font-light tracking-tight text-ink mb-8">
+  <section class="max-w-2xl mx-auto px-6 pt-24 pb-16">
+    <div class="hero-rule mb-6"></div>
+    <h1 class="text-4xl md:text-5xl font-light tracking-tight text-ink mb-12">
       {t("zh-cn", "about.title")}
     </h1>
-    <div class="prose prose-lg text-muted leading-relaxed space-y-6">
-      <p>
-        {t("zh-cn", "about.content")}
+
+    <div class="space-y-10 text-muted leading-relaxed font-light">
+      <p class="text-lg text-ink/80 leading-relaxed">
+        我是一名常駐香港與日本的攝影愛好者，被日常生活中那些安靜的美所吸引——
+        黃昏時分灑落在街頭的光影、老舊建築立面上的幾何構成、雪山的靜謐與莊嚴。
       </p>
+
       <p>
-        摄影对我而言，不仅仅是最终的画面——更是发现的那一刻。
-        黄昏时分光线洒落在安静街道上的样子，建筑立面上阴影构成的几何图形，
-        或是陌生人脸上不经意的表情。这些都是我追逐的瞬间。
+        我的作品涵蓋街拍、自然風光與膠片攝影。我特別著迷於老舊物體的表面質感——
+        生鏽的金屬、剝落的油漆、時間留下的痕跡。破損與衰敗之中，有一種新的東西無法複製的真實感。
       </p>
+
       <p>
-        这个作品集精选了我的风光、街拍、建筑等不同类别的作品。
-        每一张照片都讲述着一个关于地点、时间和感受的故事。
+        這個作品集記錄了我在香港、日本、新疆、西藏等地的拍攝足跡。
+        每一處風景都在改變我對光影、構圖的理解。
       </p>
-      <p>
-        我主要使用 Sony 无反相机系统拍摄，对自然光和抓拍构图有着深深的热爱。
-      </p>
+    </div>
+
+    <hr class="my-16 border-border" />
+
+    <div class="grid sm:grid-cols-2 gap-8 text-sm">
+      <div>
+        <h3 class="text-xs font-medium text-muted uppercase tracking-[0.2em] mb-3">所在地</h3>
+        <p class="text-ink/70 font-light">香港 &amp; 日本</p>
+      </div>
+      <div>
+        <h3 class="text-xs font-medium text-muted uppercase tracking-[0.2em] mb-3">拍攝主題</h3>
+        <p class="text-ink/70 font-light">街拍、自然、膠片、質感</p>
+      </div>
+      <div>
+        <h3 class="text-xs font-medium text-muted uppercase tracking-[0.2em] mb-3">聯絡方式</h3>
+        <p class="text-ink/70 font-light">james.lyu916@gmail.com</p>
+      </div>
+      <div>
+        <h3 class="text-xs font-medium text-muted uppercase tracking-[0.2em] mb-3">社交媒體</h3>
+        <p class="text-ink/70 font-light">@jtimes.visual</p>
+      </div>
     </div>
   </section>
 </BaseLayout>

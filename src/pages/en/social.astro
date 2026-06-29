@@ -5,38 +5,34 @@ import { t } from "../../lib/i18n";
 ---
 
 <BaseLayout title="Social — James Lyu">
-  <section class="max-w-7xl mx-auto px-6 pt-24 pb-16">
-    <h1 class="text-3xl md:text-4xl font-light tracking-tight text-ink mb-4">
+  <section class="max-w-2xl mx-auto px-6 pt-24 pb-16">
+    <div class="hero-rule mb-6"></div>
+    <h1 class="text-4xl md:text-5xl font-light tracking-tight text-ink mb-4">
       {t("en", "social.title")}
     </h1>
-    <p class="text-muted mb-12 max-w-xl leading-relaxed">
+    <p class="text-muted mb-12 leading-relaxed font-light">
       {t("en", "social.followOn")}
     </p>
 
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div class="space-y-2">
       <SocialLink
         platform={t("en", "social.instagram")}
         url="https://www.instagram.com/jtimes.visual/"
         description="Daily shots, behind the scenes, and stories."
-        icon="&#x1F4F7;"
+        handle="@jtimes.visual"
       />
       <SocialLink
         platform={t("en", "social.threads")}
         url="https://www.threads.net/@jtimes.visual"
         description="Thoughts on photography and creative process."
-        icon="&#x1F9F5;"
+        handle="@jtimes.visual"
       />
       <SocialLink
         platform={t("en", "social.xiaohongshu")}
         url="https://xhslink.com/m/AoxlJiMZwSY"
-        description="RED ID: JTimes_Visual — photography tips, gear reviews, and travel notes."
-        icon="&#x1F4D5;"
+        description="Photography tips, gear reviews, and travel notes."
+        handle="JTimes_Visual"
       />
-    </div>
-
-    <!-- Embedded posts section – add Instagram/Threads embed HTML below -->
-    <div class="mt-16 space-y-8">
-      <!-- Example: use InstagramEmbed component here when you have embed codes -->
     </div>
   </section>
 </BaseLayout>
