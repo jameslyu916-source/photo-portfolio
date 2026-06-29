@@ -135,3 +135,30 @@
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* x cycle: 3 handwriting fonts fading in sequence */
+.x-cycle-1 {
+  animation: x-fade-1 7.5s ease-in-out infinite;
+}
+.x-cycle-2 {
+  animation: x-fade-2 7.5s ease-in-out infinite;
+}
+.x-cycle-3 {
+  animation: x-fade-3 7.5s ease-in-out infinite;
+}
+
+@keyframes x-fade-1 {
+  0%, 28% { opacity: 1; }
+  33%, 94% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes x-fade-2 {
+  0%, 28% { opacity: 0; }
+  33%, 61% { opacity: 1; }
+  66%, 100% { opacity: 0; }
+}
+@keyframes x-fade-3 {
+  0%, 61% { opacity: 0; }
+  66%, 94% { opacity: 1; }
+  100% { opacity: 0; }
+}

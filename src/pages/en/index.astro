@@ -12,6 +12,7 @@ const showcase = featured.slice(0, 5);
 <BaseLayout title="JTimes — Photography" description="Light, multiplied by time. Photography by JTimes.">
   <!-- Hero -->
   <section class="max-w-7xl mx-auto px-6 pt-32 pb-16 md:pt-48 md:pb-24">
+    <!-- Jˣ mark -->
     <div class="relative inline-block">
       <span
         class="text-[14rem] md:text-[18rem] leading-none font-light italic select-none"
@@ -19,14 +20,16 @@ const showcase = featured.slice(0, 5);
       >
         J
       </span>
-      <span
-        class="absolute -top-2 -right-6 md:-right-8 text-[3.5rem] md:text-[5rem] leading-none select-none"
-        style="font-family: 'Yuji Syuku', serif;"
-      >
-        x
+
+      <!-- 3 cycling handwriting x's -->
+      <span class="absolute -top-4 -right-8 md:-right-12 text-[3.5rem] md:text-[5rem] leading-none select-none pointer-events-none">
+        <span class="absolute inset-0 x-cycle-1" style="font-family: 'Caveat', cursive;">x</span>
+        <span class="absolute inset-0 x-cycle-2" style="font-family: 'Homemade Apple', cursive;">x</span>
+        <span class="absolute inset-0 x-cycle-3" style="font-family: 'Reenie Beanie', cursive;">x</span>
       </span>
     </div>
 
+    <!-- Rule + tagline -->
     <div class="hero-rule mt-12 md:mt-16 mb-6 md:mb-8"></div>
     <p class="text-sm md:text-base text-muted max-w-md leading-relaxed font-light">
       light, multiplied by time
@@ -46,7 +49,6 @@ const showcase = featured.slice(0, 5);
   {
     showcase.length > 0 && (
       <section class="max-w-7xl mx-auto px-6 pb-32">
-        <!-- Row 1: two photos, wider gap -->
         {showcase.slice(0, 2).length > 0 && (
           <div class="grid grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
             {showcase.slice(0, 2).map((photo) => (
@@ -55,7 +57,6 @@ const showcase = featured.slice(0, 5);
           </div>
         )}
 
-        <!-- Row 2: three photos, middle one wider feel -->
         {showcase.slice(2, 5).length > 0 && (
           <div class="grid grid-cols-3 gap-4 md:gap-6">
             {showcase.slice(2, 5).map((photo) => (
