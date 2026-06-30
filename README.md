@@ -2,9 +2,9 @@
 
 A personal photography portfolio built with [Astro](https://astro.build) and [Tailwind CSS](https://tailwindcss.com). Japanese清新 aesthetic &mdash; clean whitespace, rounded type, sage green accents.
 
-![Astro](https://img.shields.io/badge/astro-v5-ff5a03?logo=astro)
-![Tailwind](https://img.shields.io/badge/tailwind-v3-06b6d4?logo=tailwindcss)
-![License](https://img.shields.io/badge/license-MIT-blue)
+[![Astro](https://img.shields.io/badge/astro-v5-ff5a03?logo=astro)](https://astro.build)
+[![Tailwind](https://img.shields.io/badge/tailwind-v3-06b6d4?logo=tailwindcss)](https://tailwindcss.com)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 ## Features
 
