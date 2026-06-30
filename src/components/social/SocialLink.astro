@@ -4,9 +4,10 @@ interface Props {
   url: string;
   description: string;
   handle?: string;
+  icon?: "instagram" | "threads" | "xiaohongshu";
 }
 
-const { platform, url, description, handle } = Astro.props;
+const { platform, url, description, handle, icon } = Astro.props;
 ---
 
 <a
@@ -21,9 +22,20 @@ const { platform, url, description, handle } = Astro.props;
            bg-muted/5 text-muted group-hover:text-accent group-hover:bg-accent/5
            transition-colors duration-300"
   >
-    <span class="text-xs font-medium tracking-widest uppercase">
-      {platform.slice(0, 2)}
-    </span>
+    {icon === "instagram" && (
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="18" cy="6" r="1" fill="currentColor" stroke="none"/></svg>
+    )}
+    {icon === "threads" && (
+      <span class="text-base font-medium">@</span>
+    )}
+    {icon === "xiaohongshu" && (
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 20l4-16h2l4 16h-2l-1-4H7l-1 4H4z"/><path d="M7 14h4"/></svg>
+    )}
+    {!icon && (
+      <span class="text-xs font-medium tracking-widest uppercase">
+        {platform.slice(0, 2)}
+      </span>
+    )}
   </div>
   <div class="flex-1 min-w-0">
     <div class="flex items-baseline gap-2">
