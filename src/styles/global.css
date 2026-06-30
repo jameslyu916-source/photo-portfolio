@@ -78,7 +78,7 @@
     }
   }
 
-  @media (max-width: 540px) {
+  @media (max-width: 380px) {
     .grid-gallery {
       column-count: 1;
       column-gap: 0;

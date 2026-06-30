@@ -24,7 +24,7 @@ const navItems: { key: import("../../lib/i18n").UIStringKey; path: string }[] = 
       JTimes
     </a>
 
-    <div class="flex items-center gap-6">
+    <div class="flex items-center gap-4 md:gap-6">
       <ul class="hidden md:flex items-center gap-6 text-sm">
         {navItems.map((item) => {
           const href = getRelativeLocaleUrl(locale, item.path);
@@ -46,6 +46,100 @@ const navItems: { key: import("../../lib/i18n").UIStringKey; path: string }[] = 
         })}
       </ul>
       <LanguageSwitcher currentLocale={locale} currentPath={currentPath} />
+
+      <!-- Hamburger (mobile only) -->
+      <button
+        id="menu-toggle"
+        class="md:hidden flex flex-col items-center justify-center gap-[5px] w-8 h-8
+               focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded-sm"
+        aria-label="Toggle menu"
+        aria-expanded="false"
+      >
+        <span class="block w-5 h-px bg-muted transition-all duration-300" id="ml1"></span>
+        <span class="block w-5 h-px bg-muted transition-all duration-300" id="ml2"></span>
+        <span class="block w-5 h-px bg-muted transition-all duration-300" id="ml3"></span>
+      </button>
     </div>
   </nav>
 </header>
+
+<!-- Mobile menu overlay (outside header to escape its stacking context) -->
+<div
+  id="mobile-menu"
+  class="fixed inset-0 top-16 bg-paper z-[60]
+         opacity-0 pointer-events-none transition-opacity duration-300
+         flex flex-col items-center pt-10 gap-10"
+>
+  <ul class="flex flex-col items-center gap-5 text-base font-light tracking-wide font-display"
+      style="text-shadow: none;">
+    {navItems.map((item) => {
+      const href = getRelativeLocaleUrl(locale, item.path);
+      const isActive =
+        (item.path === "" && currentPath === href) ||
+        (item.path !== "" && currentPath.startsWith(href));
+      return (
+        <li>
+          <a
+            href={href}
+            class={`transition-colors hover:text-accent ${
+              isActive ? "text-accent" : "text-ink/80"
+            }`}
+          >
+            {t(locale, item.key)}
+          </a>
+        </li>
+      );
+    })}
+  </ul>
+</div>
+
+<script>
+  function initMenu() {
+    const menuToggle = document.getElementById("menu-toggle");
+    const mobileMenu = document.getElementById("mobile-menu");
+    const ml1 = document.getElementById("ml1");
+    const ml2 = document.getElementById("ml2");
+    const ml3 = document.getElementById("ml3");
+
+    if (!menuToggle || !mobileMenu || !ml1 || !ml2 || !ml3) return;
+
+    // Guard against duplicate listeners
+    if (menuToggle.dataset.ready === "true") return;
+    menuToggle.dataset.ready = "true";
+
+    let isOpen = false;
+
+    function open() {
+      isOpen = true;
+      menuToggle.setAttribute("aria-expanded", "true");
+      mobileMenu.classList.remove("opacity-0", "pointer-events-none");
+      mobileMenu.classList.add("opacity-100");
+      ml1.style.transform = "translateY(6px) rotate(45deg)";
+      ml2.style.opacity = "0";
+      ml3.style.transform = "translateY(-6px) rotate(-45deg)";
+      document.body.style.overflow = "hidden";
+    }
+
+    function close() {
+      isOpen = false;
+      menuToggle.setAttribute("aria-expanded", "false");
+      mobileMenu.classList.add("opacity-0", "pointer-events-none");
+      mobileMenu.classList.remove("opacity-100");
+      ml1.style.transform = "translateY(0) rotate(0)";
+      ml2.style.opacity = "1";
+      ml3.style.transform = "translateY(0) rotate(0)";
+      document.body.style.overflow = "";
+    }
+
+    menuToggle.addEventListener("click", () => {
+      isOpen ? close() : open();
+    });
+
+    mobileMenu.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", close);
+    });
+  }
+
+  initMenu();
+  document.addEventListener("astro:page-load", initMenu);
+</script>
