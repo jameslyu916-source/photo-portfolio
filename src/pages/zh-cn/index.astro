@@ -11,9 +11,26 @@ const showcase = featured.slice(0, 5);
 
 <BaseLayout title="JTimes — 摄影" description="光，乘以時間。JTimes 摄影作品。">
   <section class="relative max-w-7xl mx-auto px-6 pt-20 pb-4 md:pt-32 md:pb-10">
+    <!-- Flowing curved light lines -->
+    <svg
+      class="absolute inset-0 w-full h-full pointer-events-none flow-lines"
+      viewBox="0 0 100 100"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      <!-- Deep S-curve across the composition -->
+      <path d="M -5,90 C 20,65 35,55 50,48 S 80,25 105,10" stroke="#7d9b76" stroke-width="0.1" fill="none" opacity="0.22" class="fl-1" />
+      <!-- Wide wave from top-left to bottom-right -->
+      <path d="M -5,15 C 30,45 55,60 105,95" stroke="#7d9b76" stroke-width="0.08" fill="none" opacity="0.18" class="fl-2" />
+      <!-- C-curve wrapping through the gap between Jx and grid -->
+      <path d="M 15,100 C 55,70 65,30 95,-5" stroke="#7d9b76" stroke-width="0.12" fill="none" opacity="0.2" class="fl-3" />
+      <!-- Gentle meander through the middle -->
+      <path d="M -5,55 C 25,35 40,50 55,40 S 70,20 105,5" stroke="#7d9b76" stroke-width="0.07" fill="none" opacity="0.16" class="fl-4" />
+    </svg>
+
     <div class="relative inline-block">
       <span
-        class="text-[14rem] md:text-[18rem] leading-none font-light italic select-none"
+        class="text-[14rem] md:text-[18rem] leading-none font-light italic select-none relative z-10"
         style="font-family: 'Cormorant Garamond', serif; font-weight: 300;"
       >
         J

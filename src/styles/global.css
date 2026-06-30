@@ -189,6 +189,32 @@
   36%  { opacity: 0; }
 }
 
+/* Flowing light lines — individual slow drifts */
+.fl-1 { animation: fl-drift-1 14s ease-in-out infinite; }
+.fl-2 { animation: fl-drift-2 18s ease-in-out infinite; }
+.fl-3 { animation: fl-drift-3 16s ease-in-out infinite; }
+.fl-4 { animation: fl-drift-4 20s ease-in-out infinite; }
+
+@keyframes fl-drift-1 {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+@keyframes fl-drift-2 {
+  0%, 100% { transform: translateY(0); }
+  30% { transform: translateY(4px); }
+  70% { transform: translateY(-3px); }
+}
+@keyframes fl-drift-3 {
+  0%, 100% { transform: translate(0, 0); }
+  40% { transform: translate(3px, -4px); }
+  80% { transform: translate(-2px, 2px); }
+}
+@keyframes fl-drift-4 {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-4px, -2px); }
+  60% { transform: translate(2px, 3px); }
+}
+
 /* Scroll hint arrow — gentle bounce */
 @keyframes scroll-hint {
   0%, 100% { transform: translateY(0); opacity: 0.35; }
