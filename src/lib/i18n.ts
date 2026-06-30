@@ -16,6 +16,7 @@ export type UIStringKey =
   | "social.instagram"
   | "social.threads"
   | "social.xiaohongshu"
+  | "social.douyin"
   | "social.followOn"
   | "about.title"
   | "about.content"
@@ -37,17 +38,18 @@ const translations: Record<Locale, Record<UIStringKey, string>> = {
       "Personal photography portfolio exploring landscapes, streets, and the spaces in between.",
     "home.viewGallery": "View Gallery",
     "home.featured": "Featured Works",
-    "social.title": "Follow My Work",
+    "social.title": "Find Me Online",
     "social.instagram": "Instagram",
     "social.threads": "Threads",
     "social.xiaohongshu": "Xiaohongshu",
-    "social.followOn": "Follow me on",
+    "social.douyin": "Douyin",
+    "social.followOn": "light, multiplied by time — wherever you are.",
     "about.title": "About Me",
     "about.content":
       "I am a photography enthusiast passionate about capturing the beauty of light, shadow, and the world around us — one frame at a time.",
     "contact.title": "Get in Touch",
     "contact.content":
-      "For collaborations, prints, or just to say hello — feel free to reach out via social media or email.",
+      "Just say hello.",
     "footer.copyright": "All rights reserved.",
   },
   "zh-cn": {
@@ -62,17 +64,18 @@ const translations: Record<Locale, Record<UIStringKey, string>> = {
     "home.heroSubtitle": "個人攝影作品集，探索風景、街頭與光影之間的故事。",
     "home.viewGallery": "瀏覽作品集",
     "home.featured": "精選作品",
-    "social.title": "關注我的作品",
+    "social.title": "我在這裡",
     "social.instagram": "Instagram",
     "social.threads": "Threads",
     "social.xiaohongshu": "小紅書",
-    "social.followOn": "在以下平台關注我",
+    "social.douyin": "抖音",
+    "social.followOn": "光，乘以時間 — 無論你在哪裡。",
     "about.title": "關於我",
     "about.content":
       "我是一名攝影愛好者，熱衷於用鏡頭捕捉光影之美，一張一張地去記錄這個世界的瞬間。",
     "contact.title": "聯繫我",
     "contact.content":
-      "如有合作、購買作品或只是想打個招呼，歡迎通過社交媒體或郵件聯繫我。",
+      "打個招呼就好。",
     "footer.copyright": "版權所有。",
   },
 };

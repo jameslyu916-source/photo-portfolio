@@ -1,41 +1,81 @@
 ---
 import BaseLayout from "../../components/layout/BaseLayout.astro";
-import SocialLink from "../../components/social/SocialLink.astro";
 import { t } from "../../lib/i18n";
+
+const platforms = [
+  {
+    name: "Instagram",
+    handle: "@jtimes.visual",
+    url: "https://www.instagram.com/jtimes.visual/",
+    icon: "instagram",
+  },
+  {
+    name: "Threads",
+    handle: "@jtimes.visual",
+    url: "https://www.threads.net/@jtimes.visual",
+    icon: "threads",
+  },
+  {
+    name: "小紅書",
+    handle: "JTimes_Visual",
+    url: "https://xhslink.com/m/AoxlJiMZwSY",
+    icon: "xiaohongshu",
+  },
+  {
+    name: "抖音",
+    handle: "JTimes.Visual",
+    url: "https://v.douyin.com/Yg8VB9S5s4o/",
+    icon: "douyin",
+  },
+];
 ---
 
-<BaseLayout title="社交媒体 — JTimes">
-  <section class="max-w-2xl mx-auto px-6 pt-24 pb-16">
+<BaseLayout title="社交媒體 — JTimes">
+  <section class="max-w-3xl mx-auto px-6 pt-24 pb-16">
     <div class="hero-rule mb-6"></div>
-    <h1 class="text-4xl md:text-5xl font-light tracking-tight text-ink mb-4">
+    <h1 class="text-4xl md:text-5xl font-light tracking-tight text-ink mb-3">
       {t("zh-cn", "social.title")}
     </h1>
-    <p class="text-muted mb-12 leading-relaxed font-light">
+    <p class="text-muted mb-12 leading-relaxed font-light max-w-lg">
       {t("zh-cn", "social.followOn")}
     </p>
 
-    <div class="space-y-2">
-      <SocialLink
-        platform={t("zh-cn", "social.instagram")}
-        url="https://www.instagram.com/jtimes.visual/"
-        description="每日隨拍、幕後花絮與故事。"
-        handle="@jtimes.visual"
-        icon="instagram"
-      />
-      <SocialLink
-        platform={t("zh-cn", "social.threads")}
-        url="https://www.threads.net/@jtimes.visual"
-        description="關於攝影與創作過程的思考。"
-        handle="@jtimes.visual"
-        icon="threads"
-      />
-      <SocialLink
-        platform={t("zh-cn", "social.xiaohongshu")}
-        url="https://xhslink.com/m/AoxlJiMZwSY"
-        description="攝影技巧、器材評測與旅行筆記。"
-        handle="JTimes_Visual"
-        icon="xiaohongshu"
-      />
+    <div class="grid md:grid-cols-2 gap-4">
+      {platforms.map((p) => (
+        <a
+          href={p.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group flex flex-col p-6 border border-border/50 rounded-sm
+                 hover:border-accent/25 hover:bg-accent/[0.02]
+                 transition-all duration-300"
+        >
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-12 h-12 flex items-center justify-center rounded-full
+                        bg-muted/[0.04] text-muted group-hover:text-accent
+                        group-hover:bg-accent/[0.06] transition-colors duration-300">
+              {p.icon === "instagram" && (
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="18" cy="6" r="1" fill="currentColor" stroke="none"/></svg>
+              )}
+              {p.icon === "threads" && (
+                <span class="text-xl font-medium">@</span>
+              )}
+              {p.icon === "xiaohongshu" && (
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" rx="1"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+              )}
+              {p.icon === "douyin" && (
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V6c1.5.8 3.5 1.3 5.5 1.3v3.2c-1.5 0-3-.4-4.5-1v8.5a3.5 3.5 0 11-1-2.5"/></svg>
+              )}
+            </div>
+            <div>
+              <h3 class="text-sm font-medium text-ink group-hover:text-accent transition-colors">
+                {p.name}
+              </h3>
+              <p class="text-xs text-muted/60 mt-0.5 font-light">{p.handle}</p>
+            </div>
+          </div>
+        </a>
+      ))}
     </div>
   </section>
 </BaseLayout>
