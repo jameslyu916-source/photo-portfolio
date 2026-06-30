@@ -1,9 +1,9 @@
 ---
 image: "../../../assets/images/photos/hk-christmas-13.jpg"
-title: "香港聖誕 #13"
+title: "十二月禮拜 · 13"
 description: ""
 location: "Hong Kong"
-series: "hong-kong-christmas"
+series: "december-liturgy"
 featured: false
 date: 2024-12-24
 order: 13

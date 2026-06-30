@@ -1,9 +1,9 @@
 ---
 image: "../../../assets/images/photos/hk-christmas-02.jpg"
-title: "Hong Kong Christmas #2"
+title: "December Liturgy · 2"
 description: ""
 location: "Hong Kong"
-series: "hong-kong-christmas"
+series: "december-liturgy"
 featured: true
 date: 2024-12-24
 order: 2

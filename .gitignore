@@ -33,3 +33,4 @@ raw-photos/
 # Claude Code local files
 .claude/
 skills-lock.json
+.agents/

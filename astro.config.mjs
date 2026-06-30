@@ -1,6 +1,7 @@
 import { defineConfig } from "astro/config";
 import tailwind from "@astrojs/tailwind";
 import sitemap from "@astrojs/sitemap";
+import adminPlugin from "./src/plugins/vite-admin";
 
 export default defineConfig({
   site: "https://jtimes-visual.com",
@@ -25,4 +26,8 @@ export default defineConfig({
   },
 
   integrations: [tailwind(), sitemap()],
+
+  vite: {
+    plugins: [adminPlugin()],
+  },
 });
