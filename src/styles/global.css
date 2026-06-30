@@ -184,7 +184,7 @@
 
 @keyframes poetry-cycle {
   0%, 100% { opacity: 0; }
-  10%  { opacity: 0.25; }
-  30%  { opacity: 0.25; }
-  40%  { opacity: 0; }
+  8%   { opacity: 1; }
+  28%  { opacity: 1; }
+  36%  { opacity: 0; }
 }
