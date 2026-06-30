@@ -1,4 +1,5 @@
 ---
-// Redirect root to /en/
+// Vercel rewrites / → /en/ at the server level before this is reached.
+// This page exists to satisfy Astro's build requirement.
 return Astro.redirect("/en/");
 ---
