@@ -8,6 +8,7 @@ A personal photography portfolio built with [Astro](https://astro.build) and [Ta
 
 ## Features
 
+- **Mobile-first responsive** &mdash; hamburger nav menu, mobile poetry grid, adaptive gallery columns
 - **Bilingual** &mdash; English and Traditional Chinese (`/en/`, `/zh-cn/`)
 - **Masonry gallery** &mdash; CSS columns layout with staggered fade-up animations
 - **Series-based filtering** &mdash; organize photos by project, not rigid categories
@@ -90,7 +91,7 @@ scripts/
 | Lightbox | [PhotoSwipe v5](https://photoswipe.com) |
 | Fonts | Google Fonts (6 families) |
 | i18n | Astro built-in routing |
-| Deployment | Vercel (planned) |
+| Deployment | [Vercel](https://vercel.com) (`jtimes-visual.com`) |
 
 > [!NOTE]
 > This project originally used `@tailwindcss/vite` (Tailwind CSS v4), but the Vite plugin failed to scan `.astro` template files for class names, producing zero utility classes at build time with no errors. Switching to the official `@astrojs/tailwind` integration with PostCSS and Tailwind v3 resolved the issue. If you're using Astro + Tailwind, stick with v3 until the ecosystem matures.
