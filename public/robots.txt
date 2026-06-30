@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://jameslyu916-source.github.io/photo-portfolio/sitemap-index.xml
+Sitemap: https://jtimes-visual.com/sitemap-index.xml
