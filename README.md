@@ -8,7 +8,7 @@ A personal photography portfolio built with [Astro](https://astro.build) and [Ta
 
 ## Features
 
-- **Bilingual** &mdash; English and Simplified Chinese (`/en/`, `/zh-cn/`)
+- **Bilingual** &mdash; English and Traditional Chinese (`/en/`, `/zh-cn/`)
 - **Masonry gallery** &mdash; CSS columns layout with staggered fade-up animations
 - **Series-based filtering** &mdash; organize photos by project, not rigid categories
 - **PhotoSwipe lightbox** &mdash; pinch-to-zoom with EXIF metadata display

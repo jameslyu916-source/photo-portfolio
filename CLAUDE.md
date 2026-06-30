@@ -34,7 +34,8 @@ npm run new-photo    # Interactive CLI to scaffold photo .md files
 - **Style**: Japanese清新 — clean, minimal, rounded fonts, breathing room
 
 ## Key Design Decisions
-- **Homepage**: Large J (serif) + cycling handwritten x (3 fonts, 7.5s loop, click to bounce). Japanese manuscript grid on right. Featured photos in 2+3 curated grid below.
+- **Homepage**: Large J (serif) + cycling handwritten x (3 fonts, 7.5s loop, click to bounce). Japanese manuscript grid + 18 poetry fragments on right (desktop), 6 fragments (mobile). Scroll-down arrow + bottom gallery CTA. Featured photos in 2+3 curated grid below.
+- **Mobile nav**: Hamburger button → full-screen overlay with nav links. Menu overlay is OUTSIDE `<header>` to escape stacking context
 - **Gallery**: CSS columns masonry, series-based filtering (not categories)
 - **PhotoCard hover**: GPU-isolated scale(1.05) with will-change-transform + backface-hidden. Bottom gradient overlay with title/location.
 - **About page**: Poetic 意识流 text, not CV-style
@@ -43,6 +44,29 @@ npm run new-photo    # Interactive CLI to scaffold photo .md files
 - Currently 15 Hong Kong Christmas photos, series: "hong-kong-christmas"
 - Content schema uses `series` field (free string), not `category` enum
 - Raw photos in `raw-photos/` (gitignored), optimized in `src/assets/images/photos/`
+
+## i18n Note
+- **zh-cn routes use Traditional Chinese**, not Simplified (user is in Hong Kong)
+
+## View Transitions & Scripts (IMPORTANT)
+- Astro View Transitions replace DOM on navigation; inline `<script>` only runs once
+- Any script with event listeners MUST wrap init in a function and listen to `astro:page-load`:
+  ```js
+  function init() {
+    const el = document.getElementById("my-element");
+    if (!el || el.dataset.ready === "true") return;
+    el.dataset.ready = "true";
+    // ... bind events
+  }
+  init();
+  document.addEventListener("astro:page-load", init);
+  ```
+- The `data-ready` guard prevents duplicate listeners on back-navigation
+- This applies to: hamburger menu toggle, x bounce animation, scroll hint arrow
+
+## CSS Patterns
+- **Grid stacking** (overlapping elements that size to content): Use `grid` + `grid-area: 1/1` instead of `absolute inset-0`. The latter collapses the container to 0×0, causing content clipping
+- **GPU hover fixes**: See Known GPU Bugs section below
 
 ## Known GPU Bugs & Fixes
 - Hover white flash: scale(1.05) + overflow-hidden GPU bug → `will-change-transform backface-hidden`
