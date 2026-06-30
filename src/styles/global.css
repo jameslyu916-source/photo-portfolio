@@ -188,3 +188,12 @@
   28%  { opacity: 1; }
   36%  { opacity: 0; }
 }
+
+/* Scroll hint arrow — gentle bounce */
+@keyframes scroll-hint {
+  0%, 100% { transform: translateY(0); opacity: 0.35; }
+  50% { transform: translateY(6px); opacity: 0.65; }
+}
+.scroll-hint-arrow {
+  animation: scroll-hint 2.4s ease-in-out infinite;
+}

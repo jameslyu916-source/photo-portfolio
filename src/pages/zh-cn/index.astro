@@ -10,7 +10,7 @@ const showcase = featured.slice(0, 5);
 ---
 
 <BaseLayout title="JTimes — 摄影" description="光，乘以時間。JTimes 摄影作品。">
-  <section class="relative max-w-7xl mx-auto px-6 pt-32 pb-16 md:pt-48 md:pb-24">
+  <section class="relative max-w-7xl mx-auto px-6 pt-20 pb-4 md:pt-32 md:pb-10">
     <div class="relative inline-block">
       <span
         class="text-[14rem] md:text-[18rem] leading-none font-light italic select-none"
@@ -44,6 +44,19 @@ const showcase = featured.slice(0, 5);
     >
       瀏覽作品 &rarr;
     </a>
+
+    <!-- Scroll hint arrow -->
+    <button
+      id="scroll-hint"
+      class="hidden md:block mt-6 mx-auto
+             scroll-hint-arrow cursor-pointer select-none
+             focus:outline-none focus-visible:opacity-100"
+      aria-label="向下滑動查看照片"
+    >
+      <svg width="28" height="18" viewBox="0 0 28 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 2L14 14L26 2" stroke="#7d9b76" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
 
     <div
       class="hidden md:block absolute top-4 right-4 lg:right-12
@@ -83,7 +96,7 @@ const showcase = featured.slice(0, 5);
 
   {
     showcase.length > 0 && (
-      <section class="max-w-7xl mx-auto px-6 pb-32">
+      <section id="featured" class="max-w-7xl mx-auto px-6 pb-20">
         {showcase.slice(0, 2).length > 0 && (
           <div class="grid grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
             {showcase.slice(0, 2).map((photo) => (
@@ -99,6 +112,18 @@ const showcase = featured.slice(0, 5);
             ))}
           </div>
         )}
+
+        <div class="text-right mt-8">
+          <a
+            href={getRelativeLocaleUrl("zh-cn", "gallery")}
+            class="group inline-flex items-center gap-2 text-muted/60
+                   hover:text-accent transition-colors"
+            style="font-family: 'Caveat', cursive; font-size: 1.2rem;"
+          >
+            瀏覽全部作品
+            <span class="inline-block transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
+          </a>
+        </div>
       </section>
     )
   }
@@ -114,6 +139,14 @@ const showcase = featured.slice(0, 5);
       heroX.addEventListener("animationend", () => {
         heroX.classList.remove("x-pop");
       }, { once: true });
+    });
+  }
+
+  const scrollHint = document.getElementById("scroll-hint");
+  const featured = document.getElementById("featured");
+  if (scrollHint && featured) {
+    scrollHint.addEventListener("click", () => {
+      featured.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   }
 </script>
