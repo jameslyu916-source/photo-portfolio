@@ -76,20 +76,14 @@ npm run new-photo    # Interactive CLI to scaffold photo .md files
 
 ## Deployment
 
-**Currently deployed to GitHub Pages** (temporary):
-- URL: `https://jameslyu916-source.github.io/photo-portfolio`
-- Config: `base: "/photo-portfolio"`, `site: "https://jameslyu916-source.github.io"`
-- Auto-deploys on push to main via `.github/workflows/deploy.yml`
-
-**When switching to custom domain + Vercel**:
-1. Change `base` to `"/"` in `astro.config.mjs`
-2. Update `site` to the custom domain URL
-3. Update `public/robots.txt` sitemap URL
-4. Delete `.github/workflows/deploy.yml` (Vercel handles deploy natively)
-5. Connect repo to Vercel, add custom domain in Vercel dashboard
+**Deployed to Vercel via Cloudflare DNS**:
+- URL: `https://jtimes-visual.com`
+- Config: `base: "/"`, `site: "https://jtimes-visual.com"` in astro.config.mjs
+- Auto-deploys on push to main via Vercel (1-2 min)
+- Cloudflare DNS: CNAME `@` + `www` → `cname.vercel-dns.com`, Proxy ON
+- Old GitHub Pages URL no longer used
 
 ## Next Up
 - Add more photo series (Japan, landscapes, film, etc.)
 - Replace generic photo titles with real descriptions
-- Buy domain + deploy to Vercel
 - GitHub: https://github.com/jameslyu916-source/photo-portfolio
