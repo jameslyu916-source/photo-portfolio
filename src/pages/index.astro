@@ -1,5 +1,8 @@
----
-// Vercel rewrites / → /en/ at the server level before this is reached.
-// This page exists to satisfy Astro's build requirement.
-return Astro.redirect("/en/");
----
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="refresh" content="0;url=/en/" />
+</head>
+<body></body>
+</html>
