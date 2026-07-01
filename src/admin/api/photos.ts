@@ -201,7 +201,7 @@ export async function createPhoto(
   }
 
   const imageRelPath = "../../../assets/images/photos/" + imageFilename;
-  const date = meta.date ?? new Date().toISOString().split("T")[0];
+  const date = meta.date || new Date().toISOString().split("T")[0];
 
   const sharedFields: Record<string, any> = {
     image: imageRelPath,
@@ -258,9 +258,11 @@ export async function updatePhoto(
   }
 
   const imageRelPath = enExisting.image ?? "../../../assets/images/photos/" + slug + ".jpg";
-  const date = meta.date ?? (enExisting.date instanceof Date
-    ? enExisting.date.toISOString().split("T")[0]
-    : String(enExisting.date ?? new Date().toISOString().split("T")[0]));
+  const date = meta.date
+    || (enExisting.date instanceof Date
+      ? enExisting.date.toISOString().split("T")[0]
+      : String(enExisting.date || ""))
+    || new Date().toISOString().split("T")[0];
 
   const sharedFields: Record<string, any> = {
     image: imageRelPath,

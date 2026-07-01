@@ -14,6 +14,7 @@ npm run dev          # Start dev server (localhost:4321)
 npm run build        # Production build to dist/
 npm run optimize-images  # Resize raw photos to 2400px
 npm run new-photo    # Interactive CLI to scaffold photo .md files
+# Admin panel at http://localhost:4321/admin (dev-only, password in .env)
 ```
 
 ## Project Structure
@@ -23,6 +24,8 @@ npm run new-photo    # Interactive CLI to scaffold photo .md files
 - `src/lib/` — i18n.ts (translations), photos.ts (data access)
 - `src/content/photos/{en,zh-cn}/` — Photo markdown entries
 - `src/assets/images/photos/` — Optimized photo files
+- `src/admin/` — Admin CMS panel (dev-only, browser-based photo management)
+- `src/plugins/` — Vite plugins (admin server middleware)
 - `scripts/` — optimize-images.ts, new-photo.ts
 - `tailwind.config.cjs` — Theme colors, font families
 - `astro.config.mjs` — Site config, i18n, integrations
@@ -41,9 +44,9 @@ npm run new-photo    # Interactive CLI to scaffold photo .md files
 - **About page**: Poetic 意识流 text, not CV-style
 
 ## Photo Content
-- Currently 15 Hong Kong Christmas photos, series: "hong-kong-christmas"
+- Currently 15 Hong Kong Christmas photos, series: "december-liturgy" (renamed from "hong-kong-christmas")
 - Content schema uses `series` field (free string), not `category` enum
-- Raw photos in `raw-photos/` (gitignored), optimized in `src/assets/images/photos/`
+- Optimized photos in `src/assets/images/photos/`
 
 ## i18n Note
 - **zh-cn routes use Traditional Chinese**, not Simplified (user is in Hong Kong)
@@ -84,6 +87,5 @@ npm run new-photo    # Interactive CLI to scaffold photo .md files
 - Old GitHub Pages URL no longer used
 
 ## Next Up
-- Add more photo series (Japan, landscapes, film, etc.)
-- Replace generic photo titles with real descriptions
+- Add more photo series (glacier/snow mountains, Japan, landscapes, film, etc.)
 - GitHub: https://github.com/jameslyu916-source/photo-portfolio

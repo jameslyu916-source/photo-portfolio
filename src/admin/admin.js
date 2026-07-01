@@ -362,9 +362,11 @@ function closeModal() {
 
 // --- Upload state ---
 let selectedFiles = [];
+let namingMode = "individual"; // "individual" | "numbered"
 
 function showUploadModal() {
   selectedFiles = [];
+  namingMode = "individual";
   const content = h("div", { className: "modal" },
     h("div", { className: "modal-header" },
       h("h2", {}, "Upload Photos"),
@@ -401,6 +403,39 @@ function buildUploadForm() {
     // File list
     h("div", { className: "file-list", id: "file-list", style: "display:none" },
       h("div", { className: "file-list-header" }, "Selected photos"),
+    ),
+
+    // Naming mode
+    h("div", { className: "shared-fields-section", id: "naming-section", style: "display:none" },
+      h("div", { className: "section-label" }, "Photo titles"),
+      h("div", { style: "display:flex;gap:1.5rem;margin-bottom:1rem" },
+        h("label", { className: "toggle-label" },
+          h("input", { type: "radio", name: "naming-mode", checked: "checked", onchange: () => setNamingMode("individual") }),
+          "Individual titles",
+        ),
+        h("label", { className: "toggle-label" },
+          h("input", { type: "radio", name: "naming-mode", onchange: () => setNamingMode("numbered") }),
+          "Numbered series",
+        ),
+      ),
+      h("div", { id: "numbered-fields", style: "display:none" },
+        h("div", { className: "form-row" },
+          h("div", { className: "form-group" },
+            h("label", { className: "form-label" }, "Base title (EN)"),
+            h("input", { className: "form-input", id: "field-baseTitleEn", placeholder: "e.g. December Liturgy", oninput: refreshNumberedPreviews }),
+          ),
+          h("div", { className: "form-group" },
+            h("label", { className: "form-label" }, "基礎標題 (ZH)"),
+            h("input", { className: "form-input", id: "field-baseTitleZh", placeholder: "e.g. 十二月禮拜", oninput: refreshNumberedPreviews }),
+          ),
+        ),
+        h("div", { className: "form-row" },
+          h("div", { className: "form-group" },
+            h("label", { className: "form-label" }, "Start numbering from"),
+            h("input", { className: "form-input", type: "number", id: "field-startNum", value: "1", min: "1", oninput: refreshNumberedPreviews, style: "max-width:100px" }),
+          ),
+        ),
+      ),
     ),
 
     // Shared fields
@@ -491,6 +526,33 @@ function setupDragDrop() {
   });
 }
 
+function setNamingMode(mode) {
+  namingMode = mode;
+  const numberedFields = document.getElementById("numbered-fields");
+  if (numberedFields) numberedFields.style.display = mode === "numbered" ? "block" : "none";
+  refreshNumberedPreviews();
+  renderFileList();
+}
+
+function getBaseTitles() {
+  const en = document.getElementById("field-baseTitleEn")?.value?.trim() ?? "";
+  const zh = document.getElementById("field-baseTitleZh")?.value?.trim() ?? "";
+  const start = parseInt(document.getElementById("field-startNum")?.value ?? "1") || 1;
+  return { en, zh, start };
+}
+
+function refreshNumberedPreviews() {
+  if (namingMode !== "numbered") return;
+  const { en, zh, start } = getBaseTitles();
+  // Update selectedFiles titles for preview
+  for (let i = 0; i < selectedFiles.length; i++) {
+    const num = start + i;
+    selectedFiles[i].titleEn = en ? `${en} · ${num}` : `Photo ${num}`;
+    selectedFiles[i].titleZh = zh ? `${zh} · ${num}` : `照片 ${num}`;
+  }
+  renderFileList();
+}
+
 function filenameToTitle(filename) {
   return filename.replace(/\.[^.]+$/, "").replace(/[-_]/g, " ").replace(/\s+/g, " ").trim();
 }
@@ -510,52 +572,71 @@ function addFiles(newFiles) {
     const title = filenameToTitle(f.name);
     selectedFiles.push({ file: f, titleEn: title, titleZh: "" });
   }
+  if (namingMode === "numbered") refreshNumberedPreviews();
   renderFileList();
   updateUploadButton();
 }
 
 function removeFile(index) {
   selectedFiles.splice(index, 1);
+  if (namingMode === "numbered") refreshNumberedPreviews();
   renderFileList();
   updateUploadButton();
 }
 
 function renderFileList() {
   const list = document.getElementById("file-list");
+  const namingSection = document.getElementById("naming-section");
   if (!list) return;
 
   if (selectedFiles.length === 0) {
     list.style.display = "none";
+    if (namingSection) namingSection.style.display = "none";
     return;
   }
 
   list.style.display = "block";
+  if (namingSection) namingSection.style.display = "block";
+
   // Clear existing items (keep header)
   while (list.children.length > 1) list.lastChild.remove();
+
+  const isNumbered = namingMode === "numbered";
 
   for (let i = 0; i < selectedFiles.length; i++) {
     const sf = selectedFiles[i];
     const thumbUrl = URL.createObjectURL(sf.file);
     sf._thumbUrl = thumbUrl;
 
-    const item = h("div", { className: "file-item" },
-      h("img", { className: "file-item-thumb", src: thumbUrl, alt: sf.file.name }),
-      h("span", { className: "file-item-name", title: sf.file.name }, sf.file.name),
-      h("input", {
-        className: "file-item-input",
-        placeholder: "English title",
-        value: sf.titleEn,
-        oninput: (e) => { selectedFiles[i].titleEn = e.target.value; },
-      }),
-      h("input", {
-        className: "file-item-input",
-        placeholder: "中文标题",
-        value: sf.titleZh,
-        oninput: (e) => { selectedFiles[i].titleZh = e.target.value; },
-      }),
-      h("button", { className: "file-item-remove", title: "Remove", onclick: () => removeFile(i) }, "✕"),
-    );
-    list.appendChild(item);
+    if (isNumbered) {
+      const item = h("div", { className: "file-item" },
+        h("img", { className: "file-item-thumb", src: thumbUrl, alt: sf.file.name }),
+        h("span", { className: "file-item-name", title: sf.file.name }, sf.file.name),
+        h("span", { style: "flex:1;font-size:0.8125rem;color:var(--color-ink);padding:0 0.25rem" }, sf.titleEn),
+        h("span", { style: "flex:1;font-size:0.8125rem;color:var(--color-ink);padding:0 0.25rem" }, sf.titleZh),
+        h("button", { className: "file-item-remove", title: "Remove", onclick: () => removeFile(i) }, "✕"),
+      );
+      list.appendChild(item);
+    } else {
+      const item = h("div", { className: "file-item" },
+        h("img", { className: "file-item-thumb", src: thumbUrl, alt: sf.file.name }),
+        h("span", { className: "file-item-name", title: sf.file.name }, sf.file.name),
+        h("input", {
+          className: "file-item-input",
+          placeholder: "English title",
+          value: sf.titleEn,
+          oninput: (e) => { selectedFiles[i].titleEn = e.target.value; },
+        }),
+        h("input", {
+          className: "file-item-input",
+          placeholder: "中文标题",
+          value: sf.titleZh,
+          oninput: (e) => { selectedFiles[i].titleZh = e.target.value; },
+        }),
+        h("button", { className: "file-item-remove", title: "Remove", onclick: () => removeFile(i) }, "✕"),
+      );
+      list.appendChild(item);
+    }
   }
 }
 
@@ -585,17 +666,26 @@ function getSharedFieldValues() {
 
 async function handleUpload() {
   if (selectedFiles.length === 0) {
-    // Legacy single-file fallback
     showFormError("upload-form-error", "Please select at least one photo.");
     return;
   }
 
-  // Validate at least one title per file
-  for (let i = 0; i < selectedFiles.length; i++) {
-    const sf = selectedFiles[i];
-    if (!sf.titleEn.trim() && !sf.titleZh.trim()) {
-      showFormError("upload-form-error", `Photo "${sf.file.name}" needs at least one title (English or Chinese).`);
+  // Validate titles
+  if (namingMode === "numbered") {
+    const { en, zh } = getBaseTitles();
+    if (!en && !zh) {
+      showFormError("upload-form-error", "Please enter at least one base title (English or Chinese) for the numbered series.");
       return;
+    }
+    // Refresh numbered titles one final time
+    refreshNumberedPreviews();
+  } else {
+    for (let i = 0; i < selectedFiles.length; i++) {
+      const sf = selectedFiles[i];
+      if (!sf.titleEn.trim() && !sf.titleZh.trim()) {
+        showFormError("upload-form-error", `Photo "${sf.file.name}" needs at least one title (English or Chinese).`);
+        return;
+      }
     }
   }
 
@@ -837,7 +927,10 @@ async function handleEdit(slug) {
 }
 
 // --- Delete Dialog ---
+let deletingPhoto = null;
+
 function showDeleteDialog(photo) {
+  deletingPhoto = photo;
   const dialog = h("div", { className: "modal-overlay", style: "align-items:center" },
     h("div", { className: "confirm-dialog" },
       h("h3", {}, `Delete "${photo.titleEn || photo.slug}"?`),
@@ -848,12 +941,15 @@ function showDeleteDialog(photo) {
       ),
     ),
   );
-  // Override overlay click — don't close on outside click for confirm dialogs
   dialog.addEventListener("click", (e) => {
     if (e.target === dialog) closeModal();
   });
   document.body.appendChild(dialog);
   currentModal = dialog;
+}
+
+function escapeRegex(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 async function handleDelete(slug) {
@@ -862,6 +958,48 @@ async function handleDelete(slug) {
 
   try {
     await api.deletePhoto(slug);
+
+    // Auto-renumber if the deleted photo was part of a numbered series
+    const deletedPhoto = deletingPhoto;
+    deletingPhoto = null;
+    const numMatch = deletedPhoto?.titleEn?.match(/^(.+) · (\d+)$/);
+    if (numMatch && deletedPhoto.series) {
+      const baseName = numMatch[1];
+      await loadAndShowMain(); // refresh to get updated list
+      const siblings = state.photos.filter((p) =>
+        p.series === deletedPhoto.series &&
+        p.slug !== slug &&
+        new RegExp(`^${escapeRegex(baseName)} · \\d+$`).test(p.titleEn)
+      );
+      if (siblings.length > 0) {
+        const renumber = confirm(
+          `Renumber remaining ${siblings.length} photo${siblings.length > 1 ? "s" : ""} in "${baseName}" to fill the gap?`
+        );
+        if (renumber) {
+          siblings.sort((a, b) => {
+            const aNum = parseInt(a.titleEn.match(/ · (\d+)$/)?.[1] ?? "0");
+            const bNum = parseInt(b.titleEn.match(/ · (\d+)$/)?.[1] ?? "0");
+            return aNum - bNum;
+          });
+          for (let i = 0; i < siblings.length; i++) {
+            const num = i + 1;
+            const sib = siblings[i];
+            try {
+              const detail = await api.getPhoto(sib.slug);
+              const newEn = detail.en.title.replace(/ · \d+$/, ` · ${num}`);
+              const newZh = detail.zhCn.title.replace(/ · \d+$/, ` · ${num}`);
+              if (newEn !== detail.en.title || newZh !== detail.zhCn.title) {
+                await api.updatePhoto(sib.slug, { titleEn: newEn, titleZh: newZh, order: num });
+              }
+            } catch {}
+          }
+          showToast(`Renumbered ${siblings.length} photo${siblings.length > 1 ? "s" : ""}.`);
+          await loadAndShowMain();
+          return;
+        }
+      }
+    }
+
     showToast("Photo deleted.");
     closeModal();
     await loadAndShowMain();

@@ -8,6 +8,7 @@ A personal photography portfolio built with [Astro](https://astro.build) and [Ta
 
 ## Features
 
+- **Admin CMS panel** &mdash; local browser-based upload with drag-drop, batch import, numbered-series naming, and auto image optimization
 - **Mobile-first responsive** &mdash; hamburger nav menu, mobile poetry grid, adaptive gallery columns
 - **Bilingual** &mdash; English and Traditional Chinese (`/en/`, `/zh-cn/`)
 - **Masonry gallery** &mdash; CSS columns layout with staggered fade-up animations
@@ -28,20 +29,22 @@ npm run dev        # → http://localhost:4321
 
 ### Adding Photos
 
-1. Place raw JPEG files in `raw-photos/`
-2. Optimize them:
+**Admin panel (recommended):**
 
-   ```bash
-   npm run optimize-images
-   ```
-   Resizes to 2400px max width, JPEG quality 82, preserves EXIF.
+```bash
+npm run dev        # → http://localhost:4321/admin
+```
 
-3. Scaffold content entries:
+Browser-based CMS &mdash; drag-drop photos, fill metadata once for the whole batch, auto-compress (2400px, JPEG q82), auto-generate bilingual `.md` content files. Supports numbered-series naming for collection imports.
 
-   ```bash
-   npm run new-photo -- <filename.jpg> <slug>
-   ```
-   Creates paired `.md` files in `src/content/photos/en/` and `src/content/photos/zh-cn/` with metadata (title, location, camera, series, date).
+**CLI (alternative):**
+
+```bash
+npm run optimize-images -- <input-dir>
+npm run new-photo -- <filename.jpg> <slug>
+```
+
+The CLI resizes raw photos with Sharp and scaffolds paired `.md` entries interactively.
 
 ### Production Build
 
@@ -53,7 +56,9 @@ npm run build      # → dist/
 
 ```
 src/
-├── assets/images/photos/   # Optimized photos (2400px WebP)
+├── admin/                  # Admin CMS panel (dev-only, browser-based)
+│   └── api/                #   auth, photo CRUD, upload handler
+├── assets/images/photos/   # Optimized photos (2400px JPEG)
 ├── components/
 │   ├── gallery/            # PhotoGrid, PhotoCard, LazyImage, FilterBar, Lightbox
 │   ├── layout/             # BaseLayout, Header, Footer, SEO
@@ -62,6 +67,7 @@ src/
 ├── content/photos/         # Photo markdown entries (en/ + zh-cn/)
 ├── lib/                    # i18n translations, photo data access
 ├── pages/                  # Route pages (en/ + zh-cn/)
+├── plugins/                # Vite plugins (admin server middleware)
 └── styles/global.css       # Tailwind directives + custom styles
 scripts/
 ├── optimize-images.ts      # Sharp-based image pre-processor
