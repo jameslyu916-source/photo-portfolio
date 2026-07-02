@@ -1,0 +1,139 @@
+---
+import PhotoCard from "./PhotoCard.astro";
+import type { Photo } from "../../lib/photos";
+
+interface Props {
+  photos: Photo[];
+}
+
+const { photos } = Astro.props;
+const shuffled = [...photos].sort(() => Math.random() - 0.5);
+const mid = Math.ceil(shuffled.length / 2);
+const row1 = shuffled.slice(0, mid);
+const row2 = shuffled.slice(mid);
+---
+
+{
+  photos.length > 0 && (
+    <section class="featured-wall" aria-label="Featured photos">
+      <!-- Row 1: scrolls left -->
+      <div class="featured-rail">
+        <div class="featured-rail-track" data-direction="left">
+          {[...row1, ...row1].map((photo) => {
+            const { image } = photo.data;
+            return (
+              <div
+                class="featured-photo"
+                style={`aspect-ratio: ${image.width} / ${image.height};`}
+              >
+                <PhotoCard photo={photo} />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <!-- Row 2: scrolls right -->
+      <div class="featured-rail">
+        <div class="featured-rail-track" data-direction="right">
+          {[...row2, ...row2].map((photo) => {
+            const { image } = photo.data;
+            return (
+              <div
+                class="featured-photo"
+                style={`aspect-ratio: ${image.width} / ${image.height};`}
+              >
+                <PhotoCard photo={photo} />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style is:global>
+  .featured-wall {
+    position: relative;
+    overflow: hidden;
+    padding: 0.375rem 0;
+    --rail-h: 35vh;
+    --rail-h-mobile: 22vh;
+    --gap: 0.375rem;
+    --fade-w: 10vw;
+    /* Fade edges */
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black var(--fade-w),
+      black calc(100% - var(--fade-w)),
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black var(--fade-w),
+      black calc(100% - var(--fade-w)),
+      transparent 100%
+    );
+  }
+
+  .featured-rail {
+    overflow: hidden;
+    margin-bottom: var(--gap);
+  }
+  .featured-rail:last-child {
+    margin-bottom: 0;
+  }
+
+  .featured-rail-track {
+    display: flex;
+    gap: var(--gap);
+    will-change: transform;
+  }
+
+  .featured-rail-track[data-direction="left"] {
+    animation: scroll-left 80s linear infinite;
+  }
+  .featured-rail-track[data-direction="right"] {
+    animation: scroll-right 70s linear infinite;
+  }
+
+  .featured-photo {
+    height: var(--rail-h);
+    flex-shrink: 0;
+  }
+
+  .featured-rail-track:hover {
+    animation-play-state: paused;
+  }
+
+  @keyframes scroll-left {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  @keyframes scroll-right {
+    0%   { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
+  }
+
+  @media (max-width: 768px) {
+    .featured-photo {
+      height: var(--rail-h-mobile);
+    }
+    .featured-rail-track[data-direction="left"] {
+      animation-duration: 50s;
+    }
+    .featured-rail-track[data-direction="right"] {
+      animation-duration: 45s;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .featured-rail-track {
+      animation: none !important;
+    }
+  }
+</style>
