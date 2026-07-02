@@ -83,12 +83,14 @@ let state = {
   error: null,
   filterSeries: "all",
   searchQuery: "",
+  selectedSlugs: new Set(),
 };
 
 // --- DOM Helpers ---
 function el(tag, attrs = {}, ...children) {
   const e = document.createElement(tag);
   for (const [k, v] of Object.entries(attrs)) {
+    if (v === undefined) continue;
     if (k === "className") e.className = v;
     else if (k === "innerHTML") e.innerHTML = v;
     else if (k.startsWith("on")) e.addEventListener(k.slice(2).toLowerCase(), v);
@@ -112,6 +114,47 @@ function getSeriesList() {
     if (p.series) set.add(p.series);
   }
   return Array.from(set).sort();
+}
+
+// --- Selection helpers ---
+function toggleSelect(slug) {
+  if (state.selectedSlugs.has(slug)) {
+    state.selectedSlugs.delete(slug);
+  } else {
+    state.selectedSlugs.add(slug);
+  }
+  refreshBatchToolbar();
+  refreshCardCheckbox(slug);
+}
+
+function clearSelection() {
+  const slugs = [...state.selectedSlugs];
+  state.selectedSlugs.clear();
+  refreshBatchToolbar();
+  slugs.forEach(refreshCardCheckbox);
+}
+
+function refreshCardCheckbox(slug) {
+  const cb = document.getElementById(`select-${slug}`);
+  if (cb) cb.checked = state.selectedSlugs.has(slug);
+}
+
+function refreshBatchToolbar() {
+  const existing = document.getElementById("batch-toolbar");
+  if (existing) existing.remove();
+  if (state.selectedSlugs.size > 0) {
+    const toolbar = document.querySelector(".toolbar");
+    if (toolbar) toolbar.after(renderBatchToolbar());
+  }
+}
+
+// --- Batch Toolbar ---
+function renderBatchToolbar() {
+  return h("div", { id: "batch-toolbar", className: "batch-toolbar" },
+    h("span", { className: "batch-toolbar-count" }, `${state.selectedSlugs.size} selected`),
+    h("button", { className: "btn btn-primary btn-small", onclick: showBatchEditModal }, "Batch Edit"),
+    h("button", { className: "btn btn-small", onclick: clearSelection }, "Clear Selection"),
+  );
 }
 
 // --- Login Screen ---
@@ -159,6 +202,7 @@ async function doLogin() {
 async function loadAndShowMain() {
   state.isLoading = true;
   state.error = null;
+  state.selectedSlugs.clear();
   renderMain();
   try {
     state.photos = await api.listPhotos();
@@ -184,6 +228,12 @@ function renderMain() {
     app.appendChild(renderError(state.error));
   } else {
     app.appendChild(renderPhotoGrid());
+  }
+
+  // Show batch toolbar if photos are selected
+  if (state.selectedSlugs.size > 0) {
+    const toolbar = document.querySelector(".toolbar");
+    if (toolbar) toolbar.after(renderBatchToolbar());
   }
 }
 
@@ -292,14 +342,31 @@ function renderPhotoCard(photo) {
   const featuredBadge = photo.featured
     ? h("span", { className: "badge badge-featured" }, "Featured")
     : null;
+  const isSelected = state.selectedSlugs.has(photo.slug);
 
   return h("div", { className: "photo-card", "data-slug": photo.slug },
-    h("img", {
-      className: "photo-card-thumb",
-      src: `/api/admin/thumbnail/${photo.slug}`,
-      alt: photo.titleEn,
-      loading: "lazy",
-    }),
+    h("div", { className: "photo-card-thumb-wrap" },
+      h("img", {
+        className: "photo-card-thumb",
+        src: `/api/admin/thumbnail/${photo.slug}`,
+        alt: photo.titleEn,
+        loading: "lazy",
+      }),
+      h("input", {
+        type: "checkbox",
+        className: "photo-card-select",
+        id: `select-${photo.slug}`,
+        checked: isSelected ? "checked" : undefined,
+        onchange: (e) => {
+          if (e.target.checked) {
+            state.selectedSlugs.add(photo.slug);
+          } else {
+            state.selectedSlugs.delete(photo.slug);
+          }
+          refreshBatchToolbar();
+        },
+      }),
+    ),
     h("div", { className: "photo-card-body" },
       h("div", { className: "photo-card-title" }, photo.titleEn || photo.slug),
       h("div", { className: "photo-card-meta" },
@@ -924,6 +991,166 @@ async function handleEdit(slug) {
     btn.disabled = false;
     btn.textContent = "Save Changes";
   }
+}
+
+// --- Batch Edit ---
+function showBatchEditModal() {
+  const slugs = [...state.selectedSlugs];
+  const selectedPhotos = slugs
+    .map((s) => state.photos.find((p) => p.slug === s))
+    .filter(Boolean);
+
+  const titleList = selectedPhotos
+    .map((p) => h("li", {}, p.titleEn || p.slug))
+    .slice(0, 10);
+  const moreCount = selectedPhotos.length - 10;
+
+  const content = h("div", { className: "modal", style: "max-width:600px" },
+    h("div", { className: "modal-header" },
+      h("h2", {}, `Batch Edit — ${slugs.length} photos`),
+      h("button", { className: "modal-close", onclick: closeModal }, "✕"),
+    ),
+    h("div", { className: "modal-body" },
+      h("div", { className: "batch-photo-list" },
+        h("p", { className: "form-label" }, "Editing:"),
+        h("ul", { className: "batch-photo-ul" },
+          ...titleList,
+          moreCount > 0 ? h("li", { className: "batch-photo-more" }, `…and ${moreCount} more`) : null,
+        ),
+      ),
+      buildBatchEditForm(),
+    ),
+    h("div", { className: "modal-footer" },
+      h("button", { className: "btn", onclick: closeModal }, "Cancel"),
+      h("button", { className: "btn btn-primary", id: "batch-edit-submit-btn", onclick: handleBatchEdit }, "Save All"),
+    ),
+  );
+  openModal(content);
+}
+
+function buildBatchEditForm() {
+  return h("div", { id: "batch-edit-form" },
+    h("p", { className: "batch-hint" }, "Enable the toggle next to each field you want to update. Unchecked fields will be left unchanged."),
+    batchField("Location", "batch-location", "text"),
+    h("div", { className: "form-row" },
+      batchField("Series", "batch-series", "text", "batch-series-list"),
+      batchField("Date", "batch-date", "date"),
+    ),
+    h("div", { className: "form-row-3" },
+      batchField("Camera", "batch-camera", "text"),
+      batchField("Lens", "batch-lens", "text"),
+      batchField("Settings", "batch-settings", "text"),
+    ),
+    h("div", { className: "form-row" },
+      batchFieldToggle("batch-featured", "Featured"),
+      batchField("Order", "batch-order", "number"),
+    ),
+    h("div", { className: "form-row-3" },
+      batchField("Instagram URL", "batch-instagramUrl", "text"),
+      batchField("Threads URL", "batch-threadsUrl", "text"),
+      batchField("Xiaohongshu URL", "batch-xiaohongshuUrl", "text"),
+    ),
+    h("div", { id: "batch-form-error", className: "form-error" }),
+  );
+}
+
+function batchField(label, id, type, datalistId) {
+  const inputAttrs = { className: "form-input", id, type, placeholder: " " };
+  if (datalistId) inputAttrs.list = datalistId;
+  const input = h("input", inputAttrs);
+  const children = [input];
+  if (datalistId === "batch-series-list") {
+    children.push(
+      h("datalist", { id: "batch-series-list" },
+        ...getSeriesList().map((s) => h("option", { value: s })),
+      ),
+    );
+  }
+  return h("div", { className: "form-group" },
+    h("label", { className: "form-label batch-field-label" },
+      h("input", { type: "checkbox", className: "batch-field-toggle", id: `${id}-toggle` }),
+      ` ${label}`,
+    ),
+    ...children,
+  );
+}
+
+function batchFieldToggle(id, label) {
+  return h("div", { className: "form-group" },
+    h("label", { className: "toggle-label batch-field-label" },
+      h("input", { type: "checkbox", className: "batch-field-toggle", id: `${id}-toggle` }),
+      ` ${label}`,
+    ),
+  );
+}
+
+async function handleBatchEdit() {
+  const slugs = [...state.selectedSlugs];
+  const btn = document.getElementById("batch-edit-submit-btn");
+  const errorEl = document.getElementById("batch-form-error");
+
+  // Collect enabled fields
+  function field(id, key) {
+    const toggle = document.getElementById(`${id}-toggle`);
+    if (!toggle || !toggle.checked) return null;
+    const input = document.getElementById(id);
+    const value = input?.type === "checkbox" ? toggle.checked : (input?.value ?? "");
+    return { key, value };
+  }
+
+  const updates = [
+    field("batch-location", "location"),
+    field("batch-series", "series"),
+    field("batch-camera", "camera"),
+    field("batch-lens", "lens"),
+    field("batch-settings", "settings"),
+    field("batch-date", "date"),
+    field("batch-featured", "featured"),
+    field("batch-order", "order"),
+    field("batch-instagramUrl", "instagramUrl"),
+    field("batch-threadsUrl", "threadsUrl"),
+    field("batch-xiaohongshuUrl", "xiaohongshuUrl"),
+  ].filter(Boolean);
+
+  if (updates.length === 0) {
+    showFormError("batch-form-error", "Enable at least one field to update.");
+    return;
+  }
+
+  // Build payload from enabled fields
+  const payload = {};
+  for (const { key, value } of updates) {
+    if (key === "order") payload[key] = parseInt(value) || 0;
+    else if (key === "featured") payload[key] = value;
+    else payload[key] = value;
+  }
+
+  btn.disabled = true;
+  let completed = 0;
+  let failed = 0;
+
+  for (const slug of slugs) {
+    btn.textContent = `Updating ${completed + 1}/${slugs.length}…`;
+    try {
+      await api.updatePhoto(slug, payload);
+      completed++;
+    } catch (err) {
+      failed++;
+      if (errorEl) errorEl.textContent = `Failed on "${slug}": ${err.message}`;
+    }
+  }
+
+  btn.disabled = false;
+  btn.textContent = "Save All";
+
+  if (failed === 0) {
+    showToast(`Updated ${completed} photo(s)!`);
+  } else {
+    showToast(`Updated ${completed}, ${failed} failed`, "error");
+  }
+  closeModal();
+  clearSelection();
+  await loadAndShowMain();
 }
 
 // --- Delete Dialog ---
