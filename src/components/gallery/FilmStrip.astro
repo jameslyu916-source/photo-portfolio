@@ -244,6 +244,22 @@ const photosJson = JSON.stringify(photosData);
     isNavigating = false;
   }
 
+  function snapToClosest() {
+    const viewCenter = track.scrollLeft + track.offsetWidth / 2;
+    let closestIdx = currentIndex;
+    let closestDist = Infinity;
+    visiblePhotos.forEach((p, i) => {
+      const frame = document.getElementById(`film-frame-${p.slug}`);
+      if (!frame) return;
+      const frameCenter = frame.offsetLeft + frame.offsetWidth / 2;
+      const dist = Math.abs(viewCenter - frameCenter);
+      if (dist < closestDist) { closestDist = dist; closestIdx = i; }
+    });
+    if (closestIdx >= 0 && closestIdx < visiblePhotos.length) {
+      setCurrentIndex(closestIdx);
+    }
+  }
+
   function goTo(idx) {
     if (visiblePhotos.length === 0) return;
     clearTimeout(navFallbackTimer);
@@ -258,9 +274,11 @@ const photosJson = JSON.stringify(photosData);
     showUI();
 
     // Fallback for browsers without scrollend (Safari/iOS)
+    // Must be longer than smooth scroll duration on mobile (~800ms)
     navFallbackTimer = setTimeout(() => {
       isNavigating = false;
-    }, 600);
+      snapToClosest();
+    }, 800);
   }
 
   function updateFrameStyles() {
@@ -293,19 +311,9 @@ const photosJson = JSON.stringify(photosData);
       if (Math.abs(viewCenter - lastCenter) > 0.5) {
         lastCenter = viewCenter;
         updateFrameStyles();
+        // Only snap when user is manually scrolling (not programmatic navigation)
         if (!isNavigating) {
-          let closestIdx = currentIndex;
-          let closestDist = Infinity;
-          visiblePhotos.forEach((p, i) => {
-            const frame = document.getElementById(`film-frame-${p.slug}`);
-            if (!frame) return;
-            const frameCenter = frame.offsetLeft + frame.offsetWidth / 2;
-            const dist = Math.abs(viewCenter - frameCenter);
-            if (dist < closestDist) { closestDist = dist; closestIdx = i; }
-          });
-          if (closestIdx >= 0 && closestIdx < visiblePhotos.length) {
-            setCurrentIndex(closestIdx);
-          }
+          snapToClosest();
         }
       }
       rafId = requestAnimationFrame(loop);
@@ -394,23 +402,11 @@ const photosJson = JSON.stringify(photosData);
       else if (e.key === "ArrowLeft") { goTo(currentIndex - 1); }
     }, { signal });
 
-    // Scroll-end snap (with scrollend event)
+    // Scroll-end snap
     track.addEventListener("scrollend", () => {
       isNavigating = false;
       clearTimeout(navFallbackTimer);
-      const viewCenter = track.scrollLeft + track.offsetWidth / 2;
-      let closestIdx = currentIndex;
-      let closestDist = Infinity;
-      visiblePhotos.forEach((p, i) => {
-        const frame = document.getElementById(`film-frame-${p.slug}`);
-        if (!frame) return;
-        const frameCenter = frame.offsetLeft + frame.offsetWidth / 2;
-        const dist = Math.abs(viewCenter - frameCenter);
-        if (dist < closestDist) { closestDist = dist; closestIdx = i; }
-      });
-      if (closestIdx >= 0 && closestIdx < visiblePhotos.length) {
-        setCurrentIndex(closestIdx);
-      }
+      snapToClosest();
     }, { signal });
 
     // Close on background click (not on photos or controls)
