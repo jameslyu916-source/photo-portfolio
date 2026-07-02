@@ -112,6 +112,7 @@ const photosJson = JSON.stringify(photosData);
   let bgToggle = false;
   let rafId = null;
   let visiblePhotos = photosData; // may be filtered
+  let abortController;
 
   // Lazy-load a single frame's image
   function loadImage(slug) {
@@ -255,6 +256,11 @@ const photosJson = JSON.stringify(photosData);
   }
 
   function initFilmStrip() {
+    // Clean up listeners from previous page (View Transitions)
+    if (abortController) abortController.abort();
+    abortController = new AbortController();
+    const { signal } = abortController;
+
     overlay = document.getElementById("film-strip");
     track = document.getElementById("film-strip-track");
     closeBtn = document.getElementById("film-strip-close");
@@ -269,9 +275,6 @@ const photosJson = JSON.stringify(photosData);
       document.body.appendChild(overlay);
     }
 
-    if (document.body.dataset.filmstripReady === "true") return;
-    document.body.dataset.filmstripReady = "true";
-
     document.addEventListener("click", (e) => {
       const card = e.target.closest("[data-photo-id]");
       if (!card) return;
@@ -280,12 +283,12 @@ const photosJson = JSON.stringify(photosData);
         e.stopPropagation();
         open(card.dataset.photoId);
       }
-    });
+    }, { signal });
 
     closeBtn?.addEventListener("click", (e) => {
       e.stopPropagation();
       close();
-    });
+    }, { signal });
 
     document.addEventListener("keydown", (e) => {
       if (!overlay || overlay.classList.contains("opacity-0")) return;
@@ -300,13 +303,13 @@ const photosJson = JSON.stringify(photosData);
         const prev = document.getElementById(`film-frame-${visiblePhotos[currentIndex].slug}`);
         if (prev) track.scrollTo({ left: prev.offsetLeft - track.offsetWidth / 2 + prev.offsetWidth / 2, behavior: "smooth" });
       }
-    });
+    }, { signal });
 
     track.addEventListener("scrollend", () => {
       const center = track.scrollLeft + track.offsetWidth / 2;
       let closestIdx = currentIndex;
       let closestDist = Infinity;
-      photosData.forEach((p, i) => {
+      visiblePhotos.forEach((p, i) => {
         const frame = document.getElementById(`film-frame-${p.slug}`);
         if (!frame) return;
         const frameCenter = frame.offsetLeft + frame.offsetWidth / 2;
@@ -314,7 +317,7 @@ const photosJson = JSON.stringify(photosData);
         if (dist < closestDist) { closestDist = dist; closestIdx = i; }
       });
       setCurrentIndex(closestIdx);
-    });
+    }, { signal });
   }
 
   initFilmStrip();
