@@ -489,11 +489,13 @@ function buildUploadForm() {
         h("div", { className: "form-row" },
           h("div", { className: "form-group" },
             h("label", { className: "form-label" }, "Base title (EN)"),
-            h("input", { className: "form-input", id: "field-baseTitleEn", placeholder: "e.g. December Liturgy", oninput: refreshNumberedPreviews }),
+            h("input", { className: "form-input", id: "field-baseTitleEn", placeholder: "e.g. December Liturgy",
+              oninput: function () { this.dataset.autoFilled = "false"; refreshNumberedPreviews(); } }),
           ),
           h("div", { className: "form-group" },
             h("label", { className: "form-label" }, "基礎標題 (ZH)"),
-            h("input", { className: "form-input", id: "field-baseTitleZh", placeholder: "e.g. 十二月禮拜", oninput: refreshNumberedPreviews }),
+            h("input", { className: "form-input", id: "field-baseTitleZh", placeholder: "e.g. 十二月禮拜",
+              oninput: function () { this.dataset.autoFilled = "false"; refreshNumberedPreviews(); } }),
           ),
         ),
         h("div", { className: "form-row" },
@@ -530,7 +532,7 @@ function buildUploadForm() {
         h("div", { className: "form-group" },
           h("label", { className: "form-label" }, "Series"),
           h("input", { className: "form-input", id: "field-series", placeholder: "e.g. hong-kong-christmas", list: "upload-series-list",
-            oninput: function () { this.dataset.manual = "true"; },
+            oninput: function () { this.dataset.manual = "true"; autoDetectSeriesNaming(); },
           }),
           h("datalist", { id: "upload-series-list" },
             ...getSeriesList().map((s) => h("option", { value: s })),
@@ -601,6 +603,56 @@ function setNamingMode(mode) {
   if (numberedFields) numberedFields.style.display = mode === "numbered" ? "block" : "none";
   refreshNumberedPreviews();
   renderFileList();
+}
+
+function autoDetectSeriesNaming() {
+  if (namingMode !== "numbered") return;
+
+  const seriesEl = document.getElementById("field-series");
+  const enEl = document.getElementById("field-baseTitleEn");
+  const zhEl = document.getElementById("field-baseTitleZh");
+  const numEl = document.getElementById("field-startNum");
+  if (!seriesEl || !enEl || !zhEl || !numEl) return;
+
+  const seriesSlug = (seriesEl.value ?? "").trim().toLowerCase().replace(/\s+/g, "-");
+  if (!seriesSlug) return;
+
+  // Skip if user has manually edited any base title field
+  if (enEl.dataset.autoFilled === "false" || zhEl.dataset.autoFilled === "false") return;
+
+  // Find existing photos in this series with numbered titles
+  const siblings = state.photos.filter((p) => p.series === seriesSlug);
+  let maxNum = 0;
+  let baseEn = "";
+  let baseZh = "";
+
+  for (const p of siblings) {
+    const enMatch = p.titleEn?.match(/^(.+) · (\d+)$/);
+    const zhMatch = p.titleZh?.match(/^(.+) · (\d+)$/);
+    if (enMatch) {
+      const num = parseInt(enMatch[2]);
+      if (num > maxNum) {
+        maxNum = num;
+        baseEn = enMatch[1];
+      }
+    }
+    if (zhMatch && !baseZh) {
+      baseZh = zhMatch[1];
+    }
+  }
+
+  if (baseEn) {
+    enEl.value = baseEn;
+    enEl.dataset.autoFilled = "true";
+  }
+  if (baseZh) {
+    zhEl.value = baseZh;
+    zhEl.dataset.autoFilled = "true";
+  }
+  if (maxNum > 0) {
+    numEl.value = String(maxNum + 1);
+  }
+  refreshNumberedPreviews();
 }
 
 function getBaseTitles() {

@@ -8,7 +8,9 @@ A personal photography portfolio built with [Astro](https://astro.build) and [Ta
 
 ## Features
 
-- **Admin CMS panel** &mdash; local browser-based upload with drag-drop, batch import, numbered-series naming, and auto image optimization
+- **Admin CMS panel** &mdash; local browser-based upload with drag-drop, batch import, batch edit, numbered-series naming, and auto image optimization
+- **FilmStrip photo viewer** &mdash; horizontal film-strip browser replacing lightbox, with deferred loading and CLS prevention
+- **FeaturedWall** &mdash; dual-rail auto-scrolling photo wall on homepage with CSS mask-image fades
 - **Mobile-first responsive** &mdash; hamburger nav menu, mobile poetry grid, adaptive gallery columns
 - **Bilingual** &mdash; English and Traditional Chinese (`/en/`, `/zh-cn/`)
 - **Masonry gallery** &mdash; CSS columns layout with staggered fade-up animations
