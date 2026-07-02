@@ -37,7 +37,7 @@ npm run new-photo    # Interactive CLI to scaffold photo .md files
 - **Style**: Japanese清新 — clean, minimal, rounded fonts, breathing room
 
 ## Key Design Decisions
-- **Homepage**: Large J (serif) + cycling handwritten x (3 fonts, 7.5s loop, click to bounce). Japanese manuscript grid + 18 poetry fragments on right (desktop), 6 fragments (mobile). Scroll-down arrow + bottom gallery CTA. Featured photos displayed in `FeaturedWall` — dual-rail auto-scrolling photo wall (one row left, one right) with CSS mask-image faded edges, ~35vh rail height. Photos split into two non-overlapping groups.
+- **Homepage**: Large J (serif) + cycling handwritten x (3 fonts, 7.5s loop, click to bounce). Japanese manuscript grid + 18 poetry fragments on right (desktop), 6 fragments (mobile). Scroll-down arrow + bottom gallery CTA. Featured photos displayed in `FeaturedWall` — asymmetric dual-rail auto-scrolling wall (taller top rail 34vh ← left, shorter bottom rail 24vh → right, different speeds) with CSS mask-image faded edges. `FilmStrip` fullscreen viewer with floating edge arrows, auto-hide UI, infinite loop navigation.
 - **Mobile nav**: Hamburger button → full-screen overlay with nav links. Menu overlay is OUTSIDE `<header>` to escape stacking context
 - **Gallery**: CSS columns masonry with CLS prevention (aspect-ratio on grid `<a>` + `contain:layout style`), series-based filtering (not categories), seeded Fisher-Yates shuffle for photo order
 - **PhotoCard hover**: GPU-isolated scale(1.05) with will-change-transform + backface-hidden. Bottom gradient overlay with title/location.

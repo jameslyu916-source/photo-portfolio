@@ -16,9 +16,9 @@ const row2 = shuffled.slice(mid);
 {
   photos.length > 0 && (
     <section class="featured-wall" aria-label="Featured photos">
-      <!-- Row 1: scrolls left -->
-      <div class="featured-rail">
-        <div class="featured-rail-track" data-direction="left">
+      <!-- Row 1: scrolls left, taller rail -->
+      <div class="featured-rail rail-tall">
+        <div class="featured-rail-track" data-direction="left" data-speed="slow">
           {[...row1, ...row1].map((photo) => {
             const { image } = photo.data;
             return (
@@ -33,9 +33,9 @@ const row2 = shuffled.slice(mid);
         </div>
       </div>
 
-      <!-- Row 2: scrolls right -->
-      <div class="featured-rail">
-        <div class="featured-rail-track" data-direction="right">
+      <!-- Row 2: scrolls right, shorter rail -->
+      <div class="featured-rail rail-short">
+        <div class="featured-rail-track" data-direction="right" data-speed="fast">
           {[...row2, ...row2].map((photo) => {
             const { image } = photo.data;
             return (
@@ -57,12 +57,9 @@ const row2 = shuffled.slice(mid);
   .featured-wall {
     position: relative;
     overflow: hidden;
-    padding: 0.375rem 0;
-    --rail-h: 35vh;
-    --rail-h-mobile: 22vh;
+    padding: 0.5rem 0;
     --gap: 0.375rem;
     --fade-w: 10vw;
-    /* Fade edges */
     mask-image: linear-gradient(
       to right,
       transparent 0%,
@@ -89,19 +86,35 @@ const row2 = shuffled.slice(mid);
 
   .featured-rail-track {
     display: flex;
+    align-items: center;
     gap: var(--gap);
     will-change: transform;
   }
 
+  /* Asymmetric rail heights */
+  .rail-tall .featured-photo  { height: 34vh; }
+  .rail-short .featured-photo { height: 24vh; }
+
+  /* Different scroll speeds */
+  .featured-rail-track[data-speed="slow"] {
+    animation-duration: 90s;
+  }
+  .featured-rail-track[data-speed="fast"] {
+    animation-duration: 55s;
+  }
+
   .featured-rail-track[data-direction="left"] {
-    animation: scroll-left 80s linear infinite;
+    animation-name: scroll-left;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
   }
   .featured-rail-track[data-direction="right"] {
-    animation: scroll-right 70s linear infinite;
+    animation-name: scroll-right;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
   }
 
   .featured-photo {
-    height: var(--rail-h);
     flex-shrink: 0;
   }
 
@@ -120,15 +133,10 @@ const row2 = shuffled.slice(mid);
   }
 
   @media (max-width: 768px) {
-    .featured-photo {
-      height: var(--rail-h-mobile);
-    }
-    .featured-rail-track[data-direction="left"] {
-      animation-duration: 50s;
-    }
-    .featured-rail-track[data-direction="right"] {
-      animation-duration: 45s;
-    }
+    .rail-tall .featured-photo  { height: 20vh; }
+    .rail-short .featured-photo { height: 16vh; }
+    .featured-rail-track[data-speed="slow"] { animation-duration: 60s; }
+    .featured-rail-track[data-speed="fast"] { animation-duration: 40s; }
   }
 
   @media (prefers-reduced-motion: reduce) {
