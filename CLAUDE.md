@@ -20,7 +20,7 @@ npm run new-photo    # Interactive CLI to scaffold photo .md files
 ## Project Structure
 - `src/pages/` — Route pages (en/ and zh-cn/ for each route)
 - `src/components/layout/` — BaseLayout, Header, Footer, SEO
-- `src/components/gallery/` — PhotoGrid, PhotoCard, LazyImage, FilterBar, Lightbox
+- `src/components/gallery/` — PhotoGrid, PhotoCard, LazyImage, FilterBar, FilmStrip, FeaturedWall
 - `src/lib/` — i18n.ts (translations), photos.ts (data access)
 - `src/content/photos/{en,zh-cn}/` — Photo markdown entries
 - `src/assets/images/photos/` — Optimized photo files
@@ -37,7 +37,7 @@ npm run new-photo    # Interactive CLI to scaffold photo .md files
 - **Style**: Japanese清新 — clean, minimal, rounded fonts, breathing room
 
 ## Key Design Decisions
-- **Homepage**: Large J (serif) + cycling handwritten x (3 fonts, 7.5s loop, click to bounce). Japanese manuscript grid + 18 poetry fragments on right (desktop), 6 fragments (mobile). Scroll-down arrow + bottom gallery CTA. Featured photos in height-constrained flex-wrap ribbon (`clamp(280px, 40vh, 500px)`) with ruled section label — adapts to any number of photos and aspect ratios.
+- **Homepage**: Large J (serif) + cycling handwritten x (3 fonts, 7.5s loop, click to bounce). Japanese manuscript grid + 18 poetry fragments on right (desktop), 6 fragments (mobile). Scroll-down arrow + bottom gallery CTA. Featured photos displayed in `FeaturedWall` — dual-rail auto-scrolling photo wall (one row left, one right) with CSS mask-image faded edges, ~35vh rail height. Photos split into two non-overlapping groups.
 - **Mobile nav**: Hamburger button → full-screen overlay with nav links. Menu overlay is OUTSIDE `<header>` to escape stacking context
 - **Gallery**: CSS columns masonry with CLS prevention (aspect-ratio on grid `<a>` + `contain:layout style`), series-based filtering (not categories), seeded Fisher-Yates shuffle for photo order
 - **PhotoCard hover**: GPU-isolated scale(1.05) with will-change-transform + backface-hidden. Bottom gradient overlay with title/location.
@@ -66,7 +66,18 @@ npm run new-photo    # Interactive CLI to scaffold photo .md files
   document.addEventListener("astro:page-load", init);
   ```
 - The `data-ready` guard prevents duplicate listeners on back-navigation
-- This applies to: hamburger menu toggle, x bounce animation, scroll hint arrow, FilterBar (series filter clicks), FilmStrip (photo click → overlay)
+- This applies to: hamburger menu toggle, x bounce animation, scroll hint arrow, FilterBar (series filter clicks)
+- **For components with closure variables** (e.g. FilmStrip's `photosData`): use `AbortController` instead of `data-ready`. On each `init()` call, `abort()` the previous controller to remove old listeners, then register new ones with `{ signal }`. This prevents stale closures from previous pages interfering with the current page's data.
+  ```js
+  let ac;
+  function init() {
+    if (ac) ac.abort();
+    ac = new AbortController();
+    const { signal } = ac;
+    el.addEventListener("click", handler, { signal });
+    // ...
+  }
+  ```
 
 ## CSS Patterns
 - **Grid stacking** (overlapping elements that size to content): Use `grid` + `grid-area: 1/1` instead of `absolute inset-0`. The latter collapses the container to 0×0, causing content clipping
