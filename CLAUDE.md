@@ -69,6 +69,8 @@ npm run new-photo    # Interactive CLI to scaffold photo .md files
 
 ## CSS Patterns
 - **Grid stacking** (overlapping elements that size to content): Use `grid` + `grid-area: 1/1` instead of `absolute inset-0`. The latter collapses the container to 0×0, causing content clipping
+- **Absolute painting order**: `absolute` elements (z-index: auto) paint AFTER normal-flow siblings. Overlays with absolute backgrounds need `relative z-10` on UI bars to stay clickable
+- **Dual-layer crossfade**: Use two `<img>` layers (A/B toggle) for background transitions; avoids the transparency flash of a single-layer fade
 - **GPU hover fixes**: See Known GPU Bugs section below
 
 ## Known GPU Bugs & Fixes
