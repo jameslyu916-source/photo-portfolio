@@ -19,11 +19,10 @@ const items = [
     {items.map((item, i) => (
       <button
         data-filter={item.key}
-        class={`px-4 py-1.5 rounded-full text-sm transition-colors border
-          ${i === 0
-            ? "bg-ink text-paper border-ink"
-            : "bg-transparent text-muted border-border hover:text-ink hover:border-ink"
-          }`}
+        class={`filter-btn px-4 py-1.5 rounded-full text-sm transition-colors border
+          bg-transparent text-muted border-border
+          hover:text-ink hover:border-ink
+          ${i === 0 ? "filter-active" : ""}`}
       >
         {item.label}
       </button>
@@ -37,26 +36,50 @@ const items = [
     if (!filterBar || filterBar.dataset.ready === "true") return;
     filterBar.dataset.ready = "true";
 
+    let swapTimer: ReturnType<typeof setTimeout> | null = null;
+
     filterBar.addEventListener("click", (e) => {
       const btn = (e.target as HTMLElement).closest("[data-filter]");
       if (!btn) return;
 
-      const active = "bg-ink text-paper border-ink";
-      const inactive = "bg-transparent text-muted border-border";
-
-      filterBar.querySelectorAll("[data-filter]").forEach((b) => {
-        b.className = b.className.includes(active)
-          ? b.className.replace(active, inactive)
-          : b.className;
+      filterBar.querySelectorAll(".filter-btn").forEach((b) => {
+        b.classList.remove("filter-active");
       });
-      btn.className = btn.className.replace(inactive, active);
+      btn.classList.add("filter-active");
 
       const filter = btn.dataset.filter;
-      document.querySelectorAll("[data-series]").forEach((card) => {
-        const s = (card as HTMLElement).dataset.series;
-        (card as HTMLElement).style.display =
-          filter === "all" || s === filter ? "" : "none";
-      });
+      const gallery = document.querySelector(".grid-gallery");
+      if (!gallery) return;
+
+      // Cancel any in-progress swap
+      if (swapTimer) clearTimeout(swapTimer);
+
+      // Phase 1: fade all cards out
+      gallery.classList.add("filtering");
+
+      // Phase 2: swap display states while invisible
+      swapTimer = setTimeout(() => {
+        swapTimer = null;
+        const cards = document.querySelectorAll("[data-series]");
+        cards.forEach((card) => {
+          const el = card as HTMLElement;
+          const match = filter === "all" || el.dataset.series === filter;
+          if (match) {
+            el.style.display = "";
+            el.classList.remove("filtered-out");
+          } else {
+            el.classList.add("filtered-out");
+            el.style.display = "none";
+          }
+        });
+
+        // Phase 3: fade visible cards in
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            gallery.classList.remove("filtering");
+          });
+        });
+      }, 250);
     });
   }
 

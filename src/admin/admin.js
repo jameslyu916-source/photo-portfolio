@@ -529,7 +529,9 @@ function buildUploadForm() {
         ),
         h("div", { className: "form-group" },
           h("label", { className: "form-label" }, "Series"),
-          h("input", { className: "form-input", id: "field-series", placeholder: "e.g. hong-kong-christmas", list: "upload-series-list" }),
+          h("input", { className: "form-input", id: "field-series", placeholder: "e.g. hong-kong-christmas", list: "upload-series-list",
+            oninput: function () { this.dataset.manual = "true"; },
+          }),
           h("datalist", { id: "upload-series-list" },
             ...getSeriesList().map((s) => h("option", { value: s })),
           ),
@@ -611,6 +613,11 @@ function getBaseTitles() {
 function refreshNumberedPreviews() {
   if (namingMode !== "numbered") return;
   const { en, zh, start } = getBaseTitles();
+  // Auto-fill series from base title (only if user hasn't manually edited it)
+  const seriesInput = document.getElementById("field-series");
+  if (seriesInput && en && !seriesInput.dataset.manual) {
+    seriesInput.value = en.toLowerCase().replace(/\s+/g, "-");
+  }
   // Update selectedFiles titles for preview
   for (let i = 0; i < selectedFiles.length; i++) {
     const num = start + i;

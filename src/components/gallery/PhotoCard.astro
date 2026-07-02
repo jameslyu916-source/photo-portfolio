@@ -16,12 +16,9 @@ const slug = photo.id.split("/").pop()?.replace(".md", "");
   class="group block cursor-zoom-in"
   data-photo-id={slug}
   data-series={series ?? ""}
-  style={`animation-delay: ${delay}ms;`}
+  style={`aspect-ratio: ${image.width} / ${image.height}; animation-delay: ${delay}ms;`}
 >
-  <div
-    class="relative overflow-hidden"
-    style={`aspect-ratio: ${image.width} / ${image.height};`}
-  >
+  <div class="relative overflow-hidden w-full h-full">
     <LazyImage
       image={image}
       alt={title}

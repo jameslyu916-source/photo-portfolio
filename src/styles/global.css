@@ -55,6 +55,17 @@
 }
 
 @layer components {
+  .filter-btn.filter-active {
+    background-color: #2d2d2d;
+    color: #fafaf9;
+    border-color: #2d2d2d;
+  }
+  .filter-btn.filter-active:hover {
+    color: #fafaf9;
+    border-color: #2d2d2d;
+    opacity: 0.8;
+  }
+
   .grid-gallery {
     column-count: 3;
     column-gap: 0.25rem;
@@ -66,6 +77,19 @@
     opacity: 0;
     transform: translateY(24px);
     animation: fade-up 0.6s ease-out forwards;
+    max-height: 3000px;
+    contain: layout style;
+  }
+
+  .grid-gallery > *.filtered-out {
+    opacity: 0 !important;
+    pointer-events: none;
+  }
+
+  .grid-gallery.filtering > * {
+    opacity: 0 !important;
+    animation: none !important;
+    transition: opacity 0.2s ease;
   }
 
   @media (max-width: 900px) {

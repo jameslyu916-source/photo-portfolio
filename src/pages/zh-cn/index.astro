@@ -138,23 +138,26 @@ const showcase = featured.slice(0, 5);
   {
     showcase.length > 0 && (
       <section id="featured" class="max-w-7xl mx-auto px-6 pb-20">
-        {showcase.slice(0, 2).length > 0 && (
-          <div class="grid grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
-            {showcase.slice(0, 2).map((photo) => (
-              <PhotoCard photo={photo} />
-            ))}
-          </div>
-        )}
+        <!-- Ruled label -->
+        <div class="flex items-center gap-4 mb-8">
+          <div class="h-px flex-1 bg-border/30"></div>
+          <span class="text-muted/50 text-xs tracking-[0.2em] uppercase font-light select-none">Featured Work</span>
+          <div class="h-px flex-1 bg-border/30"></div>
+        </div>
 
-        {showcase.slice(2, 5).length > 0 && (
-          <div class="grid grid-cols-3 gap-4 md:gap-6">
-            {showcase.slice(2, 5).map((photo) => (
+        <!-- Photo ribbon -->
+        <div class="flex flex-wrap gap-3 md:gap-4 justify-center">
+          {showcase.map((photo) => (
+            <div
+              class="flex-shrink-0"
+              style={`height: clamp(280px, 40vh, 500px); aspect-ratio: ${photo.data.image.width} / ${photo.data.image.height}; max-width: 90vw;`}
+            >
               <PhotoCard photo={photo} />
-            ))}
-          </div>
-        )}
+            </div>
+          ))}
+        </div>
 
-        <div class="text-right mt-8">
+        <div class="text-center mt-10">
           <a
             href={getRelativeLocaleUrl("zh-cn", "gallery")}
             class="group inline-flex items-center gap-2 text-muted/60

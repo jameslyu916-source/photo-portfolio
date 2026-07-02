@@ -68,10 +68,10 @@ const photosJson = JSON.stringify(photosData);
       >
         <div class="film-frame-inner flex items-center justify-center w-full">
           <img
-            src={p.src}
+            src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+            data-src={p.src}
             alt={p.title}
             class="max-h-[80vh] max-w-full object-contain select-none"
-            loading="lazy"
           />
         </div>
       </div>
@@ -111,11 +111,30 @@ const photosJson = JSON.stringify(photosData);
   let currentIndex = 0;
   let bgToggle = false;
   let rafId = null;
+  let visiblePhotos = photosData; // may be filtered
+
+  // Lazy-load a single frame's image
+  function loadImage(slug) {
+    const frame = document.getElementById(`film-frame-${slug}`);
+    if (!frame) return;
+    const img = frame.querySelector("img");
+    if (img && img.dataset.src && !img.src.startsWith("http")) {
+      img.src = img.dataset.src;
+    }
+  }
+
+  // Load images within ±2 frames of current index
+  function loadNearbyImages(idx) {
+    for (let i = idx - 2; i <= idx + 2; i++) {
+      const p = visiblePhotos[i];
+      if (p) loadImage(p.slug);
+    }
+  }
 
   function setBackground(idx) {
-    if (!photosData[idx]) return;
-    const nextSrc = photosData[idx].src;
-    // Crossfade: set inactive layer, then fade
+    const p = visiblePhotos[idx];
+    if (!p) return;
+    const nextSrc = p.src;
     if (bgToggle) {
       bgB.src = nextSrc;
       bgB.style.opacity = "1";
@@ -129,8 +148,8 @@ const photosJson = JSON.stringify(photosData);
   }
 
   function updateInfo() {
-    const p = photosData[currentIndex];
-    if (counter) counter.textContent = `${currentIndex + 1} / ${photosData.length}`;
+    const p = visiblePhotos[currentIndex];
+    if (counter) counter.textContent = `${currentIndex + 1} / ${visiblePhotos.length}`;
     if (seriesEl && p) seriesEl.textContent = p.series || "";
   }
 
@@ -139,11 +158,32 @@ const photosJson = JSON.stringify(photosData);
       currentIndex = idx;
       setBackground(idx);
       updateInfo();
+      loadNearbyImages(idx);
     }
   }
 
   function open(slug) {
-    const idx = photosData.findIndex((p) => p.slug === slug);
+    // Check active filter
+    const activeBtn = document.querySelector(".filter-btn.filter-active");
+    const filter = activeBtn?.dataset?.filter;
+    if (filter && filter !== "all") {
+      visiblePhotos = photosData.filter((p) => p.series === filter);
+      // Hide non-matching frames
+      photosData.forEach((p) => {
+        const frame = document.getElementById(`film-frame-${p.slug}`);
+        if (frame) {
+          frame.style.display = p.series === filter ? "" : "none";
+        }
+      });
+    } else {
+      visiblePhotos = photosData;
+      photosData.forEach((p) => {
+        const frame = document.getElementById(`film-frame-${p.slug}`);
+        if (frame) frame.style.display = "";
+      });
+    }
+
+    const idx = visiblePhotos.findIndex((p) => p.slug === slug);
     if (idx === -1) return;
     setCurrentIndex(idx);
 
@@ -157,6 +197,7 @@ const photosJson = JSON.stringify(photosData);
         track.scrollTo({ left: frame.offsetLeft - track.offsetWidth / 2 + frame.offsetWidth / 2, behavior: "instant" });
       }
       startRafLoop();
+      loadNearbyImages(idx);
     });
   }
 
@@ -169,7 +210,7 @@ const photosJson = JSON.stringify(photosData);
 
   function updateFrameStyles() {
     const viewCenter = track.scrollLeft + track.offsetWidth / 2;
-    photosData.forEach((p) => {
+    visiblePhotos.forEach((p) => {
       const frame = document.getElementById(`film-frame-${p.slug}`);
       if (!frame) return;
       const frameCenter = frame.offsetLeft + frame.offsetWidth / 2;
@@ -195,7 +236,7 @@ const photosJson = JSON.stringify(photosData);
         updateFrameStyles();
         let closestIdx = 0;
         let closestDist = Infinity;
-        photosData.forEach((p, i) => {
+        visiblePhotos.forEach((p, i) => {
           const frame = document.getElementById(`film-frame-${p.slug}`);
           if (!frame) return;
           const frameCenter = frame.offsetLeft + frame.offsetWidth / 2;
@@ -250,13 +291,13 @@ const photosJson = JSON.stringify(photosData);
       if (!overlay || overlay.classList.contains("opacity-0")) return;
       if (e.key === "Escape") {
         close();
-      } else if (e.key === "ArrowRight" && currentIndex < photosData.length - 1) {
+      } else if (e.key === "ArrowRight" && currentIndex < visiblePhotos.length - 1) {
         setCurrentIndex(currentIndex + 1);
-        const next = document.getElementById(`film-frame-${photosData[currentIndex].slug}`);
+        const next = document.getElementById(`film-frame-${visiblePhotos[currentIndex].slug}`);
         if (next) track.scrollTo({ left: next.offsetLeft - track.offsetWidth / 2 + next.offsetWidth / 2, behavior: "smooth" });
       } else if (e.key === "ArrowLeft" && currentIndex > 0) {
         setCurrentIndex(currentIndex - 1);
-        const prev = document.getElementById(`film-frame-${photosData[currentIndex].slug}`);
+        const prev = document.getElementById(`film-frame-${visiblePhotos[currentIndex].slug}`);
         if (prev) track.scrollTo({ left: prev.offsetLeft - track.offsetWidth / 2 + prev.offsetWidth / 2, behavior: "smooth" });
       }
     });
