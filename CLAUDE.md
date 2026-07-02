@@ -37,16 +37,17 @@ npm run new-photo    # Interactive CLI to scaffold photo .md files
 - **Style**: Japanese清新 — clean, minimal, rounded fonts, breathing room
 
 ## Key Design Decisions
-- **Homepage**: Large J (serif) + cycling handwritten x (3 fonts, 7.5s loop, click to bounce). Japanese manuscript grid + 18 poetry fragments on right (desktop), 6 fragments (mobile). Scroll-down arrow + bottom gallery CTA. Featured photos in 2+3 curated grid below.
+- **Homepage**: Large J (serif) + cycling handwritten x (3 fonts, 7.5s loop, click to bounce). Japanese manuscript grid + 18 poetry fragments on right (desktop), 6 fragments (mobile). Scroll-down arrow + bottom gallery CTA. Featured photos in height-constrained flex-wrap ribbon (`clamp(280px, 40vh, 500px)`) with ruled section label — adapts to any number of photos and aspect ratios.
 - **Mobile nav**: Hamburger button → full-screen overlay with nav links. Menu overlay is OUTSIDE `<header>` to escape stacking context
-- **Gallery**: CSS columns masonry, series-based filtering (not categories)
+- **Gallery**: CSS columns masonry with CLS prevention (aspect-ratio on grid `<a>` + `contain:layout style`), series-based filtering (not categories), seeded Fisher-Yates shuffle for photo order
 - **PhotoCard hover**: GPU-isolated scale(1.05) with will-change-transform + backface-hidden. Bottom gradient overlay with title/location.
 - **About page**: Poetic 意识流 text, not CV-style
 
 ## Photo Content
-- Currently 15 Hong Kong Christmas photos, series: "december-liturgy" (renamed from "hong-kong-christmas")
+- Series: "december-liturgy" (Hong Kong Christmas), "snow-vein" (glacier/mountains), "between-tides" (Hong Kong seaside street photography)
 - Content schema uses `series` field (free string), not `category` enum
 - Optimized photos in `src/assets/images/photos/`
+- Series name format: lowercase kebab-case (auto-converted on upload)
 
 ## i18n Note
 - **zh-cn routes use Traditional Chinese**, not Simplified (user is in Hong Kong)
@@ -65,13 +66,16 @@ npm run new-photo    # Interactive CLI to scaffold photo .md files
   document.addEventListener("astro:page-load", init);
   ```
 - The `data-ready` guard prevents duplicate listeners on back-navigation
-- This applies to: hamburger menu toggle, x bounce animation, scroll hint arrow
+- This applies to: hamburger menu toggle, x bounce animation, scroll hint arrow, FilterBar (series filter clicks), FilmStrip (photo click → overlay)
 
 ## CSS Patterns
 - **Grid stacking** (overlapping elements that size to content): Use `grid` + `grid-area: 1/1` instead of `absolute inset-0`. The latter collapses the container to 0×0, causing content clipping
 - **Absolute painting order**: `absolute` elements (z-index: auto) paint AFTER normal-flow siblings. Overlays with absolute backgrounds need `relative z-10` on UI bars to stay clickable
 - **Dual-layer crossfade**: Use two `<img>` layers (A/B toggle) for background transitions; avoids the transparency flash of a single-layer fade
 - **GPU hover fixes**: See Known GPU Bugs section below
+- **CLS prevention in CSS columns**: Put `aspect-ratio` on the grid ITEM (the `<a>` tag), not a child div. Add `contain: layout style` to isolate each card's internal layout from the column flow. This lets the browser determine column heights before any images load.
+- **FilmStrip deferred loading**: Do NOT set `src` on FilmStrip track images at build time. Use `data-src` + a 1px placeholder GIF. Swap `data-src` → `src` only when the overlay opens and for images within ±2 frames of the current index. This prevents 40+ large images from loading on page load and causing resource contention / CLS.
+- **Filter transitions**: Use a "global fade" pattern — add a `.filtering` class to the gallery container to fade ALL cards out (opacity transition), swap display states synchronously while invisible (setTimeout 250ms), then remove the class to let `fade-up` animations restart naturally. Never per-card timer management. Ensure `animation: none` during the filtering phase to avoid transition/animation conflicts on the same property.
 
 ## Known GPU Bugs & Fixes
 - Hover white flash: scale(1.05) + overflow-hidden GPU bug → `will-change-transform backface-hidden`
@@ -89,5 +93,5 @@ npm run new-photo    # Interactive CLI to scaffold photo .md files
 - Old GitHub Pages URL no longer used
 
 ## Next Up
-- Add more photo series (glacier/snow mountains, Japan, landscapes, film, etc.)
+- Add more photo series (Japan, landscapes, film, etc.)
 - GitHub: https://github.com/jameslyu916-source/photo-portfolio
