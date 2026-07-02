@@ -1,0 +1,291 @@
+---
+import type { Photo } from "../../lib/photos";
+import { getImage } from "astro:assets";
+
+interface Props {
+  photos: Photo[];
+}
+
+const { photos } = Astro.props;
+
+const photosData = await Promise.all(
+  photos.map(async (photo) => {
+    const large = await getImage({
+      src: photo.data.image,
+      width: 2400,
+      format: "webp",
+    });
+    const slug = photo.id.split("/").pop()?.replace(".md", "");
+    return {
+      slug,
+      src: large.src,
+      width: large.attributes.width ?? 2400,
+      height: large.attributes.height ?? 1600,
+      title: photo.data.title,
+      series: photo.data.series ?? "",
+    };
+  }),
+);
+
+const photosJson = JSON.stringify(photosData);
+---
+
+<div
+  id="film-strip"
+  class="fixed inset-0 z-[999] flex flex-col bg-ink
+         opacity-0 pointer-events-none transition-opacity duration-300"
+  aria-hidden="true"
+>
+  <!-- Blurred ambient backgrounds — crossfade between two layers -->
+  <img
+    id="film-strip-bg-a"
+    src=""
+    alt=""
+    class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
+    style="filter: blur(70px) brightness(0.2) saturate(1.8); transform: scale(1.3);"
+    aria-hidden="true"
+  />
+  <img
+    id="film-strip-bg-b"
+    src=""
+    alt=""
+    class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-700"
+    style="filter: blur(70px) brightness(0.2) saturate(1.8); transform: scale(1.3);"
+    aria-hidden="true"
+  />
+
+  <!-- Horizontal scroll track -->
+  <div
+    id="film-strip-track"
+    class="flex-1 flex items-center overflow-x-auto overflow-y-hidden scrollbar-none"
+    style="scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding: 0 10vw;"
+  >
+    {photosData.map((p) => (
+      <div
+        id={`film-frame-${p.slug}`}
+        class="film-frame flex-shrink-0 w-[80vw] h-full flex items-center justify-center"
+        style="scroll-snap-align: center;"
+      >
+        <div class="film-frame-inner flex items-center justify-center w-full">
+          <img
+            src={p.src}
+            alt={p.title}
+            class="max-h-[80vh] max-w-full object-contain select-none"
+            loading="lazy"
+          />
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <!-- Bottom bar: series + counter + close -->
+  <div class="relative z-10 flex-shrink-0 flex items-center justify-between px-6 h-14 border-t border-white/[0.06]">
+    <div class="flex items-center gap-4">
+      <div
+        id="film-strip-counter"
+        class="text-white/50 text-xs font-light tracking-widest font-display"
+      ></div>
+      <span
+        id="film-strip-series"
+        class="text-white/30 text-xs font-light tracking-wide truncate max-w-[40vw]"
+        style="font-family: 'Caveat', cursive; font-size: 0.9rem;"
+      ></span>
+    </div>
+    <button
+      id="film-strip-close"
+      class="flex items-center gap-2 text-white/50 hover:text-white transition-colors text-xs font-light tracking-wide font-display"
+      aria-label="Close"
+    >
+      Close
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+        <line x1="7" y1="7" x2="17" y2="17" />
+        <line x1="17" y1="7" x2="7" y2="17" />
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script define:vars={{ photosJson }}>
+  const photosData = JSON.parse(photosJson);
+  let overlay, track, closeBtn, counter, seriesEl, bgA, bgB;
+  let currentIndex = 0;
+  let bgToggle = false;
+  let rafId = null;
+
+  function setBackground(idx) {
+    if (!photosData[idx]) return;
+    const nextSrc = photosData[idx].src;
+    // Crossfade: set inactive layer, then fade
+    if (bgToggle) {
+      bgB.src = nextSrc;
+      bgB.style.opacity = "1";
+      bgA.style.opacity = "0";
+    } else {
+      bgA.src = nextSrc;
+      bgA.style.opacity = "1";
+      bgB.style.opacity = "0";
+    }
+    bgToggle = !bgToggle;
+  }
+
+  function updateInfo() {
+    const p = photosData[currentIndex];
+    if (counter) counter.textContent = `${currentIndex + 1} / ${photosData.length}`;
+    if (seriesEl && p) seriesEl.textContent = p.series || "";
+  }
+
+  function setCurrentIndex(idx) {
+    if (idx !== currentIndex) {
+      currentIndex = idx;
+      setBackground(idx);
+      updateInfo();
+    }
+  }
+
+  function open(slug) {
+    const idx = photosData.findIndex((p) => p.slug === slug);
+    if (idx === -1) return;
+    setCurrentIndex(idx);
+
+    overlay.classList.remove("opacity-0", "pointer-events-none");
+    overlay.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+
+    requestAnimationFrame(() => {
+      const frame = document.getElementById(`film-frame-${slug}`);
+      if (frame) {
+        track.scrollTo({ left: frame.offsetLeft - track.offsetWidth / 2 + frame.offsetWidth / 2, behavior: "instant" });
+      }
+      startRafLoop();
+    });
+  }
+
+  function close() {
+    overlay.classList.add("opacity-0", "pointer-events-none");
+    overlay.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+    stopRafLoop();
+  }
+
+  function updateFrameStyles() {
+    const viewCenter = track.scrollLeft + track.offsetWidth / 2;
+    photosData.forEach((p) => {
+      const frame = document.getElementById(`film-frame-${p.slug}`);
+      if (!frame) return;
+      const frameCenter = frame.offsetLeft + frame.offsetWidth / 2;
+      const dist = Math.abs(frameCenter - viewCenter);
+      const normalized = Math.min(1, dist / (track.offsetWidth * 0.55));
+      const opacity = (1 - normalized * 1.4).toFixed(2);
+      const scale = (1 - normalized * 0.35).toFixed(3);
+      const inner = frame.querySelector(".film-frame-inner");
+      if (inner) {
+        inner.style.opacity = Math.max(0.1, opacity);
+        inner.style.transform = `scale(${Math.max(0.7, scale)})`;
+      }
+    });
+  }
+
+  function startRafLoop() {
+    stopRafLoop();
+    let lastCenter = -1;
+    function loop() {
+      const viewCenter = track.scrollLeft + track.offsetWidth / 2;
+      if (Math.abs(viewCenter - lastCenter) > 0.5) {
+        lastCenter = viewCenter;
+        updateFrameStyles();
+        let closestIdx = 0;
+        let closestDist = Infinity;
+        photosData.forEach((p, i) => {
+          const frame = document.getElementById(`film-frame-${p.slug}`);
+          if (!frame) return;
+          const frameCenter = frame.offsetLeft + frame.offsetWidth / 2;
+          const dist = Math.abs(viewCenter - frameCenter);
+          if (dist < closestDist) { closestDist = dist; closestIdx = i; }
+        });
+        setCurrentIndex(closestIdx);
+      }
+      rafId = requestAnimationFrame(loop);
+    }
+    rafId = requestAnimationFrame(loop);
+  }
+
+  function stopRafLoop() {
+    if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+  }
+
+  function initFilmStrip() {
+    overlay = document.getElementById("film-strip");
+    track = document.getElementById("film-strip-track");
+    closeBtn = document.getElementById("film-strip-close");
+    counter = document.getElementById("film-strip-counter");
+    seriesEl = document.getElementById("film-strip-series");
+    bgA = document.getElementById("film-strip-bg-a");
+    bgB = document.getElementById("film-strip-bg-b");
+    if (!overlay || !track) return;
+
+    // Move overlay to <body> root to escape View Transitions stacking context
+    if (overlay.parentElement !== document.body) {
+      document.body.appendChild(overlay);
+    }
+
+    if (document.body.dataset.filmstripReady === "true") return;
+    document.body.dataset.filmstripReady = "true";
+
+    document.addEventListener("click", (e) => {
+      const card = e.target.closest("[data-photo-id]");
+      if (!card) return;
+      if (overlay && overlay.classList.contains("opacity-0")) {
+        e.preventDefault();
+        e.stopPropagation();
+        open(card.dataset.photoId);
+      }
+    });
+
+    closeBtn?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      close();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (!overlay || overlay.classList.contains("opacity-0")) return;
+      if (e.key === "Escape") {
+        close();
+      } else if (e.key === "ArrowRight" && currentIndex < photosData.length - 1) {
+        setCurrentIndex(currentIndex + 1);
+        const next = document.getElementById(`film-frame-${photosData[currentIndex].slug}`);
+        if (next) track.scrollTo({ left: next.offsetLeft - track.offsetWidth / 2 + next.offsetWidth / 2, behavior: "smooth" });
+      } else if (e.key === "ArrowLeft" && currentIndex > 0) {
+        setCurrentIndex(currentIndex - 1);
+        const prev = document.getElementById(`film-frame-${photosData[currentIndex].slug}`);
+        if (prev) track.scrollTo({ left: prev.offsetLeft - track.offsetWidth / 2 + prev.offsetWidth / 2, behavior: "smooth" });
+      }
+    });
+
+    track.addEventListener("scrollend", () => {
+      const center = track.scrollLeft + track.offsetWidth / 2;
+      let closestIdx = currentIndex;
+      let closestDist = Infinity;
+      photosData.forEach((p, i) => {
+        const frame = document.getElementById(`film-frame-${p.slug}`);
+        if (!frame) return;
+        const frameCenter = frame.offsetLeft + frame.offsetWidth / 2;
+        const dist = Math.abs(center - frameCenter);
+        if (dist < closestDist) { closestDist = dist; closestIdx = i; }
+      });
+      setCurrentIndex(closestIdx);
+    });
+  }
+
+  initFilmStrip();
+  document.addEventListener("astro:page-load", initFilmStrip);
+</script>
+
+<style is:global>
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+</style>

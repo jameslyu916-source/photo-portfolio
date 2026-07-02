@@ -2,6 +2,7 @@
 import { getRelativeLocaleUrl } from "astro:i18n";
 import BaseLayout from "../../components/layout/BaseLayout.astro";
 import PhotoCard from "../../components/gallery/PhotoCard.astro";
+import FilmStrip from "../../components/gallery/FilmStrip.astro";
 import { getFeaturedPhotos } from "../../lib/photos";
 
 const locale = "zh-cn";
@@ -167,6 +168,8 @@ const showcase = featured.slice(0, 5);
       </section>
     )
   }
+
+  <FilmStrip photos={showcase} />
 </BaseLayout>
 
 <script>

@@ -13,7 +13,6 @@ const slug = photo.id.split("/").pop()?.replace(".md", "");
 ---
 
 <a
-  href={`?photo=${slug}`}
   class="group block cursor-zoom-in"
   data-photo-id={slug}
   data-series={series ?? ""}
