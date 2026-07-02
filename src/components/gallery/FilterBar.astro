@@ -32,8 +32,11 @@ const items = [
 )}
 
 <script>
-  const filterBar = document.getElementById("filter-bar");
-  if (filterBar) {
+  function initFilterBar() {
+    const filterBar = document.getElementById("filter-bar");
+    if (!filterBar || filterBar.dataset.ready === "true") return;
+    filterBar.dataset.ready = "true";
+
     filterBar.addEventListener("click", (e) => {
       const btn = (e.target as HTMLElement).closest("[data-filter]");
       if (!btn) return;
@@ -56,4 +59,7 @@ const items = [
       });
     });
   }
+
+  initFilterBar();
+  document.addEventListener("astro:page-load", initFilterBar);
 </script>
