@@ -42,7 +42,7 @@ const photosJson = JSON.stringify(photosData);
     src=""
     alt=""
     class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
-    style="filter: blur(70px) brightness(0.2) saturate(1.8); transform: scale(1.3);"
+    style="filter: blur(70px) brightness(0.2) saturate(1.8); transform: scale(1.3); z-index: 0;"
     aria-hidden="true"
   />
   <img
@@ -50,30 +50,14 @@ const photosJson = JSON.stringify(photosData);
     src=""
     alt=""
     class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-700"
-    style="filter: blur(70px) brightness(0.2) saturate(1.8); transform: scale(1.3);"
+    style="filter: blur(70px) brightness(0.2) saturate(1.8); transform: scale(1.3); z-index: 0;"
     aria-hidden="true"
   />
-
-  <!-- Floating edge arrows -->
-  <button id="film-strip-prev" aria-label="Previous"
-    class="film-strip-arrow left-4"
-  >
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="15 6 9 12 15 18"></polyline>
-    </svg>
-  </button>
-  <button id="film-strip-next" aria-label="Next"
-    class="film-strip-arrow right-4"
-  >
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="9 6 15 12 9 18"></polyline>
-    </svg>
-  </button>
 
   <!-- Horizontal scroll track -->
   <div
     id="film-strip-track"
-    class="flex-1 flex items-center overflow-x-auto overflow-y-hidden scrollbar-none"
+    class="relative z-[1] flex-1 flex items-center overflow-x-auto overflow-y-hidden scrollbar-none"
     style="scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding: 0 10vw;"
   >
     {photosData.map((p) => (
@@ -94,8 +78,20 @@ const photosJson = JSON.stringify(photosData);
     ))}
   </div>
 
+  <!-- Floating edge arrows -->
+  <button id="film-strip-prev" aria-label="Previous" class="film-strip-arrow left-4">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 6 9 12 15 18"></polyline>
+    </svg>
+  </button>
+  <button id="film-strip-next" aria-label="Next" class="film-strip-arrow right-4">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="9 6 15 12 9 18"></polyline>
+    </svg>
+  </button>
+
   <!-- Bottom bar -->
-  <div id="film-strip-bar" class="relative z-10 flex-shrink-0 flex items-center justify-between px-6 h-16 border-t border-white/[0.06] transition-opacity duration-500">
+  <div id="film-strip-bar" class="relative z-[2] flex-shrink-0 flex items-center justify-between px-6 h-16 border-t border-white/[0.06] transition-opacity duration-500">
     <div class="flex items-center gap-4">
       <span id="film-strip-counter" class="text-white/60 text-sm font-light tracking-widest tabular-nums"
         style="font-family: 'Zen Kaku Gothic New', sans-serif;">1 / 1</span>
@@ -127,6 +123,7 @@ const photosJson = JSON.stringify(photosData);
   let abortController;
   let hideUiTimer = null;
   let isNavigating = false;
+  let navFallbackTimer = null;
 
   function showUI() {
     if (bar) bar.style.opacity = "1";
@@ -152,8 +149,10 @@ const photosJson = JSON.stringify(photosData);
   }
 
   function loadNearbyImages(idx) {
+    const len = visiblePhotos.length;
     for (let i = idx - 2; i <= idx + 2; i++) {
-      const p = visiblePhotos[i];
+      const wrapped = ((i % len) + len) % len;
+      const p = visiblePhotos[wrapped];
       if (p) loadImage(p.slug);
     }
   }
@@ -161,23 +160,28 @@ const photosJson = JSON.stringify(photosData);
   function setBackground(idx) {
     const p = visiblePhotos[idx];
     if (!p) return;
-    const nextSrc = p.src;
+    bgA.style.transition = "none";
+    bgB.style.transition = "none";
     if (bgToggle) {
-      bgB.src = nextSrc;
+      bgB.src = p.src;
       bgB.style.opacity = "1";
       bgA.style.opacity = "0";
     } else {
-      bgA.src = nextSrc;
+      bgA.src = p.src;
       bgA.style.opacity = "1";
       bgB.style.opacity = "0";
     }
     bgToggle = !bgToggle;
+    requestAnimationFrame(() => {
+      bgA.style.transition = "opacity 0.7s";
+      bgB.style.transition = "opacity 0.7s";
+    });
   }
 
   function updateInfo() {
     const p = visiblePhotos[currentIndex];
     if (counter) counter.textContent = `${currentIndex + 1} / ${visiblePhotos.length}`;
-    if (seriesEl && p) seriesEl.textContent = p.series || "";
+    if (seriesEl) seriesEl.textContent = p ? (p.series || "") : "";
   }
 
   function setCurrentIndex(idx) {
@@ -188,24 +192,28 @@ const photosJson = JSON.stringify(photosData);
     loadNearbyImages(idx);
   }
 
+  function scrollToFrame(idx) {
+    const frame = document.getElementById(`film-frame-${visiblePhotos[idx].slug}`);
+    if (!frame) return;
+    const frameLeft = frame.offsetLeft;
+    const frameWidth = frame.offsetWidth;
+    const target = frameLeft - track.offsetWidth / 2 + frameWidth / 2;
+    track.scrollTo({ left: target, behavior: "smooth" });
+  }
+
   function open(slug) {
-    const activeBtn = document.querySelector(".filter-btn.filter-active");
-    const filter = activeBtn?.dataset?.filter;
-    if (filter && filter !== "all") {
-      visiblePhotos = photosData.filter((p) => p.series === filter);
-      photosData.forEach((p) => {
-        const frame = document.getElementById(`film-frame-${p.slug}`);
-        if (frame) {
-          frame.style.display = p.series === filter ? "" : "none";
-        }
-      });
-    } else {
-      visiblePhotos = photosData;
-      photosData.forEach((p) => {
-        const frame = document.getElementById(`film-frame-${p.slug}`);
-        if (frame) frame.style.display = "";
-      });
-    }
+    // Reset state for fresh open
+    visiblePhotos = photosData;
+    currentIndex = 0;
+    bgToggle = false;
+    isNavigating = false;
+    clearTimeout(navFallbackTimer);
+
+    // Show all frames first
+    photosData.forEach((p) => {
+      const frame = document.getElementById(`film-frame-${p.slug}`);
+      if (frame) frame.style.display = "";
+    });
 
     const idx = visiblePhotos.findIndex((p) => p.slug === slug);
     if (idx === -1) return;
@@ -232,21 +240,27 @@ const photosJson = JSON.stringify(photosData);
     document.body.style.overflow = "";
     stopRafLoop();
     clearTimeout(hideUiTimer);
+    clearTimeout(navFallbackTimer);
+    isNavigating = false;
   }
 
   function goTo(idx) {
+    if (visiblePhotos.length === 0) return;
+    clearTimeout(navFallbackTimer);
+
+    // Wrap around
     if (idx < 0) idx = visiblePhotos.length - 1;
     if (idx >= visiblePhotos.length) idx = 0;
+
     isNavigating = true;
     setCurrentIndex(idx);
-    const frame = document.getElementById(`film-frame-${visiblePhotos[idx].slug}`);
-    if (frame) {
-      track.scrollTo({
-        left: frame.offsetLeft - track.offsetWidth / 2 + frame.offsetWidth / 2,
-        behavior: "smooth",
-      });
-    }
+    scrollToFrame(idx);
     showUI();
+
+    // Fallback for browsers without scrollend (Safari/iOS)
+    navFallbackTimer = setTimeout(() => {
+      isNavigating = false;
+    }, 600);
   }
 
   function updateFrameStyles() {
@@ -271,22 +285,27 @@ const photosJson = JSON.stringify(photosData);
     stopRafLoop();
     let lastCenter = -1;
     function loop() {
+      if (!overlay || overlay.classList.contains("opacity-0")) {
+        stopRafLoop();
+        return;
+      }
       const viewCenter = track.scrollLeft + track.offsetWidth / 2;
       if (Math.abs(viewCenter - lastCenter) > 0.5) {
         lastCenter = viewCenter;
         updateFrameStyles();
-        let closestIdx = currentIndex;
-        let closestDist = Infinity;
-        visiblePhotos.forEach((p, i) => {
-          const frame = document.getElementById(`film-frame-${p.slug}`);
-          if (!frame) return;
-          const frameCenter = frame.offsetLeft + frame.offsetWidth / 2;
-          const dist = Math.abs(viewCenter - frameCenter);
-          if (dist < closestDist) { closestDist = dist; closestIdx = i; }
-        });
-        // Skip during programmatic navigation to prevent counter flicker
-        if (!isNavigating && closestIdx >= 0 && closestIdx < visiblePhotos.length) {
-          setCurrentIndex(closestIdx);
+        if (!isNavigating) {
+          let closestIdx = currentIndex;
+          let closestDist = Infinity;
+          visiblePhotos.forEach((p, i) => {
+            const frame = document.getElementById(`film-frame-${p.slug}`);
+            if (!frame) return;
+            const frameCenter = frame.offsetLeft + frame.offsetWidth / 2;
+            const dist = Math.abs(viewCenter - frameCenter);
+            if (dist < closestDist) { closestDist = dist; closestIdx = i; }
+          });
+          if (closestIdx >= 0 && closestIdx < visiblePhotos.length) {
+            setCurrentIndex(closestIdx);
+          }
         }
       }
       rafId = requestAnimationFrame(loop);
@@ -303,7 +322,20 @@ const photosJson = JSON.stringify(photosData);
     abortController = new AbortController();
     const { signal } = abortController;
 
+    // CRITICAL: Remove any stale overlay left in <body> from previous page (View Transitions)
+    const existingOverlays = document.querySelectorAll("#film-strip");
+    for (const el of existingOverlays) {
+      if (el.parentElement === document.body && !el.isConnected) {
+        el.remove();
+      }
+    }
+
     overlay = document.getElementById("film-strip");
+    // If the overlay isn't the one in our current page's DOM, find the right one
+    if (overlay && overlay.parentElement !== document.body) {
+      // This overlay is still in the page document — it's the right one
+    }
+
     track = document.getElementById("film-strip-track");
     closeBtn = document.getElementById("film-strip-close");
     prevBtn = document.getElementById("film-strip-prev");
@@ -313,17 +345,30 @@ const photosJson = JSON.stringify(photosData);
     bgA = document.getElementById("film-strip-bg-a");
     bgB = document.getElementById("film-strip-bg-b");
     bar = document.getElementById("film-strip-bar");
+
+    // Remove any leftover overlays from body (from previous View Transitions pages)
+    const staleOverlays = document.body.querySelectorAll("#film-strip");
+    staleOverlays.forEach((el) => {
+      if (el !== overlay) el.remove();
+    });
+
     if (!overlay || !track) return;
 
+    // Move to body to escape stacking context
     if (overlay.parentElement !== document.body) {
       document.body.appendChild(overlay);
     }
+
+    // Reset state
+    visiblePhotos = photosData;
+    currentIndex = 0;
+    isNavigating = false;
 
     // Open on photo click
     document.addEventListener("click", (e) => {
       const card = e.target.closest("[data-photo-id]");
       if (!card) return;
-      if (overlay && overlay.classList.contains("opacity-0")) {
+      if (overlay.classList.contains("opacity-0")) {
         e.preventDefault();
         e.stopPropagation();
         open(card.dataset.photoId);
@@ -334,36 +379,33 @@ const photosJson = JSON.stringify(photosData);
     closeBtn?.addEventListener("click", (e) => { e.stopPropagation(); close(); }, { signal });
 
     // Navigation buttons
-    prevBtn?.addEventListener("click", (e) => { e.stopPropagation(); goTo(currentIndex - 1); }, { signal });
-    nextBtn?.addEventListener("click", (e) => { e.stopPropagation(); goTo(currentIndex + 1); }, { signal });
+    prevBtn?.addEventListener("click", (e) => { e.stopPropagation(); if (!overlay.classList.contains("opacity-0")) goTo(currentIndex - 1); }, { signal });
+    nextBtn?.addEventListener("click", (e) => { e.stopPropagation(); if (!overlay.classList.contains("opacity-0")) goTo(currentIndex + 1); }, { signal });
 
-    // Show UI on interaction within overlay
-    overlay?.addEventListener("mousemove", () => {
-      if (!overlay.classList.contains("opacity-0")) showUI();
-    }, { signal });
-    overlay?.addEventListener("touchstart", () => {
-      if (!overlay.classList.contains("opacity-0")) showUI();
-    }, { signal, passive: true });
+    // Show UI on interaction
+    overlay?.addEventListener("mousemove", () => { if (!overlay.classList.contains("opacity-0")) showUI(); }, { signal });
+    overlay?.addEventListener("touchstart", () => { if (!overlay.classList.contains("opacity-0")) showUI(); }, { signal, passive: true });
 
     // Keyboard
     document.addEventListener("keydown", (e) => {
-      if (!overlay || overlay.classList.contains("opacity-0")) return;
+      if (overlay.classList.contains("opacity-0")) return;
       if (e.key === "Escape") { close(); }
       else if (e.key === "ArrowRight") { goTo(currentIndex + 1); }
       else if (e.key === "ArrowLeft") { goTo(currentIndex - 1); }
     }, { signal });
 
-    // Scroll-end snap
+    // Scroll-end snap (with scrollend event)
     track.addEventListener("scrollend", () => {
       isNavigating = false;
-      const center = track.scrollLeft + track.offsetWidth / 2;
+      clearTimeout(navFallbackTimer);
+      const viewCenter = track.scrollLeft + track.offsetWidth / 2;
       let closestIdx = currentIndex;
       let closestDist = Infinity;
       visiblePhotos.forEach((p, i) => {
         const frame = document.getElementById(`film-frame-${p.slug}`);
         if (!frame) return;
         const frameCenter = frame.offsetLeft + frame.offsetWidth / 2;
-        const dist = Math.abs(center - frameCenter);
+        const dist = Math.abs(viewCenter - frameCenter);
         if (dist < closestDist) { closestDist = dist; closestIdx = i; }
       });
       if (closestIdx >= 0 && closestIdx < visiblePhotos.length) {
@@ -371,7 +413,7 @@ const photosJson = JSON.stringify(photosData);
       }
     }, { signal });
 
-    // Close on background click
+    // Close on background click (not on photos or controls)
     overlay?.addEventListener("click", (e) => {
       if (e.target === overlay || e.target === track) close();
     }, { signal });
