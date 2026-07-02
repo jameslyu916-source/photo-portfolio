@@ -140,7 +140,7 @@ export default function adminPlugin(): Plugin {
               lens: result.fields.lens,
               settings: result.fields.settings,
               location: result.fields.location,
-              series: result.fields.series,
+              series: (result.fields.series ?? "").toLowerCase().replace(/\s+/g, "-"),
               featured: result.fields.featured === "true",
               date: result.fields.date,
               order: parseInt(result.fields.order ?? "0"),
