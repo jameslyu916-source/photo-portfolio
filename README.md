@@ -31,7 +31,7 @@ A personal photography portfolio built with [Astro](https://astro.build) and [Ta
 
 **J&times;** &mdash; the J is a Cormorant Garamond serif, the &times; cycles through three handwriting fonts every 7.5 seconds. Click to bounce it.
 
-The name comes from the idea that a photograph is *light, multiplied by time* &mdash; the shutter opens, light hits the sensor, and a fraction of a second becomes permanent.
+The name plays on the creator's name, James: *J* for the initial, and *times* — as in multiplication, but also as in moments, eras, the passage of things. Spoken aloud, JTimes echoes the sound of James. The mark J&times; works as both a signature and an abbreviation — a name half-hidden in plain sight.
 
 The site uses a sage green accent on a warm paper-white background, with Zen Maru Gothic and Zen Kaku Gothic New for type. All components are custom-built for this project — no starter templates or UI kits.
 
