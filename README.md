@@ -1,6 +1,6 @@
 # J&times; &mdash; light, multiplied by time
 
-A personal photography portfolio &mdash; clean, minimal, and carefully put together. Built with [Astro](https://astro.build) and [Tailwind CSS](https://tailwindcss.com).
+A personal photography portfolio built with [Astro](https://astro.build) and [Tailwind CSS](https://tailwindcss.com).
 
 [![Astro](https://img.shields.io/badge/astro-v5-ff5a03?logo=astro)](https://astro.build)
 [![Tailwind](https://img.shields.io/badge/tailwind-v3-06b6d4?logo=tailwindcss)](https://tailwindcss.com)
@@ -33,7 +33,7 @@ A personal photography portfolio &mdash; clean, minimal, and carefully put toget
 
 The name comes from the idea that a photograph is *light, multiplied by time* &mdash; the shutter opens, light hits the sensor, and a fraction of a second becomes permanent.
 
-The visual direction is clean and restrained: generous whitespace, a soft sage green accent, rounded Japanese typefaces, and a quiet attention to detail. No heavy frameworks, no starter templates &mdash; every component is built from scratch and tuned by hand.
+The site uses a sage green accent on a warm paper-white background, with Zen Maru Gothic and Zen Kaku Gothic New for type. All components are custom-built for this project — no starter templates or UI kits.
 
 ## Features
 
@@ -54,9 +54,9 @@ The visual direction is clean and restrained: generous whitespace, a soft sage g
 - **Homepage** &mdash; oversized J&times; hero mark, flowing SVG light lines, manuscript grid with fading poetry fragments, scroll-down arrow, and the FeaturedWall below.
 - **About page** &mdash; stream-of-consciousness text with an asymmetric alignment rhythm (center &rarr; left &rarr; right &rarr; center). Viewfinder corner brackets frame the text. Selected keywords rendered inline in handwriting fonts for a mixed-typeface literary effect.
 - **Social page** &mdash; circular "bubble constellation" &mdash; four platform links as differently-sized circles in an organic flex-wrap S-curve with sage glow on hover.
-- **Contact page** &mdash; minimal horizontal link list. Just the essentials.
+- **Contact page** &mdash; straightforward list of contact links.
 
-### Performance & polish
+### Performance
 
 - **CLS prevention** &mdash; `aspect-ratio` on masonry grid items, `contain: layout style`, and FilmStrip deferred image loading (images load only when the viewer opens).
 - **GPU-optimized interactions** &mdash; hardware-accelerated hover transforms with isolated compositing layers.

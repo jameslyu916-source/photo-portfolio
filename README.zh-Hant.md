@@ -1,6 +1,6 @@
 # J&times; &mdash; 光，乘以時間
 
-個人攝影作品集 &mdash; 簡潔、乾淨、用心打磨。使用 [Astro](https://astro.build) 和 [Tailwind CSS](https://tailwindcss.com) 構建。
+個人攝影作品集，使用 [Astro](https://astro.build) 和 [Tailwind CSS](https://tailwindcss.com) 構建。
 
 [![Astro](https://img.shields.io/badge/astro-v5-ff5a03?logo=astro)](https://astro.build)
 [![Tailwind](https://img.shields.io/badge/tailwind-v3-06b6d4?logo=tailwindcss)](https://tailwindcss.com)
@@ -33,7 +33,7 @@
 
 名字來自一個想法：一張照片就是*光，乘以時間*&mdash;快門打開，光線落在感光元件上，零點幾秒就變成了永恆。
 
-視覺方向追求乾淨與克制：大量留白、柔和的鼠尾草綠色點綴、圓潤的日文字體、以及安靜的細節關注。沒有厚重的框架，沒有現成的模板&mdash;每個組件都是從頭開始手工打造的。
+網站以鼠尾草綠為點綴色，搭配暖白紙色背景，字體使用 Zen Maru Gothic 和 Zen Kaku Gothic New。所有組件均為本專案從頭構建，沒有使用任何現成模板或 UI 套件。
 
 ## 功能特色
 
@@ -54,9 +54,9 @@
 - **首頁** &mdash; 超大 J&times; 標記、流動的 SVG 光線、手稿網格與淡入淡出的詩意片段、向下滾動箭頭，以及下方的 FeaturedWall。
 - **關於頁面** &mdash; 意識流文字，採用不對稱的對齊節奏（居中 &rarr; 靠左 &rarr; 靠右 &rarr; 居中）。取景框角標框住文字。選定的關鍵詞以手寫字體內嵌呈現，營造混合字體的文學效果。
 - **社交媒體頁面** &mdash; 圓形「泡泡星座」&mdash;四個平台連結以不同大小的圓形呈現，flex-wrap 形成有機的 S 型排列，hover 時有鼠尾草綠光暈。
-- **聯繫頁面** &mdash; 極簡的水平連結列表。恰到好處。
+- **聯繫頁面** &mdash; 簡單的聯絡方式列表。
 
-### 效能與細節
+### 效能
 
 - **CLS 防止** &mdash; 瀑布流網格項目使用 `aspect-ratio`、`contain: layout style`，FilmStrip 延遲圖片載入（僅在檢視器打開時載入圖片）。
 - **GPU 優化互動** &mdash; 硬體加速的 hover 變換，配合獨立的合成圖層。
