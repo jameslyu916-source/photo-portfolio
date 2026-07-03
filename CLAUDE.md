@@ -15,6 +15,8 @@ npm run build        # Production build to dist/
 npm run optimize-images  # Resize raw photos to 2400px
 npm run new-photo    # Interactive CLI to scaffold photo .md files
 # Admin panel at http://localhost:4321/admin (dev-only, password in .env)
+node scripts/screenshots.mjs   # Capture desktop+mobile screenshots of all pages
+node scripts/social-cards.mjs  # Generate social-media-ready card images from screenshots
 ```
 
 ## Project Structure
@@ -42,7 +44,7 @@ npm run new-photo    # Interactive CLI to scaffold photo .md files
 - **Gallery**: CSS columns masonry with CLS prevention (aspect-ratio on grid `<a>` + `contain:layout style`), series-based filtering (not categories), seeded Fisher-Yates shuffle for photo order
 - **PhotoCard hover**: GPU-isolated scale(1.05) with will-change-transform + backface-hidden. Bottom gradient overlay with title/location.
 - **Social page**: Circular "bubble constellation" layout — 4 platform cards as rounded-full circles of varying sizes (180-230px desktop). Flex-wrap with staggered vertical mt offsets for organic S-curve flow. Sage glow (`box-shadow`) + scale(1.08) on hover. Manuscript grid background inherited from homepage. Distinct from Contact page's horizontal list cards.
-- **About page**: Poetic 意识流 text, not CV-style
+- **About page**: Poetic 意识流 text with asymmetric poetry rhythm layout — 4 paragraphs alternating center/left/right/center alignment. Three viewfinder corner brackets (top-right, bottom-left, bottom-right — hero-rule doubles as top-left). Selected keywords rendered inline in handwriting fonts (Caveat / Waiting for the Sunrise / Nothing You Could Do) for a mixed-typeface literary effect.
 
 ## Photo Content
 - Series: "december-liturgy" (Hong Kong Christmas), "snow-vein" (glacier/mountains), "between-tides" (Hong Kong seaside street photography)

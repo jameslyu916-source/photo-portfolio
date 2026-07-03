@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1200">
+<title>JTimes — Cards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Nothing+You+Could+Do&family=Zen+Kaku+Gothic+New:wght@300;400&family=Zen+Maru+Gothic:wght@400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { background: #e8e8e4; }
+  body { width: 1200px; }
+
+  .card {
+    background: #fafaf9;
+    padding: 52px 56px 56px;
+    margin-bottom: 4px;
+    color: #2d2d2d;
+    font-family: 'Zen Kaku Gothic New', system-ui, sans-serif;
+  }
+
+  /* ── Header ── */
+  .card-head { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
+  .card-head .dot { width: 7px; height: 7px; border-radius: 50%; background: #7d9b76; opacity: 0.5; flex-shrink: 0; }
+  .card-head h2 { font-family: 'Zen Maru Gothic', system-ui, sans-serif; font-size: 1.1rem; font-weight: 400; letter-spacing: 0.1em; color: #8c8c8c; text-transform: uppercase; }
+  .card-head .line { flex: 1; height: 1px; background: #e8e8e4; margin-top: 1px; }
+  .card-desc { font-size: 1rem; color: #8c8c8c; font-weight: 300; margin-bottom: 32px; padding-left: 21px; line-height: 1.6; max-width: 560px; }
+
+  /* ── Screenshot base ── */
+  img { display: block; }
+  .desktop { width: 100%; border-radius: 5px; box-shadow: 0 2px 20px rgba(0,0,0,0.07), 0 6px 32px rgba(0,0,0,0.04); }
+  .mobile  { width: 100%; border-radius: 14px; box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 10px 40px rgba(0,0,0,0.05), 0 0 0 2px #ddd; }
+
+  /* ── Layout: desktop + mobile ── */
+  .row-duo { display: grid; grid-template-columns: 1fr 220px; gap: 24px; align-items: start; }
+  .row-duo .mobile-wrap { padding-top: 12px; }
+
+  /* ── Layout: desktop full-width ── */
+  .row-full { }
+  .row-full .desktop { width: 100%; }
+
+  /* ── Layout: two desktop images stacked ── */
+  .row-stack { display: flex; flex-direction: column; gap: 20px; }
+
+  /* ── Layout: two columns (for gallery filter comparison) ── */
+  .row-2col { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-top: 20px; }
+  .row-2col img { width: 100%; border-radius: 5px; box-shadow: 0 2px 16px rgba(0,0,0,0.05), 0 5px 24px rgba(0,0,0,0.03); }
+
+  /* ── Brand mark ── */
+  .brand { text-align: center; margin-top: 44px; }
+  .brand span.j { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-style: italic; font-weight: 300; color: #2d2d2d; }
+  .brand span.x { font-family: 'Nothing You Could Do', cursive; font-size: 1.1rem; color: #7d9b76; margin-left: -1px; }
+  .brand span.url { font-size: 0.75rem; color: #8c8c8c; font-weight: 300; letter-spacing: 0.04em; margin-left: 12px; }
+</style>
+</head>
+<body>
+
+<!-- 1. HOMEPAGE -->
+<div class="card" id="card-homepage">
+  <div class="card-head"><div class="dot"></div><h2>Homepage</h2><div class="line"></div></div>
+  <p class="card-desc">A cycling handwritten &times;, manuscript grid, and dual-rail scrolling photo wall.</p>
+  <div class="row-duo">
+    <img class="desktop" src="01-homepage-desktop.png" alt="Homepage">
+    <div class="mobile-wrap"><img class="mobile" src="01-homepage-mobile.png" alt="Homepage mobile"></div>
+  </div>
+  <div class="row-stack" style="margin-top:20px;">
+    <img class="desktop" src="02-homepage-scrolled-desktop.png" alt="Featured wall">
+  </div>
+  <div class="brand"><span class="j">J</span><span class="x">&times;</span><span class="url">jtimes-visual.com</span></div>
+</div>
+
+<!-- 2. GALLERY -->
+<div class="card" id="card-gallery">
+  <div class="card-head"><div class="dot"></div><h2>Gallery</h2><div class="line"></div></div>
+  <p class="card-desc">Browse by series &mdash; tap a filter to see photos from that collection.</p>
+  <div class="row-duo">
+    <img class="desktop" src="03-gallery-desktop.png" alt="Gallery">
+    <div class="mobile-wrap"><img class="mobile" src="03-gallery-mobile.png" alt="Gallery mobile"></div>
+  </div>
+  <div class="row-2col">
+    <img src="04-gallery-filtered-desktop.png" alt="Filtered desktop">
+    <img src="04-gallery-filtered-mobile.png" alt="Filtered mobile">
+  </div>
+  <div class="brand"><span class="j">J</span><span class="x">&times;</span><span class="url">jtimes-visual.com</span></div>
+</div>
+
+<!-- 3. PHOTO VIEWER -->
+<div class="card" id="card-viewer">
+  <div class="card-head"><div class="dot"></div><h2>Photo Viewer</h2><div class="line"></div></div>
+  <p class="card-desc">Tap any photo to open the fullscreen viewer &mdash; swipe to browse.</p>
+  <div class="row-full">
+    <img class="desktop" src="08-filmstrip-desktop.png" alt="FilmStrip viewer">
+  </div>
+  <div class="brand"><span class="j">J</span><span class="x">&times;</span><span class="url">jtimes-visual.com</span></div>
+</div>
+
+<!-- 4. ABOUT -->
+<div class="card" id="card-about">
+  <div class="card-head"><div class="dot"></div><h2>About</h2><div class="line"></div></div>
+  <p class="card-desc">A stream-of-consciousness piece on photography and borrowed time.</p>
+  <div class="row-full">
+    <img class="desktop" src="05-about-desktop.png" alt="About">
+  </div>
+  <div class="brand"><span class="j">J</span><span class="x">&times;</span><span class="url">jtimes-visual.com</span></div>
+</div>
+
+<!-- 5. SOCIAL -->
+<div class="card" id="card-social">
+  <div class="card-head"><div class="dot"></div><h2>Social</h2><div class="line"></div></div>
+  <p class="card-desc">Find me across platforms.</p>
+  <div class="row-full">
+    <img class="desktop" src="06-social-desktop.png" alt="Social">
+  </div>
+  <div class="brand"><span class="j">J</span><span class="x">&times;</span><span class="url">jtimes-visual.com</span></div>
+</div>
+
+<!-- 6. CONTACT -->
+<div class="card" id="card-contact">
+  <div class="card-head"><div class="dot"></div><h2>Contact</h2><div class="line"></div></div>
+  <p class="card-desc">Just the essentials.</p>
+  <div style="text-align:center; padding:12px 0;">
+    <img class="mobile" src="07-contact-mobile.png" alt="Contact" style="width:300px; display:inline-block; border-radius:18px; box-shadow:0 4px 24px rgba(0,0,0,0.08),0 10px 40px rgba(0,0,0,0.05),0 0 0 2px #ddd;">
+  </div>
+  <div class="brand"><span class="j">J</span><span class="x">&times;</span><span class="url">jtimes-visual.com</span></div>
+</div>
+
+</body>
+</html>

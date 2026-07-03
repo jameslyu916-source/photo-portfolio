@@ -34,3 +34,7 @@ raw-photos/
 .claude/
 skills-lock.json
 .agents/
+
+# Generated screenshots and social cards (run scripts to regenerate)
+scripts/screenshots/*.png
+scripts/screenshots/posts/

@@ -104,6 +104,18 @@ scripts/
 > [!NOTE]
 > This project originally used `@tailwindcss/vite` (Tailwind CSS v4), but the Vite plugin failed to scan `.astro` template files for class names, producing zero utility classes at build time with no errors. Switching to the official `@astrojs/tailwind` integration with PostCSS and Tailwind v3 resolved the issue. If you're using Astro + Tailwind, stick with v3 until the ecosystem matures.
 
+## Screenshots
+
+Generate page screenshots and social-media-ready card images:
+
+```bash
+npm run dev                              # Start dev server first
+node scripts/screenshots.mjs             # Capture all pages (desktop + mobile) to scripts/screenshots/
+node scripts/social-cards.mjs            # Generate styled card PNGs to scripts/screenshots/posts/
+```
+
+The showcase page at `scripts/screenshots/index.html` presents all screenshots in an editorial layout. Requires Playwright (`npm install`).
+
 ## License
 
 MIT
