@@ -43,7 +43,7 @@ const translations: Record<Locale, Record<UIStringKey, string>> = {
     "social.threads": "Threads",
     "social.xiaohongshu": "Xiaohongshu",
     "social.douyin": "Douyin",
-    "social.followOn": "light, multiplied by time — wherever you are.",
+    "social.followOn": "wherever you are.",
     "about.title": "About Me",
     "about.content":
       "I am a photography enthusiast passionate about capturing the beauty of light, shadow, and the world around us — one frame at a time.",
@@ -69,7 +69,7 @@ const translations: Record<Locale, Record<UIStringKey, string>> = {
     "social.threads": "Threads",
     "social.xiaohongshu": "小紅書",
     "social.douyin": "抖音",
-    "social.followOn": "光，乘以時間 — 無論你在哪裡。",
+    "social.followOn": "無論你在哪裡。",
     "about.title": "關於我",
     "about.content":
       "我是一名攝影愛好者，熱衷於用鏡頭捕捉光影之美，一張一張地去記錄這個世界的瞬間。",
