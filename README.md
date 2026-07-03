@@ -22,6 +22,25 @@ A personal photography portfolio built with [Astro](https://astro.build) and [Ta
 - **Cycling handwritten logo** &mdash; 3 cursive fonts rotate on the homepage, click to bounce
 - **GPU-optimized hover** &mdash; hardware-accelerated scale transforms with isolated layers
 
+## Screenshots
+
+<p align="center">
+  <img src="docs/screenshots/homepage.png" width="49%" alt="Homepage">
+  <img src="docs/screenshots/gallery.png" width="49%" alt="Gallery">
+  <img src="docs/screenshots/viewer.png" width="49%" alt="Photo Viewer">
+  <img src="docs/screenshots/about.png" width="49%" alt="About">
+</p>
+
+<details>
+<summary>All pages</summary>
+<p align="center">
+  <img src="docs/screenshots/social.png" width="49%" alt="Social">
+  <img src="docs/screenshots/contact.png" width="49%" alt="Contact">
+</p>
+</details>
+
+> Generate updated screenshots anytime with `node scripts/screenshots.mjs` then `node scripts/social-cards.mjs`.
+
 ## Quick Start
 
 ```bash
