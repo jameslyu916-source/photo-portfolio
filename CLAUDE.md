@@ -41,6 +41,7 @@ npm run new-photo    # Interactive CLI to scaffold photo .md files
 - **Mobile nav**: Hamburger button → full-screen overlay with nav links. Menu overlay is OUTSIDE `<header>` to escape stacking context
 - **Gallery**: CSS columns masonry with CLS prevention (aspect-ratio on grid `<a>` + `contain:layout style`), series-based filtering (not categories), seeded Fisher-Yates shuffle for photo order
 - **PhotoCard hover**: GPU-isolated scale(1.05) with will-change-transform + backface-hidden. Bottom gradient overlay with title/location.
+- **Social page**: Circular "bubble constellation" layout — 4 platform cards as rounded-full circles of varying sizes (180-230px desktop). Flex-wrap with staggered vertical mt offsets for organic S-curve flow. Sage glow (`box-shadow`) + scale(1.08) on hover. Manuscript grid background inherited from homepage. Distinct from Contact page's horizontal list cards.
 - **About page**: Poetic 意识流 text, not CV-style
 
 ## Photo Content
