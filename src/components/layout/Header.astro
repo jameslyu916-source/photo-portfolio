@@ -15,8 +15,8 @@ const navItems: { key: import("../../lib/i18n").UIStringKey; path: string }[] = 
 ];
 ---
 
-<header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-sm bg-paper/80 border-b border-border">
-  <nav class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+<header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-sm bg-paper/80">
+  <nav class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between relative">
     <a
       href={getRelativeLocaleUrl(locale, "")}
       class="flex items-center gap-2.5 text-lg tracking-wide text-ink hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent rounded-sm font-display"
@@ -32,7 +32,7 @@ const navItems: { key: import("../../lib/i18n").UIStringKey; path: string }[] = 
     </a>
 
     <div class="flex items-center gap-4 md:gap-6">
-      <ul class="hidden md:flex items-center gap-6 text-sm">
+      <ul class="hidden md:flex items-center gap-1 text-sm" id="nav-list">
         {navItems.map((item) => {
           const href = getRelativeLocaleUrl(locale, item.path);
           const isActive =
@@ -42,10 +42,14 @@ const navItems: { key: import("../../lib/i18n").UIStringKey; path: string }[] = 
             <li>
               <a
                 href={href}
-                class={`transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent rounded-sm ${
-                  isActive ? "text-accent font-medium" : "text-muted"
+                class={`nav-link relative px-3 py-2 transition-colors duration-300 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent rounded-sm tracking-wide ${
+                  isActive ? "text-accent" : "text-muted"
                 }`}
               >
+                <span class="nav-dot absolute -top-1 left-1/2 -translate-x-1/2 text-accent/40 text-[10px] leading-none transition-opacity duration-300"
+                  style="opacity: ${isActive ? '1' : '0'};">
+                  &middot;
+                </span>
                 {t(locale, item.key)}
               </a>
             </li>
@@ -66,6 +70,11 @@ const navItems: { key: import("../../lib/i18n").UIStringKey; path: string }[] = 
         <span class="block w-5 h-px bg-muted transition-all duration-300" id="ml2"></span>
         <span class="block w-5 h-px bg-muted transition-all duration-300" id="ml3"></span>
       </button>
+    </div>
+
+    <!-- Bottom border gradient -->
+    <div class="absolute bottom-0 left-0 right-0 h-px"
+         style="background: linear-gradient(to right, transparent, #7d9b76 15%, #7d9b76 50%, #7d9b76 85%, transparent); opacity: 0.25;">
     </div>
   </nav>
 </header>

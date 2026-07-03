@@ -92,6 +92,36 @@
     transition: opacity 0.2s ease;
   }
 
+  /* Header nav link effects */
+  .nav-link {
+    transition: color 0.3s ease;
+  }
+
+  .nav-link:hover .nav-dot {
+    opacity: 1 !important;
+  }
+
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    width: 55%;
+    height: 1.5px;
+    background: #7d9b76;
+    border-radius: 1px;
+    transition: transform 0.3s ease;
+  }
+
+  .nav-link.text-accent::after {
+    transform: translateX(-50%) scaleX(1);
+  }
+
+  .nav-link:hover::after {
+    transform: translateX(-50%) scaleX(1);
+  }
+
   @media (max-width: 900px) {
     .grid-gallery {
       column-count: 2;
