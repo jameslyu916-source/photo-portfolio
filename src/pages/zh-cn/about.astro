@@ -3,44 +3,101 @@ import BaseLayout from "../../components/layout/BaseLayout.astro";
 ---
 
 <BaseLayout title="關於 — JTimes">
-  <section class="max-w-2xl mx-auto px-6 pt-24 pb-16">
-    <div class="hero-rule mb-10"></div>
+  <section class="relative max-w-3xl mx-auto px-6 pt-24 pb-16 overflow-hidden">
+    <div class="relative z-10">
+      <!-- Viewfinder corner brackets — top-left intentionally omitted, hero-rule stands in its place -->
+      <div
+        class="about-line absolute top-0 right-0 w-4 h-7 md:w-5 md:h-9 border-t border-r border-accent/30"
+        style="animation-delay: 0ms;"
+        aria-hidden="true"
+      ></div>
+      <div
+        class="about-line absolute bottom-0 left-0 w-4 h-7 md:w-5 md:h-9 border-b border-l border-accent/30"
+        style="animation-delay: 0ms;"
+        aria-hidden="true"
+      ></div>
+      <div
+        class="about-line absolute bottom-0 right-0 w-10 h-4 md:w-14 md:h-5 border-b border-r border-accent/30"
+        style="animation-delay: 0ms;"
+        aria-hidden="true"
+      ></div>
 
-    <div class="space-y-10 text-muted leading-relaxed font-light">
-      <p class="text-xl text-ink/80 leading-relaxed">
-        光乘以時間。這就是攝影。
-      </p>
+      <div class="hero-rule mb-10"></div>
 
-      <p>
-        我收集那些夾縫中的片刻&mdash;&mdash;那些如果不抓住就會消散的東西。
-        一瞥的重量，轉念的幾何，某件事情即將發生之前、
-        寂靜收緊的方式。
-      </p>
+      <div class="space-y-16 md:space-y-20">
+        <!-- P1: centered, larger -->
+        <p
+          class="about-line text-center text-xl md:text-2xl text-ink/80 leading-relaxed font-light
+                 md:max-w-lg md:mx-auto"
+          style="animation-delay: 100ms;"
+        >
+          光乘以<span style="font-family: 'Waiting for the Sunrise', cursive;" class="text-accent/60">時間</span>。這就是攝影。
+        </p>
 
-      <p>
-        在快門的脆響與之後的寂靜之間，我拾起這些碎片。
-        不是為了留住它們，只是為了證明它們存在過。
-      </p>
+        <!-- P2: left-aligned -->
+        <p
+          class="about-line text-center md:text-left text-base md:text-lg text-muted leading-relaxed font-light
+                 md:max-w-md md:ml-12"
+          style="animation-delay: 250ms;"
+        >
+          我收集那些夾縫中的片刻&mdash;&mdash;那些如果不抓住就會<span style="font-family: 'Caveat', cursive;" class="text-accent/60">消散</span>的東西。
+          一瞥的重量，未竟之言的餘響，某件事情即將發生之前、
+          <span style="font-family: 'Nothing You Could Do', cursive;" class="text-accent/60">寂靜收緊</span>的方式。
+        </p>
 
-      <p>
-        有人稱之為攝影。<br />
-        我叫它借來的時間。
-      </p>
-    </div>
+        <!-- P3: right-aligned -->
+        <p
+          class="about-line text-center md:text-right text-base md:text-lg text-muted leading-relaxed font-light
+                 md:max-w-md md:ml-auto md:mr-12"
+          style="animation-delay: 400ms;"
+        >
+          在快門的脆響與之後的寂靜之間，我拾起這些<span style="font-family: 'Caveat', cursive;" class="text-accent/60">碎片</span>。
+          不是為了留住它們，只是為了證明它們存在過。
+        </p>
 
-    <hr class="my-16 border-border" />
+        <!-- P4: centered, wider tracking -->
+        <p
+          class="about-line text-center text-lg md:text-xl text-ink/80 leading-relaxed font-light
+                 md:max-w-lg md:mx-auto tracking-wide"
+          style="animation-delay: 550ms;"
+        >
+          有人稱之為攝影。<br />
+          我叫它<span style="font-family: 'Waiting for the Sunrise', cursive;" class="text-accent/60">借來的時間</span>。
+        </p>
+      </div>
 
-    <div class="space-y-2 text-sm text-muted/70">
-      <p>
-        <a href="https://www.instagram.com/jtimes.visual/" target="_blank" rel="noopener noreferrer"
-           class="hover:text-accent transition-colors">Instagram</a>
-        &nbsp;&middot;&nbsp;
-        <a href="https://www.threads.net/@jtimes.visual" target="_blank" rel="noopener noreferrer"
-           class="hover:text-accent transition-colors">Threads</a>
-        &nbsp;&middot;&nbsp;
-        <a href="https://github.com/jameslyu916-source" target="_blank" rel="noopener noreferrer"
-           class="hover:text-accent transition-colors">GitHub</a>
-      </p>
+      <!-- Colophon -->
+      <div class="about-line mt-24 md:mt-32 text-center" style="animation-delay: 700ms;">
+        <div class="w-12 h-px bg-border/40 mx-auto mb-8"></div>
+        <p class="text-xs text-muted/50 tracking-wider">
+          <a href="https://www.instagram.com/jtimes.visual/" target="_blank" rel="noopener noreferrer"
+             class="hover:text-accent transition-colors">Instagram</a>
+          &nbsp;&middot;&nbsp;
+          <a href="https://www.threads.net/@jtimes.visual" target="_blank" rel="noopener noreferrer"
+             class="hover:text-accent transition-colors">Threads</a>
+          &nbsp;&middot;&nbsp;
+          <a href="https://github.com/jameslyu916-source" target="_blank" rel="noopener noreferrer"
+             class="hover:text-accent transition-colors">GitHub</a>
+        </p>
+      </div>
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .about-line {
+    opacity: 0;
+    animation: about-fade-up 0.8s ease-out both;
+  }
+
+  @keyframes about-fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
