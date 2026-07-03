@@ -37,7 +37,7 @@ npm run new-photo    # Interactive CLI to scaffold photo .md files
 - **Style**: Japanese清新 — clean, minimal, rounded fonts, breathing room
 
 ## Key Design Decisions
-- **Homepage**: Large J (serif) + cycling handwritten x (3 fonts, 7.5s loop, click to bounce). Japanese manuscript grid + 18 poetry fragments on right (desktop), 6 fragments (mobile). Scroll-down arrow + bottom gallery CTA. Featured photos displayed in `FeaturedWall` — asymmetric dual-rail auto-scrolling wall (taller top rail 34vh ← left, shorter bottom rail 24vh → right, different speeds) with CSS mask-image faded edges. `FilmStrip` fullscreen viewer with floating edge arrows, auto-hide UI, infinite loop navigation.
+- **Homepage**: Large J (serif) + cycling handwritten x (3 fonts, 7.5s loop, click to bounce). Japanese manuscript grid + 18 poetry fragments on right (desktop), 6 fragments (mobile). Scroll-down arrow + bottom gallery CTA. Featured photos displayed in `FeaturedWall` — asymmetric dual-rail auto-scrolling wall (taller top rail 34vh ← left, shorter bottom rail 24vh → right, different speeds) with CSS mask-image faded edges. `FilmStrip` fullscreen viewer with blurred ambient background, vignette overlay, floating edge arrows, navigation dots (sliding window when >8 photos), auto-hide UI, infinite loop navigation.
 - **Mobile nav**: Hamburger button → full-screen overlay with nav links. Menu overlay is OUTSIDE `<header>` to escape stacking context
 - **Gallery**: CSS columns masonry with CLS prevention (aspect-ratio on grid `<a>` + `contain:layout style`), series-based filtering (not categories), seeded Fisher-Yates shuffle for photo order
 - **PhotoCard hover**: GPU-isolated scale(1.05) with will-change-transform + backface-hidden. Bottom gradient overlay with title/location.
@@ -86,6 +86,7 @@ npm run new-photo    # Interactive CLI to scaffold photo .md files
 - **GPU hover fixes**: See Known GPU Bugs section below
 - **CLS prevention in CSS columns**: Put `aspect-ratio` on the grid ITEM (the `<a>` tag), not a child div. Add `contain: layout style` to isolate each card's internal layout from the column flow. This lets the browser determine column heights before any images load.
 - **FilmStrip deferred loading**: Do NOT set `src` on FilmStrip track images at build time. Use `data-src` + a 1px placeholder GIF. Swap `data-src` → `src` only when the overlay opens and for images within ±2 frames of the current index. This prevents 40+ large images from loading on page load and causing resource contention / CLS.
+- **FilmStrip filter awareness**: The `open()` function MUST check `document.querySelector(".filter-btn.filter-active")` and filter `visiblePhotos` accordingly. This logic was lost once in a merge — verify it's present after any FilmStrip refactor.
 - **Filter transitions**: Use a "global fade" pattern — add a `.filtering` class to the gallery container to fade ALL cards out (opacity transition), swap display states synchronously while invisible (setTimeout 250ms), then remove the class to let `fade-up` animations restart naturally. Never per-card timer management. Ensure `animation: none` during the filtering phase to avoid transition/animation conflicts on the same property.
 
 ## Known GPU Bugs & Fixes
