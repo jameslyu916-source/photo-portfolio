@@ -160,8 +160,6 @@ const photosJson = JSON.stringify(photosData);
   function setBackground(idx) {
     const p = visiblePhotos[idx];
     if (!p) return;
-    bgA.style.transition = "none";
-    bgB.style.transition = "none";
     if (bgToggle) {
       bgB.src = p.src;
       bgB.style.opacity = "1";
@@ -172,10 +170,6 @@ const photosJson = JSON.stringify(photosData);
       bgB.style.opacity = "0";
     }
     bgToggle = !bgToggle;
-    requestAnimationFrame(() => {
-      bgA.style.transition = "opacity 0.7s";
-      bgB.style.transition = "opacity 0.7s";
-    });
   }
 
   function updateInfo() {
