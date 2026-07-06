@@ -700,7 +700,7 @@ const mapSvgsJson = JSON.stringify(mapSvgs);
   .map-card {
     position: fixed;
     bottom: 80px;
-    right: 24px;
+    right: 12vw;
     z-index: 1001;
     opacity: 0;
     transform: translateY(8px);
@@ -734,15 +734,15 @@ const mapSvgsJson = JSON.stringify(mapSvgs);
 
   .map-inner svg {
     display: block;
-    width: 210px;
-    height: 210px;
+    width: 155px;
+    height: 155px;
     color: #fff;
     mix-blend-mode: difference;
   }
 
   @media (max-width: 768px) {
     .map-card {
-      right: 12px;
+      right: 8vw;
       bottom: 72px;
     }
 
@@ -751,8 +751,8 @@ const mapSvgsJson = JSON.stringify(mapSvgs);
     }
 
     .map-inner svg {
-      width: 150px;
-      height: 150px;
+      width: 110px;
+      height: 110px;
     }
   }
 </style>
