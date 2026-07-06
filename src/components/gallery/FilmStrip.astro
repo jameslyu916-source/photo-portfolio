@@ -1,12 +1,14 @@
 ---
 import type { Photo } from "../../lib/photos";
 import { getImage } from "astro:assets";
+import { t } from "../../lib/i18n";
 
 interface Props {
   photos: Photo[];
+  locale?: string;
 }
 
-const { photos } = Astro.props;
+const { photos, locale = "en" } = Astro.props;
 
 const photosData = await Promise.all(
   photos.map(async (photo) => {
@@ -28,6 +30,13 @@ const photosData = await Promise.all(
 );
 
 const photosJson = JSON.stringify(photosData);
+const i18n = {
+  previous: t(locale, "filmstrip.previous"),
+  next: t(locale, "filmstrip.next"),
+  close: t(locale, "filmstrip.close"),
+  goToPhoto: t(locale, "filmstrip.goToPhoto"),
+};
+const i18nJson = JSON.stringify(i18n);
 ---
 
 <div
@@ -84,12 +93,12 @@ const photosJson = JSON.stringify(photosData);
   </div>
 
   <!-- Floating edge arrows -->
-  <button id="film-strip-prev" aria-label="Previous" class="film-strip-arrow left-4">
+  <button id="film-strip-prev" aria-label={i18n.previous} class="film-strip-arrow left-4">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="15 6 9 12 15 18"></polyline>
     </svg>
   </button>
-  <button id="film-strip-next" aria-label="Next" class="film-strip-arrow right-4">
+  <button id="film-strip-next" aria-label={i18n.next} class="film-strip-arrow right-4">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="9 6 15 12 9 18"></polyline>
     </svg>
@@ -112,9 +121,9 @@ const photosJson = JSON.stringify(photosData);
     <button id="film-strip-close"
       class="flex items-center gap-2 text-white/50 hover:text-white transition-colors text-sm font-light tracking-wide"
       style="font-family: 'Zen Kaku Gothic New', sans-serif;"
-      aria-label="Close"
+      aria-label={i18n.close}
     >
-      Close
+      {i18n.close}
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
         <line x1="7" y1="7" x2="17" y2="17" />
         <line x1="17" y1="7" x2="7" y2="17" />
@@ -123,8 +132,9 @@ const photosJson = JSON.stringify(photosData);
   </div>
 </div>
 
-<script define:vars={{ photosJson }}>
+<script define:vars={{ photosJson, i18nJson }}>
   const photosData = JSON.parse(photosJson);
+  const i18n = JSON.parse(i18nJson);
   let overlay, track, closeBtn, prevBtn, nextBtn, counter, seriesEl, bgA, bgB, bar, dots;
   let currentIndex = 0;
   let bgToggle = false;
@@ -134,6 +144,8 @@ const photosJson = JSON.stringify(photosData);
   let hideUiTimer = null;
   let isNavigating = false;
   let navFallbackTimer = null;
+  const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
+  const UI_HIDE_DELAY = isTouchDevice ? 8000 : 3000;
 
   function showUI() {
     if (bar) bar.style.opacity = "1";
@@ -141,7 +153,7 @@ const photosJson = JSON.stringify(photosData);
     if (prevBtn) prevBtn.style.opacity = "1";
     if (nextBtn) nextBtn.style.opacity = "1";
     clearTimeout(hideUiTimer);
-    hideUiTimer = setTimeout(hideUI, 3000);
+    hideUiTimer = setTimeout(hideUI, UI_HIDE_DELAY);
   }
 
   function hideUI() {
@@ -231,7 +243,7 @@ const photosJson = JSON.stringify(photosData);
   function createDot(index) {
     const dot = document.createElement("button");
     dot.className = "film-strip-dot";
-    dot.setAttribute("aria-label", `Go to photo ${index + 1}`);
+    dot.setAttribute("aria-label", i18n.goToPhoto.replace("{n}", index + 1));
     dot.addEventListener("click", () => goTo(index));
     return dot;
   }
@@ -316,6 +328,7 @@ const photosJson = JSON.stringify(photosData);
     overlay.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
     showUI();
+    history.pushState({ filmStripOpen: true }, "");
 
     requestAnimationFrame(() => {
       const frame = document.getElementById(`film-frame-${slug}`);
@@ -335,6 +348,7 @@ const photosJson = JSON.stringify(photosData);
     clearTimeout(hideUiTimer);
     clearTimeout(navFallbackTimer);
     isNavigating = false;
+    history.replaceState(null, "");
   }
 
   function snapToClosest() {
@@ -344,6 +358,7 @@ const photosJson = JSON.stringify(photosData);
     visiblePhotos.forEach((p, i) => {
       const frame = document.getElementById(`film-frame-${p.slug}`);
       if (!frame) return;
+      if (frame.style.display === "none") return;
       const frameCenter = frame.offsetLeft + frame.offsetWidth / 2;
       const dist = Math.abs(viewCenter - frameCenter);
       if (dist < closestDist) { closestDist = dist; closestIdx = i; }
@@ -379,6 +394,7 @@ const photosJson = JSON.stringify(photosData);
     visiblePhotos.forEach((p) => {
       const frame = document.getElementById(`film-frame-${p.slug}`);
       if (!frame) return;
+      if (frame.style.display === "none") return;
       const frameCenter = frame.offsetLeft + frame.offsetWidth / 2;
       const dist = Math.abs(frameCenter - viewCenter);
       const normalized = Math.min(1, dist / (track.offsetWidth * 0.55));
@@ -465,6 +481,11 @@ const photosJson = JSON.stringify(photosData);
     visiblePhotos = photosData;
     currentIndex = 0;
     isNavigating = false;
+    // Clear any stale display:none from previous filter
+    photosData.forEach((p) => {
+      const frame = document.getElementById(`film-frame-${p.slug}`);
+      if (frame) frame.style.display = "";
+    });
 
     // Open on photo click
     document.addEventListener("click", (e) => {
@@ -506,6 +527,19 @@ const photosJson = JSON.stringify(photosData);
     // Close on background click (not on photos or controls)
     overlay?.addEventListener("click", (e) => {
       if (e.target === overlay || e.target === track) close();
+    }, { signal });
+
+    // Browser back button closes overlay instead of navigating away
+    window.addEventListener("popstate", () => {
+      if (overlay && !overlay.classList.contains("opacity-0")) {
+        overlay.classList.add("opacity-0", "pointer-events-none");
+        overlay.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+        stopRafLoop();
+        clearTimeout(hideUiTimer);
+        clearTimeout(navFallbackTimer);
+        isNavigating = false;
+      }
     }, { signal });
   }
 

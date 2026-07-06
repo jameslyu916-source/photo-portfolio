@@ -22,11 +22,19 @@ const canonicalPath = Astro.url.pathname;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#fafaf9" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Essential: body text, headings, logo serif — render-blocking -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,500;1,300&family=Caveat:wght@400;500&family=Waiting+for+the+Sunrise&family=Nothing+You+Could+Do&family=Zen+Maru+Gothic:wght@400;500&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Sans+SC:wght@300;400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,500;1,300&family=Zen+Maru+Gothic:wght@400;500&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Sans+SC:wght@300;400;500&display=swap"
       rel="stylesheet"
+    />
+    <!-- Handwriting: decorative only, async — non-render-blocking -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500&family=Waiting+for+the+Sunrise&family=Nothing+You+Could+Do&display=swap"
+      rel="stylesheet"
+      media="print" onload="this.media='all'"
     />
     <SEO
       title={title}

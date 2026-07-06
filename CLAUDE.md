@@ -4,7 +4,7 @@
 - **Astro v5** + **Tailwind CSS v3** + **@astrojs/tailwind v6**
 - **CRITICAL**: Do NOT use `@tailwindcss/vite` (Tailwind v4) — it silently fails to scan `.astro` files, producing zero utility classes. Must use `@astrojs/tailwind` + `tailwindcss@3`.
 - Node v26, npm
-- PhotoSwipe v5 for lightbox, Sharp for image optimization
+- FilmStrip (custom fullscreen viewer), Sharp for image optimization
 - Astro View Transitions enabled
 - i18n: en + zh-cn, prefixDefaultLocale routing
 
