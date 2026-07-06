@@ -700,7 +700,7 @@ const mapSvgsJson = JSON.stringify(mapSvgs);
   .map-card {
     position: fixed;
     bottom: 80px;
-    right: 12vw;
+    right: 24px;
     z-index: 1001;
     opacity: 0;
     transform: translateY(8px);
@@ -726,23 +726,25 @@ const mapSvgsJson = JSON.stringify(mapSvgs);
     font-family: 'Zen Maru Gothic', serif;
     font-size: 0.65rem;
     letter-spacing: 0.18em;
-    color: #fff;
+    color: rgba(255, 255, 255, 0.8);
     text-align: center;
     pointer-events: none;
-    mix-blend-mode: difference;
+    text-shadow:
+      0 0 2px rgba(0, 0, 0, 0.6),
+      0 0 6px rgba(255, 255, 255, 0.4);
   }
 
   .map-inner svg {
     display: block;
     width: 155px;
     height: 155px;
-    color: #fff;
-    mix-blend-mode: difference;
+    color: rgba(255, 255, 255, 0.75);
+    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
   }
 
   @media (max-width: 768px) {
     .map-card {
-      right: 8vw;
+      right: 12px;
       bottom: 72px;
     }
 
