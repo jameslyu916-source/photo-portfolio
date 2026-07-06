@@ -155,6 +155,7 @@ const mapSvgsJson = JSON.stringify(mapSvgs);
   let overlay, track, closeBtn, prevBtn, nextBtn, counter, seriesEl, bgA, bgB, bar, dots;
   let locationName, mapCard, mapInner, mapLabel;
   let currentMapRegion = null;
+  let mapSwapTimer = null;
   let currentIndex = 0;
   let bgToggle = false;
   let rafId = null;
@@ -298,7 +299,8 @@ const mapSvgsJson = JSON.stringify(mapSvgs);
       locationName.textContent = p.location || "";
       if (region !== currentMapRegion) {
         mapInner.style.opacity = "0";
-        setTimeout(() => {
+        clearTimeout(mapSwapTimer);
+        mapSwapTimer = setTimeout(() => {
           mapInner.innerHTML = mapSvgs[region];
           mapLabel.textContent = p.location || "";
           mapInner.style.opacity = "1";
@@ -343,6 +345,7 @@ const mapSvgsJson = JSON.stringify(mapSvgs);
     bgToggle = false;
     isNavigating = false;
     currentMapRegion = null;
+    clearTimeout(mapSwapTimer);
     clearTimeout(navFallbackTimer);
 
     // Check active filter
@@ -395,6 +398,7 @@ const mapSvgsJson = JSON.stringify(mapSvgs);
     isNavigating = false;
     if (mapCard) mapCard.classList.remove("visible");
     currentMapRegion = null;
+    clearTimeout(mapSwapTimer);
     history.replaceState(null, "");
   }
 
@@ -702,8 +706,6 @@ const mapSvgsJson = JSON.stringify(mapSvgs);
     transform: translateY(8px);
     transition: opacity 0.4s ease, transform 0.4s ease;
     pointer-events: none;
-    perspective: 600px;
-    mix-blend-mode: difference;
   }
 
   .map-card.visible {
@@ -724,20 +726,18 @@ const mapSvgsJson = JSON.stringify(mapSvgs);
     font-family: 'Zen Maru Gothic', serif;
     font-size: 0.65rem;
     letter-spacing: 0.18em;
-    color: rgba(255, 255, 255, 0.5);
+    color: #fff;
     text-align: center;
     pointer-events: none;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+    mix-blend-mode: difference;
   }
 
   .map-inner svg {
     display: block;
     width: 210px;
     height: 210px;
-    color: rgba(255, 255, 255, 0.5);
-    transform: rotateX(55deg) rotateZ(-5deg);
-    transform-style: preserve-3d;
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.35));
+    color: #fff;
+    mix-blend-mode: difference;
   }
 
   @media (max-width: 768px) {
