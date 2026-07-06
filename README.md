@@ -46,7 +46,7 @@ The site uses a sage green accent on a warm paper-white background, with Zen Mar
 
 - **Masonry gallery** &mdash; CSS columns layout with staggered fade-up animations. Series-based filtering with a global fade transition pattern that avoids per-card timer management.
 - **Seeded shuffle** &mdash; Fisher-Yates shuffle with a deterministic PRNG so photo order is random but stable across page loads.
-- **FilmStrip viewer** &mdash; custom fullscreen photo browser with blurred ambient background crossfade, vignette overlay, horizontal scroll-snap, floating edge arrows, and sliding navigation dots. Replaces the earlier PhotoSwipe integration.
+- **FilmStrip viewer** &mdash; custom fullscreen photo browser with blurred ambient background crossfade, vignette overlay, horizontal scroll-snap, floating edge arrows, and sliding navigation dots. Includes location line-art maps generated from real OpenStreetMap coastline data. Replaces the earlier PhotoSwipe integration.
 - **FeaturedWall** &mdash; dual-rail auto-scrolling photo wall on the homepage (top rail scrolls left, bottom rail scrolls right, at different speeds) with CSS `mask-image` faded edges.
 
 ### Layout & design
