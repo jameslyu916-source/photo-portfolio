@@ -56,3 +56,30 @@ export function getSeriesFromPhotos(photos: Photo[]): string[] {
   }
   return Array.from(seriesSet);
 }
+
+const REGION_MAP: Record<string, string> = {
+  "hong kong": "hong-kong",
+  "stanley": "hong-kong",
+  "kowloon": "hong-kong",
+  "tst": "hong-kong",
+  "tsim sha tsui": "hong-kong",
+  "central": "hong-kong",
+  "west kowloon": "hong-kong",
+  "赤柱": "hong-kong",
+  "西九龍": "hong-kong",
+  "尖沙咀": "hong-kong",
+  "香港": "hong-kong",
+  "sichuan": "sichuan",
+  "四川": "sichuan",
+  "成都": "sichuan",
+  "chengdu": "sichuan",
+};
+
+export function getMapRegion(location: string | undefined): string | null {
+  if (!location) return null;
+  const normalized = location.toLowerCase().trim();
+  for (const [keyword, region] of Object.entries(REGION_MAP)) {
+    if (normalized.includes(keyword)) return region;
+  }
+  return null;
+}

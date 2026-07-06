@@ -2,6 +2,9 @@
 import type { Photo } from "../../lib/photos";
 import { getImage } from "astro:assets";
 import { t } from "../../lib/i18n";
+import { getMapRegion } from "../../lib/photos";
+import hkSvg from "../../assets/maps/hong-kong.svg?raw";
+import scSvg from "../../assets/maps/sichuan.svg?raw";
 
 interface Props {
   photos: Photo[];
@@ -25,6 +28,8 @@ const photosData = await Promise.all(
       height: large.attributes.height ?? 1600,
       title: photo.data.title,
       series: photo.data.series ?? "",
+      location: photo.data.location ?? "",
+      mapRegion: getMapRegion(photo.data.location),
     };
   }),
 );
@@ -37,6 +42,8 @@ const i18n = {
   goToPhoto: t(locale, "filmstrip.goToPhoto"),
 };
 const i18nJson = JSON.stringify(i18n);
+const mapSvgs = { "hong-kong": hkSvg, sichuan: scSvg };
+const mapSvgsJson = JSON.stringify(mapSvgs);
 ---
 
 <div
@@ -117,6 +124,9 @@ const i18nJson = JSON.stringify(i18n);
       <span id="film-strip-series"
         class="text-white/35 text-sm tracking-wide truncate max-w-[40vw]"
         style="font-family: 'Caveat', cursive; font-size: 1rem;">&nbsp;</span>
+      <span id="film-strip-location-name"
+        class="hidden text-white/20 text-xs tracking-wide"
+        style="font-family: 'Zen Kaku Gothic New', sans-serif;"></span>
     </div>
     <button id="film-strip-close"
       class="flex items-center gap-2 text-white/50 hover:text-white transition-colors text-sm font-light tracking-wide"
@@ -130,12 +140,21 @@ const i18nJson = JSON.stringify(i18n);
       </svg>
     </button>
   </div>
+
+  <!-- Location map card — always visible in corner -->
+  <div id="film-strip-map-card" class="map-card" aria-hidden="true">
+    <span id="film-strip-map-label" class="map-label"></span>
+    <div id="film-strip-map-inner" class="map-inner"></div>
+  </div>
 </div>
 
-<script define:vars={{ photosJson, i18nJson }}>
+<script define:vars={{ photosJson, i18nJson, mapSvgsJson }}>
   const photosData = JSON.parse(photosJson);
   const i18n = JSON.parse(i18nJson);
+  const mapSvgs = JSON.parse(mapSvgsJson);
   let overlay, track, closeBtn, prevBtn, nextBtn, counter, seriesEl, bgA, bgB, bar, dots;
+  let locationName, mapCard, mapInner, mapLabel;
+  let currentMapRegion = null;
   let currentIndex = 0;
   let bgToggle = false;
   let rafId = null;
@@ -269,10 +288,35 @@ const i18nJson = JSON.stringify(i18n);
     }
   }
 
+  function updateMap(p) {
+    if (!mapCard || !mapInner || !mapLabel || !locationName) return;
+    const region = p?.mapRegion;
+    const hasMap = region && mapSvgs[region];
+    if (hasMap) {
+      mapCard.classList.add("visible");
+      locationName.classList.remove("hidden");
+      locationName.textContent = p.location || "";
+      if (region !== currentMapRegion) {
+        mapInner.style.opacity = "0";
+        setTimeout(() => {
+          mapInner.innerHTML = mapSvgs[region];
+          mapLabel.textContent = p.location || "";
+          mapInner.style.opacity = "1";
+        }, 200);
+        currentMapRegion = region;
+      }
+    } else {
+      mapCard.classList.remove("visible");
+      locationName.classList.add("hidden");
+      currentMapRegion = null;
+    }
+  }
+
   function updateInfo() {
     const p = visiblePhotos[currentIndex];
     if (counter) counter.textContent = `${currentIndex + 1} / ${visiblePhotos.length}`;
     if (seriesEl) seriesEl.textContent = p ? (p.series || "") : "";
+    updateMap(p);
     refreshDotActive();
   }
 
@@ -298,6 +342,7 @@ const i18nJson = JSON.stringify(i18n);
     currentIndex = 0;
     bgToggle = false;
     isNavigating = false;
+    currentMapRegion = null;
     clearTimeout(navFallbackTimer);
 
     // Check active filter
@@ -348,6 +393,8 @@ const i18nJson = JSON.stringify(i18n);
     clearTimeout(hideUiTimer);
     clearTimeout(navFallbackTimer);
     isNavigating = false;
+    if (mapCard) mapCard.classList.remove("visible");
+    currentMapRegion = null;
     history.replaceState(null, "");
   }
 
@@ -463,6 +510,10 @@ const i18nJson = JSON.stringify(i18n);
     bgB = document.getElementById("film-strip-bg-b");
     bar = document.getElementById("film-strip-bar");
     dots = document.getElementById("film-strip-dots");
+    locationName = document.getElementById("film-strip-location-name");
+    mapCard = document.getElementById("film-strip-map-card");
+    mapInner = document.getElementById("film-strip-map-inner");
+    mapLabel = document.getElementById("film-strip-map-label");
 
     // Remove any leftover overlays from body (from previous View Transitions pages)
     const staleOverlays = document.body.querySelectorAll("#film-strip");
@@ -638,6 +689,69 @@ const i18nJson = JSON.stringify(i18n);
     .film-strip-dot {
       width: 8px;
       height: 8px;
+    }
+  }
+
+  /* Map card — always-visible tilted line-art location map */
+  .map-card {
+    position: fixed;
+    bottom: 80px;
+    right: 24px;
+    z-index: 1001;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    pointer-events: none;
+    perspective: 600px;
+  }
+
+  .map-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .map-inner {
+    position: relative;
+    transition: opacity 0.25s ease;
+  }
+
+  .map-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Zen Maru Gothic', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+    pointer-events: none;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+  }
+
+  .map-inner svg {
+    display: block;
+    width: 210px;
+    height: 210px;
+    color: rgba(255, 255, 255, 0.5);
+    transform: rotateX(55deg) rotateZ(-5deg);
+    transform-style: preserve-3d;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.35));
+  }
+
+  @media (max-width: 768px) {
+    .map-card {
+      right: 12px;
+      bottom: 72px;
+    }
+
+    .map-label {
+      font-size: 0.55rem;
+    }
+
+    .map-inner svg {
+      width: 150px;
+      height: 150px;
     }
   }
 </style>

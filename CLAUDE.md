@@ -107,6 +107,35 @@ node scripts/social-cards.mjs  # Generate social-media-ready card images from sc
 - Cloudflare DNS: CNAME `@` + `www` → `cname.vercel-dns.com`, Proxy ON
 - Old GitHub Pages URL no longer used
 
+## Location Maps
+
+FilmStrip shows a tilted line-art map in the bottom-right corner, generated from real OSM coastline/boundary data. White glowing lines, transparent background, location name centered on the map.
+
+### Data pipeline
+1. Raw OSM data downloaded once via Overpass API → `scripts/map-data/{region}.json`
+2. `node scripts/generate-maps.mjs` → RDP simplification + Mercator projection → `src/assets/maps/{region}.svg`
+3. `src/lib/photos.ts` → `getMapRegion(location)` maps photo location strings to region keys
+4. FilmStrip.astro imports SVGs as raw strings (`?raw`), inlines via `define:vars`
+
+### Adding a new region
+1. Find the OSM relation ID via `https://nominatim.openstreetmap.org/search?q={place}&format=json`  
+   → Look for `"osm_type":"relation"`, note the `osm_id`
+2. **Coastline**: `curl -o scripts/map-data/{key}-coastline.json "https://overpass-api.de/api/interpreter?data=[out:json];way[\"natural\"=\"coastline\"](S,W,N,E);out%20geom;"`  
+   (replace S,W,N,E with the region's lat/lng bounding box — roughly ±0.5° around the target area)
+3. **Admin boundary**: `curl -o scripts/map-data/{key}.json "https://polygons.openstreetmap.fr/get_geojson.py?id={RELATION_ID}"`  
+   (use for regions where coastline isn't the primary visual, e.g. inland provinces)
+4. Add entry to `REGIONS` in `scripts/generate-maps.mjs` (tolerance ~0.0006 for coastline, ~0.008 for admin boundary)
+5. Run `node scripts/generate-maps.mjs` → SVGs land in `src/assets/maps/`
+6. Add location keywords to `REGION_MAP` in `src/lib/photos.ts` (case-insensitive substring match)
+7. The new SVG is auto-inlined at build time — no other code changes needed
+
+### Key files
+- `src/assets/maps/{region}.svg` — generated line-art maps (committed)
+- `scripts/map-data/{region}.json` — raw OSM data (committed, large files OK)
+- `scripts/generate-maps.mjs` — generation script
+- `src/lib/photos.ts` → `getMapRegion()` — location → region mapping
+- `src/components/gallery/FilmStrip.astro` — map card UI + CSS
+
 ## Next Up
 - Add more photo series (Japan, landscapes, film, etc.)
 - GitHub: https://github.com/jameslyu916-source/photo-portfolio
