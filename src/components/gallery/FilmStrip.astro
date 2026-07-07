@@ -297,12 +297,12 @@ const mapSvgsJson = JSON.stringify(mapSvgs);
       mapCard.classList.add("visible");
       locationName.classList.remove("hidden");
       locationName.textContent = p.location || "";
+      mapLabel.textContent = p.location || "";
       if (region !== currentMapRegion) {
         mapInner.style.opacity = "0";
         clearTimeout(mapSwapTimer);
         mapSwapTimer = setTimeout(() => {
           mapInner.innerHTML = mapSvgs[region];
-          mapLabel.textContent = p.location || "";
           mapInner.style.opacity = "1";
         }, 200);
         currentMapRegion = region;
