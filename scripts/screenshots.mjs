@@ -82,6 +82,11 @@ console.log("FilmStrip overlay…");
   await page.waitForTimeout(2000);
   await page.click(".grid-gallery > a:first-child");
   await page.waitForTimeout(2500);
+  // Navigate to trigger proper map initialization
+  await page.click("#film-strip-next");
+  await page.waitForTimeout(1500);
+  await page.click("#film-strip-prev");
+  await page.waitForTimeout(1500);
   await page.screenshot({ path: `${OUT}/08-filmstrip-desktop.png` });
   await ctx.close();
   console.log("  ✓ 08-filmstrip-desktop");
