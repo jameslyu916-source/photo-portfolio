@@ -7,7 +7,7 @@
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 <!-- language-selector-start -->
-[English](README.md) &nbsp;&middot;&nbsp; [繁體中文](README.zh-Hant.md)
+[English](README.md) &nbsp;&middot;&nbsp; **繁體中文**
 <!-- language-selector-end -->
 
 ## 頁面截圖
@@ -62,6 +62,7 @@
 - **GPU 優化互動** &mdash; 硬體加速的 hover 變換，配合獨立的合成圖層。
 - **View Transitions** &mdash; Astro SPA 導航，對於有閉包狀態的組件使用 `AbortController` 事件監聽器生命週期。相關模式記錄在 `CLAUDE.md` 中。
 - **響應式設計** &mdash; 漢堡選單手機導航、自適應作品集列數（3 &rarr; 2 &rarr; 1）、手機詩意網格、全站觸控友善。
+- **監控** &mdash; Vercel Analytics + Speed Insights，追蹤網站流量與效能。
 
 ### 國際化
 
@@ -89,6 +90,7 @@ src/
 ├── admin/                  # 瀏覽器端 CMS（僅開發環境）
 │   └── api/                #   認證、照片 CRUD、上傳處理
 ├── assets/images/photos/   # 已最佳化的照片（2400px JPEG）
+├── assets/maps/            # 生成的線條 SVG 地圖（香港、四川等）
 ├── components/
 │   ├── gallery/            # PhotoGrid、PhotoCard、LazyImage、FilterBar、FilmStrip、FeaturedWall
 │   ├── layout/             # BaseLayout、Header、Footer、SEO
@@ -101,6 +103,7 @@ src/
 scripts/
 ├── screenshots.mjs         # Playwright — 擷取桌面 + 手機截圖
 ├── social-cards.mjs        # 生成社交媒體用卡片圖片
+├── generate-maps.mjs       # 從 OSM 海岸線/行政邊界資料生成線條 SVG 地圖
 ├── optimize-images.ts      # 基於 Sharp 的圖片預處理器
 └── new-photo.ts            # 互動式照片內容脚手架
 ```

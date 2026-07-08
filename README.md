@@ -7,7 +7,7 @@ A personal photography portfolio built with [Astro](https://astro.build) and [Ta
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 <!-- language-selector-start -->
-[English](README.md) &nbsp;&middot;&nbsp; [繁體中文](README.zh-Hant.md)
+**English** &nbsp;&middot;&nbsp; [繁體中文](README.zh-Hant.md)
 <!-- language-selector-end -->
 
 ## Screenshots
@@ -62,6 +62,7 @@ The site uses a sage green accent on a warm paper-white background, with Zen Mar
 - **GPU-optimized interactions** &mdash; hardware-accelerated hover transforms with isolated compositing layers.
 - **View Transitions** &mdash; Astro SPA navigation with `AbortController`-based event listener lifecycle for components with closure state. Documented patterns in `CLAUDE.md`.
 - **Responsive** &mdash; hamburger mobile nav, adaptive gallery columns (3 &rarr; 2 &rarr; 1), mobile poetry grid, touch-friendly throughout.
+- **Monitoring** &mdash; Vercel Analytics + Speed Insights for traffic and performance tracking.
 
 ### Internationalization
 
@@ -89,6 +90,7 @@ src/
 ├── admin/                  # Browser-based CMS (dev-only)
 │   └── api/                #   Auth, photo CRUD, upload handler
 ├── assets/images/photos/   # Optimized photos (2400px JPEG)
+├── assets/maps/            # Generated line-art SVG maps (Hong Kong, Sichuan, …)
 ├── components/
 │   ├── gallery/            # PhotoGrid, PhotoCard, LazyImage, FilterBar, FilmStrip, FeaturedWall
 │   ├── layout/             # BaseLayout, Header, Footer, SEO
@@ -101,6 +103,7 @@ src/
 scripts/
 ├── screenshots.mjs         # Playwright — capture desktop + mobile screenshots
 ├── social-cards.mjs        # Generate social-media-ready card images
+├── generate-maps.mjs       # Generate line-art SVG maps from OSM coastline/boundary data
 ├── optimize-images.ts      # Sharp-based image pre-processor
 └── new-photo.ts            # Interactive photo entry scaffold
 ```
