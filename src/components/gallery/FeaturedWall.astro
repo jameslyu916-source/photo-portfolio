@@ -1,13 +1,16 @@
 ---
 import PhotoCard from "./PhotoCard.astro";
-import type { Photo } from "../../lib/photos";
+import { shuffleWithSeed, type Photo } from "../../lib/photos";
 
 interface Props {
   photos: Photo[];
 }
 
 const { photos } = Astro.props;
-const shuffled = [...photos].sort(() => Math.random() - 0.5);
+// Seeded, not Math.random(): the wall order used to change on every deploy,
+// which reordered the rails for returning visitors. Same seed keeps both
+// locales on the same arrangement.
+const shuffled = shuffleWithSeed([...photos], 20240101);
 const mid = Math.ceil(shuffled.length / 2);
 const row1 = shuffled.slice(0, mid);
 const row2 = shuffled.slice(mid);

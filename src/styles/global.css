@@ -45,10 +45,12 @@
     z-index: 1;
   }
 
-  /* Vercel: respect reduced motion */
+  /* Respect reduced motion — and stop infinite loops instead of running them
+     at 0.01ms per frame, which still burns CPU on every animation frame. */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
       animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
     }
   }

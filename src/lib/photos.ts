@@ -12,7 +12,7 @@ function createRng(seed: number): () => number {
 }
 
 // Fisher-Yates shuffle with seed
-function shuffleWithSeed<T>(arr: T[], seed: number): T[] {
+export function shuffleWithSeed<T>(arr: T[], seed: number): T[] {
   const result = [...arr];
   const rand = createRng(seed);
   for (let i = result.length - 1; i > 0; i--) {

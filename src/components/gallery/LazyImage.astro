@@ -30,6 +30,8 @@ const placeholder = await getImage({
     width={optimized.attributes.width}
     height={optimized.attributes.height}
     class="blur-up w-full h-full object-cover absolute inset-0"
+    loading="lazy"
+    decoding="async"
     aria-hidden="true"
   />
   <img

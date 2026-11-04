@@ -19,7 +19,7 @@ const series = getSeriesFromPhotos(photos);
     </h1>
     <div class="mt-10">
       <FilterBar locale="zh-cn" series={series} />
-      <PhotoGrid photos={photos} />
+      <PhotoGrid photos={photos} emptyText="暫無作品，敬請期待。" />
       <FilmStrip photos={photos} locale="zh-cn" />
     </div>
   </section>

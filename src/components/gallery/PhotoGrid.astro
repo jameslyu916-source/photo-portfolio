@@ -4,20 +4,27 @@ import PhotoCard from "./PhotoCard.astro";
 
 interface Props {
   photos: Photo[];
+  emptyText?: string;
 }
 
-const { photos } = Astro.props;
+const { photos, emptyText = "No photos yet. Check back soon." } = Astro.props;
+
+// Cap the entrance stagger: a pure i * 50 keeps growing with the collection and
+// leaves the later cards invisible for seconds (62 photos => 3.05s delay).
+const STAGGER_MS = 50;
+const MAX_DELAY_MS = 400;
+const stagger = (i: number) => Math.min(i * STAGGER_MS, MAX_DELAY_MS);
 ---
 
 <div class="grid-gallery" id="photo-grid">
   {
     photos.length === 0 ? (
       <div class="text-center py-20 text-muted">
-        <p>No photos yet. Check back soon.</p>
+        <p>{emptyText}</p>
       </div>
     ) : (
       photos.map((photo, i) => (
-        <PhotoCard photo={photo} delay={i * 50} />
+        <PhotoCard photo={photo} delay={stagger(i)} />
       ))
     )
   }
