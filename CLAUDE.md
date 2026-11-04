@@ -82,6 +82,16 @@ node scripts/social-cards.mjs  # Generate social-media-ready card images from sc
   }
   ```
 
+## Gotchas that have shipped broken before
+
+`npm run verify` (or `npm run verify:build`) asserts each of these on `dist/`; run it before deploying.
+
+- **`<script type="application/ld+json">` is NOT interpolated.** Astro emits that content verbatim, so a `{site}` placeholder ships literally and every crawler rejects the block as invalid JSON. Build the object in the frontmatter and inject it with `set:html={JSON.stringify(...)}` (see `SEO.astro`).
+- **`order` is not a display order.** Gallery order is a seeded Fisher-Yates shuffle; `order` is a per-series sequence number written by the admin renumber flow. Sorting the gallery by it just groups one series at the top.
+- **`open()` must start at `currentIndex = -1`, not `0`.** `setCurrentIndex()` bails out when the index is unchanged, so resetting to 0 skipped frame 0 and left the counter stuck on `1 / 1`.
+- **Photo cards are `role="button"` + `tabindex="0"`** because they are anchors without an `href` (FilmStrip opens them via a delegated listener). FilmStrip must keep its Enter/Space handler, and the closed overlay must stay `inert` — `pointer-events-none` does not remove it from the tab order.
+- **`FeaturedWall` shuffles with a fixed seed.** `Math.random()` reordered the homepage on every deploy; both locales now share one stable arrangement.
+
 ## CSS Patterns
 - **Grid stacking** (overlapping elements that size to content): Use `grid` + `grid-area: 1/1` instead of `absolute inset-0`. The latter collapses the container to 0×0, causing content clipping
 - **Absolute painting order**: `absolute` elements (z-index: auto) paint AFTER normal-flow siblings. Overlays with absolute backgrounds need `relative z-10` on UI bars to stay clickable
