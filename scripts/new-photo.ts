@@ -53,9 +53,9 @@ async function main() {
   const camera = await ask(rl, "Camera (optional): ");
   const lens = await ask(rl, "Lens (optional): ");
   const settings = await ask(rl, "Settings, e.g. f/2.8 1/500s ISO 100 (optional): ");
-  const catInput = await ask(
+  const seriesInput = await ask(
     rl,
-    "Category [landscape|street|portrait|nature|architecture|abstract|black-and-white]: ",
+    "Series (kebab-case, e.g. snow-vein — leave empty for none): ",
   );
   const featuredInput = await ask(rl, "Featured? [y/N]: ");
   const dateInput = await ask(rl, "Date [YYYY-MM-DD]: ");
@@ -64,7 +64,12 @@ async function main() {
 
   const date = dateInput || new Date().toISOString().split("T")[0];
   const featured = featuredInput.toLowerCase() === "y";
-  const category = catInput || undefined;
+  // `category` was replaced by `series` in the content schema; writing the old
+  // key made the entry invisible to the series filter (Zod silently drops
+  // unknown keys, so nothing errored).
+  const series = seriesInput
+    ? seriesInput.trim().toLowerCase().replace(/\s+/g, "-")
+    : undefined;
 
   const enMd = `---
 image: "../../../assets/images/photos/${imageFile}"
@@ -87,8 +92,8 @@ ${
     ? `settings: "${settings}"
 `
     : ""}${
-  category
-    ? `category: "${category}"
+  series
+    ? `series: "${series}"
 `
     : ""}featured: ${featured}
 date: ${date}
@@ -117,8 +122,8 @@ ${
     ? `settings: "${settings}"
 `
     : ""}${
-  category
-    ? `category: "${category}"
+  series
+    ? `series: "${series}"
 `
     : ""}featured: ${featured}
 date: ${date}

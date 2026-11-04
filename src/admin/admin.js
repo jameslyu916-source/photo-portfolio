@@ -727,6 +727,16 @@ function renderFileList() {
   // Clear existing items (keep header)
   while (list.children.length > 1) list.lastChild.remove();
 
+  // Release the previous render's object URLs before minting new ones.
+  // renderFileList() runs on every add/remove/naming change, so it used to leak
+  // one blob URL per photo per render.
+  for (const sf of selectedFiles) {
+    if (sf._thumbUrl) {
+      URL.revokeObjectURL(sf._thumbUrl);
+      sf._thumbUrl = null;
+    }
+  }
+
   const isNumbered = namingMode === "numbered";
 
   for (let i = 0; i < selectedFiles.length; i++) {
@@ -1089,7 +1099,7 @@ function showBatchEditModal() {
 
 function buildBatchEditForm() {
   return h("div", { id: "batch-edit-form" },
-    h("p", { className: "batch-hint" }, "Enable the toggle next to each field you want to update. Unchecked fields will be left unchanged."),
+    h("p", { className: "batch-hint" }, "Enable the toggle next to each field you want to update. Fields you leave alone stay unchanged."),
     batchField("Location", "batch-location", "text"),
     h("div", { className: "form-row" },
       batchField("Series", "batch-series", "text", "batch-series-list"),
@@ -1101,7 +1111,7 @@ function buildBatchEditForm() {
       batchField("Settings", "batch-settings", "text"),
     ),
     h("div", { className: "form-row" },
-      batchFieldToggle("batch-featured", "Featured"),
+      batchFeaturedField(),
       batchField("Order", "batch-order", "number"),
     ),
     h("div", { className: "form-row-3" },
@@ -1134,12 +1144,17 @@ function batchField(label, id, type, datalistId) {
   );
 }
 
-function batchFieldToggle(id, label) {
+// Tri-state instead of a checkbox: a checkbox toggle could only ever send
+// `true`, so batch edit had no way to un-feature a selection.
+function batchFeaturedField() {
+  const select = h("select", { className: "form-input", id: "batch-featured" },
+    h("option", { value: "" }, "— leave unchanged"),
+    h("option", { value: "true" }, "Featured"),
+    h("option", { value: "false" }, "Not featured"),
+  );
   return h("div", { className: "form-group" },
-    h("label", { className: "toggle-label batch-field-label" },
-      h("input", { type: "checkbox", className: "batch-field-toggle", id: `${id}-toggle` }),
-      ` ${label}`,
-    ),
+    h("label", { className: "form-label" }, "Featured"),
+    select,
   );
 }
 
@@ -1164,12 +1179,17 @@ async function handleBatchEdit() {
     field("batch-lens", "lens"),
     field("batch-settings", "settings"),
     field("batch-date", "date"),
-    field("batch-featured", "featured"),
     field("batch-order", "order"),
     field("batch-instagramUrl", "instagramUrl"),
     field("batch-threadsUrl", "threadsUrl"),
     field("batch-xiaohongshuUrl", "xiaohongshuUrl"),
   ].filter(Boolean);
+
+  // Featured has no enable-toggle — its own dropdown is already tri-state.
+  const featuredSelect = document.getElementById("batch-featured");
+  if (featuredSelect && featuredSelect.value !== "") {
+    updates.push({ key: "featured", value: featuredSelect.value === "true" });
+  }
 
   if (updates.length === 0) {
     showFormError("batch-form-error", "Enable at least one field to update.");
@@ -1180,7 +1200,6 @@ async function handleBatchEdit() {
   const payload = {};
   for (const { key, value } of updates) {
     if (key === "order") payload[key] = parseInt(value) || 0;
-    else if (key === "featured") payload[key] = value;
     else payload[key] = value;
   }
 

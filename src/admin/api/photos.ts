@@ -237,6 +237,19 @@ export async function createPhoto(
   fs.writeFileSync(zhPath, buildFrontmatter(zhFields));
 }
 
+/**
+ * JSON/form bodies can carry booleans or strings. Only an explicit value changes
+ * `featured`; anything unparseable means "leave it alone".
+ */
+function toBool(value: unknown): boolean | undefined {
+  if (value === undefined || value === null || value === "") return undefined;
+  if (typeof value === "boolean") return value;
+  const s = String(value).trim().toLowerCase();
+  if (s === "true" || s === "1" || s === "on" || s === "yes") return true;
+  if (s === "false" || s === "0" || s === "off" || s === "no") return false;
+  return undefined;
+}
+
 export async function updatePhoto(
   slug: string,
   meta: PhotoMetadata,
@@ -251,11 +264,16 @@ export async function updatePhoto(
   // Read existing to preserve image reference and fields not being updated
   const { data: enExisting } = parseMdFile(enPath);
 
+  // Present-but-empty means "clear this field"; undefined means "leave it".
+  // (The old both-empty-means-keep version made it impossible to remove a
+  // series, location or camera once it had been set.)
   function merge<T>(newVal: T | undefined, oldVal: T | undefined, fallback: T): T {
-    if (newVal !== undefined && newVal !== null && newVal !== "") return newVal;
-    if (oldVal !== undefined && oldVal !== null && oldVal !== "") return oldVal;
+    if (newVal !== undefined && newVal !== null) return newVal;
+    if (oldVal !== undefined && oldVal !== null) return oldVal;
     return fallback;
   }
+
+  const featured = toBool(meta.featured);
 
   const imageRelPath = enExisting.image ?? "../../../assets/images/photos/" + slug + ".jpg";
   const date = meta.date
@@ -271,7 +289,7 @@ export async function updatePhoto(
     settings: merge(meta.settings, enExisting.settings, null),
     location: merge(meta.location, enExisting.location, null),
     series: merge(meta.series, enExisting.series, null),
-    featured: meta.featured !== undefined ? Boolean(meta.featured) : Boolean(enExisting.featured),
+    featured: featured !== undefined ? featured : Boolean(enExisting.featured),
     date,
     order: meta.order !== undefined ? Number(meta.order) : Number(enExisting.order ?? 0),
     instagramUrl: merge(meta.instagramUrl, enExisting.instagramUrl, null),
@@ -282,7 +300,7 @@ export async function updatePhoto(
   // English entry
   const enFields: Record<string, any> = {
     ...sharedFields,
-    title: merge(meta.titleEn, enExisting.title, ""),
+    title: merge(meta.titleEn || undefined, enExisting.title, ""),
     description: meta.descriptionEn !== undefined ? meta.descriptionEn : (enExisting.description ?? ""),
     tags: meta.tagsEn?.length ? meta.tagsEn : (enExisting.tags?.length ? enExisting.tags : undefined),
   };
@@ -296,7 +314,7 @@ export async function updatePhoto(
 
   const zhFields: Record<string, any> = {
     ...sharedFields,
-    title: merge(meta.titleZh, zhExisting.title, ""),
+    title: merge(meta.titleZh || undefined, zhExisting.title, ""),
     description: meta.descriptionZh !== undefined ? meta.descriptionZh : (zhExisting.description ?? ""),
     tags: meta.tagsZh?.length ? meta.tagsZh : (zhExisting.tags?.length ? zhExisting.tags : undefined),
   };
