@@ -11,11 +11,13 @@ const { currentLocale, currentPath } = Astro.props;
 const targetLocale: Locale = currentLocale === "en" ? "zh-cn" : "en";
 const targetLabel = targetLocale === "zh-cn" ? "中文" : "EN";
 
-// Swap locale in the current path — keeps the base prefix intact
-const targetHref = currentPath.replace(
-  /\/(en|zh-cn)(\/|$)/,
-  `/${targetLocale}$2`,
-);
+// Swap locale in the current path — keeps the base prefix intact.
+// Paths without a locale segment (the 404 page) fall back to that locale's
+// home, otherwise the switcher just links back to the page you are already on.
+const isLocalized = /\/(en|zh-cn)(\/|$)/.test(currentPath);
+const targetHref = isLocalized
+  ? currentPath.replace(/\/(en|zh-cn)(\/|$)/, `/${targetLocale}$2`)
+  : `/${targetLocale}/`;
 ---
 
 <a

@@ -15,7 +15,7 @@ const {
   canonicalPath,
 } = Astro.props;
 
-const site = Astro.site ?? "https://jameslyu916.com";
+const site = Astro.site ?? new URL("https://jtimes-visual.com");
 
 const swapLocale = (target: string) =>
   canonicalPath.replace(/\/(en|zh-cn)(\/|$)/, `/${target}$2`);
@@ -26,6 +26,22 @@ const zhcnURL = new URL(swapLocale("zh-cn"), site).href;
 const ogImage = image
   ? new URL(image, site).href
   : new URL("/social-preview.jpg", site).href;
+
+// Astro does NOT interpolate expressions inside <script type="application/ld+json">
+// — that content is emitted verbatim. Building the payload as a real string and
+// injecting it with set:html is what keeps the JSON valid; a `{site}` placeholder
+// in the template ships literally and every crawler rejects the block.
+const structuredData = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "James Lyu",
+  url: site.href,
+  jobTitle: "Photographer",
+  sameAs: [
+    "https://www.instagram.com/jtimes.visual/",
+    "https://www.threads.net/@jtimes.visual",
+  ],
+}).replace(/</g, "\\u003c");
 ---
 
 <title>{title}</title>
@@ -45,16 +61,4 @@ const ogImage = image
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={ogImage} />
 
-<script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    "name": "James Lyu",
-    "url": {site},
-    "jobTitle": "Photographer",
-    "sameAs": [
-      "https://www.instagram.com/jtimes.visual/",
-      "https://www.threads.net/@jtimes.visual"
-    ]
-  }
-</script>
+<script type="application/ld+json" set:html={structuredData}></script>
