@@ -12,10 +12,14 @@ const { image, title, location, series } = photo.data;
 const slug = photo.id.split("/").pop()?.replace(".md", "");
 ---
 
+<!-- No href: clicking is handled by FilmStrip's delegated listener. role+tabindex
+     keep the card reachable by keyboard; Enter/Space is handled in FilmStrip. -->
 <a
-  class="group block cursor-zoom-in"
+  class="group block cursor-zoom-in rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
   data-photo-id={slug}
   data-series={series ?? ""}
+  role="button"
+  tabindex="0"
   style={`aspect-ratio: ${image.width} / ${image.height}; animation-delay: ${delay}ms;`}
 >
   <div class="relative overflow-hidden w-full h-full">
