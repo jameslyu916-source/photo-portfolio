@@ -90,15 +90,11 @@ import BaseLayout from "../../components/layout/BaseLayout.astro";
     animation: about-fade-up 0.8s ease-out both;
   }
 
-  /* Handwritten accent words. The Latin handwriting faces previously used here
-     (Caveat / Waiting for the Sunrise / Nothing You Could Do) contain no CJK
-     glyphs at all, so every Chinese character silently fell back to a system
-     font — that is why these words never looked handwritten. WenKai is a
-     Traditional-Chinese kai face with full coverage of the characters used. */
+  /* Handwritten accent words. The face itself comes from .hand in global.css
+     (self-hosted Yozai subset). Only the size is tuned here: Yozai's glyphs sit
+     small inside the em box, so at 1em they read smaller than the body copy. */
   .hand {
-    font-family: "LXGW WenKai TC", "Noto Serif TC", serif;
-    font-weight: 400;
-    letter-spacing: 0.02em;
+    font-size: 1.12em;
   }
 
   @keyframes about-fade-up {

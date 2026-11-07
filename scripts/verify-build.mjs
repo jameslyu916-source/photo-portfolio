@@ -236,6 +236,30 @@ check("every local asset referenced by HTML exists", () => {
   return `${checked} reference(s) resolved`;
 });
 
+check("every local asset referenced by CSS exists", () => {
+  const cssFiles = [];
+  (function walkCss(dir) {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const p = path.join(dir, entry.name);
+      if (entry.isDirectory()) walkCss(p);
+      else if (entry.name.endsWith(".css")) cssFiles.push(p);
+    }
+  })(DIST);
+
+  const missing = new Set();
+  let checked = 0;
+  for (const file of cssFiles) {
+    const css = fs.readFileSync(file, "utf8");
+    for (const m of css.matchAll(/url\(\s*['"]?(\/[^'")]+)['"]?\s*\)/g)) {
+      const url = m[1].split("#")[0].split("?")[0];
+      checked += 1;
+      if (!fs.existsSync(path.join(DIST, url.replace(/^\/+/, "")))) missing.add(url);
+    }
+  }
+  assert(missing.size === 0, `missing in dist/: ${[...missing].slice(0, 8).join(", ")}`);
+  return `${checked} reference(s) in ${cssFiles.length} css file(s)`;
+});
+
 check("root is a redirect to /en/", () => {
   const root = pages.find((p) => p.url === "/");
   assert(root, "dist/index.html not built");

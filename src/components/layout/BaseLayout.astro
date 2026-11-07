@@ -48,21 +48,6 @@ const canonicalPath = Astro.url.pathname;
       rel="stylesheet"
       media="print" onload="this.media='all'"
     />
-    {
-      locale === "zh-cn" ? (
-        <link
-          href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC&display=swap"
-          rel="stylesheet"
-          media="print" onload="this.media='all'"
-        />
-      ) : (
-        <link
-          href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap"
-          rel="stylesheet"
-          media="print" onload="this.media='all'"
-        />
-      )
-    }
     <SEO
       title={title}
       description={description}

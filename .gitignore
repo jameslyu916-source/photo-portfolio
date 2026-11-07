@@ -38,3 +38,6 @@ skills-lock.json
 # Generated screenshots and social cards (run scripts to regenerate)
 scripts/screenshots/*.png
 scripts/screenshots/posts/
+
+# Scratch space for font/preview experiments
+_fontwork/

@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Handwritten accent face (zh-cn only). Self-hosted subset of Yozai (SIL OFL 1.1,
+   © LXGW / Y.OzVox) containing just the characters used on the site — 59KB
+   instead of a 15MB source font. Regenerate after changing Chinese copy:
+     python scripts/build-hand-font.py        (needs: pip install fonttools) */
+@font-face {
+  font-family: "JTimes Hand";
+  src: url("/fonts/yozai-subset.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
   /* Font roles. The defaults are the Latin/Japanese faces the English pages use;
      html:lang(zh) below swaps in Traditional-Chinese faces. Keep these in sync
@@ -9,6 +21,7 @@
   :root {
     --font-sans: "Zen Kaku Gothic New", "Noto Sans SC", system-ui, sans-serif;
     --font-display: "Zen Maru Gothic", "M PLUS Rounded 1c", system-ui, sans-serif;
+    --font-hand: "Caveat", cursive;
   }
 
   /* zh-cn pages are Traditional Chinese. The Japanese faces above carry no
@@ -17,6 +30,7 @@
   html:lang(zh) {
     --font-sans: "Noto Sans TC", system-ui, sans-serif;
     --font-display: "Noto Serif TC", "Noto Sans TC", serif;
+    --font-hand: "JTimes Hand", "Noto Serif TC", serif;
   }
 
   html {
@@ -73,6 +87,14 @@
 }
 
 @layer components {
+  /* Handwritten accent text (zh-cn). Family comes from --font-hand; the size is
+     tuned per usage because Yozai's glyphs sit small inside the em box. */
+  .hand {
+    font-family: var(--font-hand);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+  }
+
   .filter-btn.filter-active {
     background-color: #2d2d2d;
     color: #fafaf9;
