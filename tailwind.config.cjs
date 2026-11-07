@@ -11,8 +11,11 @@ module.exports = {
         accent: "#7d9b76",
       },
       fontFamily: {
-        sans: ['"Zen Kaku Gothic New"', '"Noto Sans SC"', "system-ui", "sans-serif"],
-        display: ['"Zen Maru Gothic"', '"M PLUS Rounded 1c"', "system-rounded", "sans-serif"],
+        // Resolved through CSS variables so html:lang(zh) can swap the whole
+        // stack (including .font-sans / .font-display utilities) to Traditional
+        // Chinese faces. Defaults live in src/styles/global.css.
+        sans: ["var(--font-sans, system-ui, sans-serif)"],
+        display: ["var(--font-display, system-ui, sans-serif)"],
       },
     },
   },

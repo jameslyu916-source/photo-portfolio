@@ -3,8 +3,24 @@
 @tailwind utilities;
 
 @layer base {
+  /* Font roles. The defaults are the Latin/Japanese faces the English pages use;
+     html:lang(zh) below swaps in Traditional-Chinese faces. Keep these in sync
+     with the font <link>s in BaseLayout.astro. */
+  :root {
+    --font-sans: "Zen Kaku Gothic New", "Noto Sans SC", system-ui, sans-serif;
+    --font-display: "Zen Maru Gothic", "M PLUS Rounded 1c", system-ui, sans-serif;
+  }
+
+  /* zh-cn pages are Traditional Chinese. The Japanese faces above carry no
+     glyphs for Traditional-only code points (繫 U+7E6B, 靜, 緊, 來, 攝 …), so
+     each of those characters fell back to a system font mid-sentence. */
+  html:lang(zh) {
+    --font-sans: "Noto Sans TC", system-ui, sans-serif;
+    --font-display: "Noto Serif TC", "Noto Sans TC", serif;
+  }
+
   html {
-    font-family: "Zen Kaku Gothic New", "Noto Sans SC", system-ui, sans-serif;
+    font-family: var(--font-sans);
     color: #2d2d2d;
     background-color: #fafaf9;
     -webkit-font-smoothing: antialiased;
@@ -13,7 +29,7 @@
   }
 
   h1, h2, h3 {
-    font-family: "Zen Maru Gothic", "M PLUS Rounded 1c", system-rounded, sans-serif;
+    font-family: var(--font-display);
     font-weight: 400;
     line-height: 1.2;
     letter-spacing: 0.02em;

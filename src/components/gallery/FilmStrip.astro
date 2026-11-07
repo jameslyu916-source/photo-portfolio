@@ -114,24 +114,24 @@ const mapSvgsJson = JSON.stringify(mapSvgs);
 
   <!-- Navigation dots -->
   <div id="film-strip-dots" class="relative z-[2] flex items-center justify-center gap-2 pb-2 transition-opacity duration-500"
-       style="font-family: 'Zen Kaku Gothic New', sans-serif;">
+       style="font-family: var(--font-sans, sans-serif);">
   </div>
 
   <!-- Bottom bar -->
   <div id="film-strip-bar" class="relative z-[2] flex-shrink-0 flex items-center justify-between px-6 h-16 border-t border-white/[0.06] transition-opacity duration-500">
     <div class="flex items-center gap-4">
       <span id="film-strip-counter" class="text-white/60 text-sm font-light tracking-widest tabular-nums"
-        style="font-family: 'Zen Kaku Gothic New', sans-serif;">1 / 1</span>
+        style="font-family: var(--font-sans, sans-serif);">1 / 1</span>
       <span id="film-strip-series"
         class="text-white/35 text-sm tracking-wide truncate max-w-[40vw]"
         style="font-family: 'Caveat', cursive; font-size: 1rem;">&nbsp;</span>
       <span id="film-strip-location-name"
         class="hidden text-white/20 text-xs tracking-wide"
-        style="font-family: 'Zen Kaku Gothic New', sans-serif;"></span>
+        style="font-family: var(--font-sans, sans-serif);"></span>
     </div>
     <button id="film-strip-close"
       class="flex items-center gap-2 text-white/50 hover:text-white transition-colors text-sm font-light tracking-wide"
-      style="font-family: 'Zen Kaku Gothic New', sans-serif;"
+      style="font-family: var(--font-sans, sans-serif);"
       aria-label={i18n.close}
     >
       {i18n.close}
@@ -739,7 +739,7 @@ const mapSvgsJson = JSON.stringify(mapSvgs);
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-family: 'Zen Maru Gothic', serif;
+    font-family: var(--font-display, serif);
     font-size: 0.65rem;
     letter-spacing: 0.18em;
     color: #fff;
