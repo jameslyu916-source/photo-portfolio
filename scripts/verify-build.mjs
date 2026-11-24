@@ -78,8 +78,8 @@ check("favicon declared on every page", () => {
   const missing = contentPages.filter((p) => !/<link[^>]+rel="icon"[^>]*>/i.test(p.html));
   assert(missing.length === 0, `missing rel="icon": ${missing.map((p) => p.url).join(", ")}`);
   assert(
-    contentPages.every((p) => /<link[^>]+href="\/favicon\.svg"/i.test(p.html)),
-    "rel=icon present but not pointing at /favicon.svg",
+    contentPages.every((p) => /<link[^>]+rel="icon"[^>]+href="\/favicon-avatar\.png"/i.test(p.html)),
+    "rel=icon present but not pointing at /favicon-avatar.png",
   );
   return `on ${contentPages.length} page(s)`;
 });

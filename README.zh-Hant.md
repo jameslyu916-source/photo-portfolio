@@ -4,7 +4,34 @@
 
 [前往 jtimes-visual.com](https://jtimes-visual.com) · [English](README.md)
 
-![JTimes 首頁](docs/screenshots/homepage.png)
+![JTimes 首頁的 J× 標誌與精選照片牆](docs/screenshots/homepage.jpg)
+
+## 關於 JTimes
+
+JTimes 來自我的名字 James。**J** 是名字的首字母，**times** 既有相乘的意思，也讓我想到照片留下的那些片刻。唸起來，JTimes 和 James 有點相似。**J×** 是我用在作品上的簡寫簽名。它背後的想法是「光，乘以時間」。
+
+## 網站內容
+
+- 首頁有一面橫向捲動的精選照片牆。
+- 作品集可以按系列篩選，縮圖會依螢幕大小載入。
+- 全螢幕檢視器可用滑動、方向鍵或畫面上的按鈕瀏覽已選系列，部分照片附有拍攝地點的小地圖。
+- 英文和繁中版共用同一批照片，各自有標題和說明。
+
+<p>
+  <img src="docs/screenshots/gallery.jpg" width="49%" alt="英文作品集篩選至 Snow Vein 系列">
+  <img src="docs/screenshots/viewer.jpg" width="49%" alt="附四川地圖的 Snow Vein 全螢幕照片">
+</p>
+
+## 專案結構
+
+| 路徑 | 內容 |
+| --- | --- |
+| `src/pages/` | 英文與繁中頁面 |
+| `src/components/gallery/` | 照片格線、系列篩選、精選照片牆及全螢幕檢視器 |
+| `src/content/photos/` | 照片的 Markdown 資料，分為 `en/` 和 `zh-cn/` |
+| `src/assets/images/photos/` | 兩種語言版本共用的照片檔案 |
+| `src/admin/` | 本機照片管理後台及 API |
+| `scripts/` | 建置檢查、圖片工具及截圖腳本 |
 
 ## 在本機執行
 
@@ -37,6 +64,6 @@ npm run preview
 
 正式版的建置產物在 `dist/`。推送至 `main` 後，Vercel 會自動部署。管理後台隨本機開發伺服器執行。繁中頁面沿用 `/zh-cn/` 網址，語言標記為 `zh-Hant`。
 
-## 授權
+## 授權與照片
 
-[MIT](LICENSE)。
+網站程式碼及相關文件採用 [MIT 授權](LICENSE)。我的攝影作品與 JTimes 頭像另有各自的使用權限，如需重用，請先聯絡我取得同意。第三方素材沿用各自的授權。
