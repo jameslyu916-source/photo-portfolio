@@ -1,5 +1,8 @@
 import path from "node:path";
 import fs from "node:fs";
+import os from "node:os";
+import { randomUUID } from "node:crypto";
+import type { IncomingMessage } from "node:http";
 import { createWriteStream } from "node:fs";
 import { pipeline } from "node:stream/promises";
 import Busboy from "busboy";
@@ -14,104 +17,61 @@ interface UploadResult {
   slug: string;
   imageFilename: string;
   fields: Record<string, string>;
+  image: Buffer;
 }
 
-export function handleUpload(req: any): Promise<UploadResult> {
-  return new Promise((resolve, reject) => {
-    const fields: Record<string, string> = {};
-    let tempFile: string | null = null;
-    let originalFilename = "";
-    let finalFilename = "";
-    let fileWritePromise: Promise<void> | null = null;
 
-    const busboy = Busboy({
-      headers: req.headers,
-      limits: { fileSize: 100 * 1024 * 1024 }, // 100MB max
-    });
-
-    busboy.on(
-      "file",
-      (fieldname: string, file: NodeJS.ReadableStream, info: any) => {
-        const { filename, mimeType } = info;
-        if (!filename) return;
-
-        const allowedTypes = ["image/jpeg", "image/png", "image/tiff", "image/webp"];
-        if (!allowedTypes.includes(mimeType)) {
-          reject(new Error(`Unsupported file type: ${mimeType}`));
-          file.resume();
-          return;
-        }
-
-        originalFilename = path.parse(filename).name;
-        finalFilename = originalFilename.toLowerCase().replace(/\s+/g, "-") + ".jpg";
-        tempFile = path.join(IMAGE_DIR, `.tmp_${Date.now()}_${finalFilename}`);
-
-        fs.mkdirSync(IMAGE_DIR, { recursive: true });
-        const ws = createWriteStream(tempFile);
-        fileWritePromise = pipeline(file, ws);
-      },
-    );
-
-    busboy.on("field", (name: string, val: string) => {
-      fields[name] = val;
-    });
-
-    busboy.on("finish", async () => {
-      // Wait for file write to complete before processing
-      if (fileWritePromise) {
-        try {
-          await fileWritePromise;
-        } catch (err) {
-          reject(err);
-          return;
-        }
-      }
-
-      if (!tempFile || !finalFilename) {
-        reject(new Error("No file uploaded"));
-        return;
-      }
-
-      try {
-        const outputPath = path.join(IMAGE_DIR, finalFilename);
-
-        // Check for existing file
-        if (fs.existsSync(outputPath)) {
-          if (fs.existsSync(tempFile)) fs.unlinkSync(tempFile);
-          reject(new Error(`File "${finalFilename}" already exists. Rename your file before uploading.`));
-          return;
-        }
-
-        // Compress with sharp
-        await sharp(tempFile)
-          .resize(MAX_DIMENSION, MAX_DIMENSION, {
-            fit: "inside",
-            withoutEnlargement: true,
-          })
-          .jpeg({ quality: JPEG_QUALITY, mozjpeg: true })
-          .withMetadata()
-          .toFile(outputPath);
-
-        // Clean up temp
-        if (fs.existsSync(tempFile)) fs.unlinkSync(tempFile);
-
-        const slug = originalFilename.toLowerCase().replace(/\s+/g, "-");
-
-        resolve({
-          slug,
-          imageFilename: finalFilename,
-          fields,
-        });
-      } catch (err) {
-        if (tempFile && fs.existsSync(tempFile)) fs.unlinkSync(tempFile);
-        reject(err);
-      }
-    });
-
-    busboy.on("error", (err: Error) => reject(err));
-
-    req.pipe(busboy);
+export async function handleUpload(req: IncomingMessage): Promise<UploadResult> {
+  const fields: Record<string, string> = {};
+  const tempFile = path.join(os.tmpdir(), "jtimes-upload-" + randomUUID());
+  let slug = "";
+  let fileWrite: Promise<void> | undefined;
+  let fileError: unknown;
+  const busboy = Busboy({
+    headers: req.headers,
+    limits: { files: 1, fileSize: 100 * 1024 * 1024 },
   });
+
+  busboy.on("file", (_fieldname, file, { filename, mimeType }) => {
+    const allowedTypes = ["image/jpeg", "image/png", "image/tiff", "image/webp"];
+    if (!filename || !allowedTypes.includes(mimeType)) {
+      fileError = new Error(filename ? "Unsupported file type: " + mimeType : "No file uploaded.");
+      file.resume();
+      return;
+    }
+
+    slug = path.parse(filename).name.toLowerCase().replace(/\s+/g, "-");
+    file.on("limit", () => { fileError = new Error("Image exceeds the 100 MB upload limit."); });
+    fileWrite = pipeline(file, createWriteStream(tempFile, { flags: "wx" })).catch((error) => {
+      fileError = error;
+    });
+  });
+
+  busboy.on("filesLimit", () => { fileError = new Error("Upload one photo per request."); });
+  busboy.on("field", (name, value, info) => {
+    if (info.nameTruncated || info.valueTruncated) {
+      fileError = new Error("An upload field exceeds the supported size.");
+    }
+    fields[name] = value;
+  });
+
+  try {
+    await pipeline(req, busboy);
+    await fileWrite;
+    if (fileError) throw fileError;
+    if (!slug || !fileWrite) throw new Error("No file uploaded.");
+
+    const image = await sharp(tempFile)
+      .resize(MAX_DIMENSION, MAX_DIMENSION, { fit: "inside", withoutEnlargement: true })
+      .jpeg({ quality: JPEG_QUALITY, mozjpeg: true })
+      .withMetadata()
+      .toBuffer();
+
+    return { slug, imageFilename: slug + ".jpg", fields, image };
+  } finally {
+    await fileWrite;
+    fs.rmSync(tempFile, { force: true });
+  }
 }
 
 export async function serveThumbnail(slug: string, res: any): Promise<void> {

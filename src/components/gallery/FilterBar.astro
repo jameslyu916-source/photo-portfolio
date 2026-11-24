@@ -1,5 +1,5 @@
 ---
-import { t, type Locale } from "../../lib/i18n";
+import { seriesLabel, t, type Locale } from "../../lib/i18n";
 
 interface Props {
   locale: Locale;
@@ -10,7 +10,7 @@ const { locale, series } = Astro.props;
 
 const items = [
   { key: "all", label: t(locale, "gallery.filterAll") },
-  ...series.map((s) => ({ key: s, label: s })),
+  ...series.map((s) => ({ key: s, label: seriesLabel(s, locale) })),
 ];
 ---
 
@@ -19,6 +19,7 @@ const items = [
     {items.map((item, i) => (
       <button
         data-filter={item.key}
+        aria-pressed={i === 0 ? "true" : "false"}
         class={`filter-btn px-4 py-1.5 rounded-full text-sm transition-colors border
           bg-transparent text-muted border-border
           hover:text-ink hover:border-ink
@@ -39,13 +40,13 @@ const items = [
     let swapTimer: ReturnType<typeof setTimeout> | null = null;
 
     filterBar.addEventListener("click", (e) => {
-      const btn = (e.target as HTMLElement).closest("[data-filter]");
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>("button[data-filter]");
       if (!btn) return;
 
       filterBar.querySelectorAll(".filter-btn").forEach((b) => {
-        b.classList.remove("filter-active");
+        b.classList.toggle("filter-active", b === btn);
+        b.setAttribute("aria-pressed", String(b === btn));
       });
-      btn.classList.add("filter-active");
 
       const filter = btn.dataset.filter;
       const gallery = document.querySelector(".grid-gallery");
@@ -60,7 +61,7 @@ const items = [
       // Phase 2: swap display states while invisible
       swapTimer = setTimeout(() => {
         swapTimer = null;
-        const cards = document.querySelectorAll("[data-series]");
+        const cards = gallery.querySelectorAll("[data-series]");
         cards.forEach((card) => {
           const el = card as HTMLElement;
           const match = filter === "all" || el.dataset.series === filter;

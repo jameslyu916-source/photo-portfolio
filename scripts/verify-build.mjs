@@ -168,9 +168,42 @@ check("closed film strip is inert", () => {
       /aria-hidden="true"/.test(tag[0]),
       `${page.url}: #film-strip should start aria-hidden`,
     );
+    assert(/role="dialog"/.test(tag[0]) && /aria-modal="true"/.test(tag[0]),
+      `${page.url}: #film-strip should be a modal dialog`);
   }
   assert(strips > 0, "no film strip markup found");
   return `${strips} strip(s)`;
+});
+
+check("photo cards ship responsive image candidates", () => {
+  let checked = 0;
+  for (const page of contentPages) {
+    const cards = [...page.html.matchAll(/<a[^>]*data-photo-id="[^"]+"[^>]*>[\s\S]*?<\/a>/g)];
+    for (const [card] of cards) {
+      const image = card.match(/<img\b[^>]*\bsrcset="[^"]+"[^>]*>/)?.[0] ?? "";
+      const srcset = image.match(/\bsrcset="([^"]+)"/)?.[1];
+      const widths = new Set(Array.from(srcset?.matchAll(/\s(\d+)w(?=,|$)/g) ?? [], (match) => Number(match[1])));
+      const fallbackWidth = Number(image.match(/\bwidth="(\d+)"/)?.[1]);
+      const minimum = fallbackWidth <= 400 ? 1 : 2;
+      assert(widths.size >= minimum && /\bsizes="[^"]+"/.test(image),
+        `${page.url}: a photo card lacks image width candidates or a sizes hint`);
+      checked++;
+    }
+  }
+  assert(checked > 0, "no photo cards found");
+  return `${checked} card(s) with responsive image candidates`;
+});
+
+check("brand and closed navigation are consistent", () => {
+  for (const page of contentPages) {
+    const header = page.html.match(/<header\b[^>]*>[\s\S]*?<\/header>/)?.[0] ?? "";
+    const brand = header.match(/<a[^>]*class="[^"]*\bfont-brand\b[^"]*"[^>]*>/)?.[0];
+    assert(brand && /\blang="en"/.test(brand), `${page.url}: missing stable Latin brand font`);
+    const menu = page.html.match(/<div[^>]*id="mobile-menu"[^>]*>/)?.[0];
+    assert(menu && /\binert\b/.test(menu) && /aria-hidden="true"/.test(menu),
+      `${page.url}: the closed mobile menu is exposed to keyboard or screen readers`);
+  }
+  return `${contentPages.length} page(s)`;
 });
 
 check("zh-cn pages use Traditional Chinese", () => {
@@ -198,7 +231,9 @@ check("html lang attribute matches the locale", () => {
     const lang = (page.html.match(/<html[^>]*\blang="([^"]+)"/i) || [])[1];
     assert(lang, `${page.url}: <html> has no lang`);
     if (page.url.startsWith("/zh-cn")) {
-      assert(lang === "zh-CN", `${page.url}: lang="${lang}", expected "zh-CN"`);
+      assert(lang === "zh-Hant", `${page.url}: lang="${lang}", expected "zh-Hant"`);
+      assert(/rel="alternate" hreflang="zh-Hant"/.test(page.html),
+        `${page.url}: missing Traditional Chinese alternate link`);
     } else {
       assert(lang === "en", `${page.url}: lang="${lang}", expected "en"`);
     }

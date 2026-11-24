@@ -1,166 +1,42 @@
-# J&times; &mdash; light, multiplied by time
+# JTimes
 
-A personal photography portfolio built with [Astro](https://astro.build) and [Tailwind CSS](https://tailwindcss.com).
+My photography portfolio. The site has an English and a Traditional Chinese gallery, with photographs grouped into series.
 
-[![Astro](https://img.shields.io/badge/astro-v5-ff5a03?logo=astro)](https://astro.build)
-[![Tailwind](https://img.shields.io/badge/tailwind-v3-06b6d4?logo=tailwindcss)](https://tailwindcss.com)
-[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[Visit jtimes-visual.com](https://jtimes-visual.com) · [繁體中文](README.zh-Hant.md)
 
-<!-- language-selector-start -->
-**English** &nbsp;&middot;&nbsp; [繁體中文](README.zh-Hant.md)
-<!-- language-selector-end -->
+![JTimes homepage](docs/screenshots/homepage.png)
 
-## Screenshots
+## Run locally
 
-<p align="center">
-  <img src="docs/screenshots/homepage.png" width="49%" alt="Homepage">
-  <img src="docs/screenshots/gallery.png" width="49%" alt="Gallery">
-  <img src="docs/screenshots/viewer.png" width="49%" alt="Photo Viewer">
-  <img src="docs/screenshots/about.png" width="49%" alt="About">
-</p>
+The site uses Astro and Tailwind CSS. Use Node.js 24 and npm.
 
-<details>
-<summary>More pages</summary>
-<p align="center">
-  <img src="docs/screenshots/social.png" width="49%" alt="Social">
-  <img src="docs/screenshots/contact.png" width="49%" alt="Contact">
-</p>
-</details>
-
-## Brand
-
-**J&times;** &mdash; the J is a Cormorant Garamond serif, the &times; cycles through three handwriting fonts every 7.5 seconds. Click to bounce it.
-
-The name plays on the creator's name, James: *J* for the initial, and *times* — as in multiplication, but also as in moments, eras, the passage of things. Spoken aloud, JTimes echoes the sound of James. The mark J&times; works as both a signature and an abbreviation — a name half-hidden in plain sight.
-
-The site uses a sage green accent on a warm paper-white background, with Zen Maru Gothic and Zen Kaku Gothic New for type. All components are custom-built for this project — no starter templates or UI kits.
-
-## Features
-
-### Content management
-
-- **Admin panel** &mdash; browser-based CMS at `/admin` (dev-only). Drag-and-drop upload with auto-compression to 2400px JPEG, batch metadata editing, and numbered-series naming for collection imports. No external services required.
-- **Content Collections** &mdash; photo metadata stored as Markdown frontmatter with Zod schemas. Bilingual entries under `src/content/photos/{en,zh-cn}/`.
-
-### Gallery & viewing
-
-- **Masonry gallery** &mdash; CSS columns layout with staggered fade-up animations. Series-based filtering with a global fade transition pattern that avoids per-card timer management.
-- **Seeded shuffle** &mdash; Fisher-Yates shuffle with a deterministic PRNG so photo order is random but stable across page loads.
-- **FilmStrip viewer** &mdash; custom fullscreen photo browser with blurred ambient background crossfade, vignette overlay, horizontal scroll-snap, floating edge arrows, and sliding navigation dots. Includes location line-art maps generated from real OpenStreetMap coastline data. Replaces the earlier PhotoSwipe integration.
-- **FeaturedWall** &mdash; dual-rail auto-scrolling photo wall on the homepage (top rail scrolls left, bottom rail scrolls right, at different speeds) with CSS `mask-image` faded edges.
-
-### Layout & design
-
-- **Homepage** &mdash; oversized J&times; hero mark, flowing SVG light lines, manuscript grid with fading poetry fragments, scroll-down arrow, and the FeaturedWall below.
-- **About page** &mdash; stream-of-consciousness text with an asymmetric alignment rhythm (center &rarr; left &rarr; right &rarr; center). Viewfinder corner brackets frame the text. Selected keywords rendered inline in handwriting fonts for a mixed-typeface literary effect.
-- **Social page** &mdash; circular "bubble constellation" &mdash; four platform links as differently-sized circles in an organic flex-wrap S-curve with sage glow on hover.
-- **Contact page** &mdash; straightforward list of contact links.
-
-### Performance
-
-- **CLS prevention** &mdash; `aspect-ratio` on masonry grid items, `contain: layout style`, and FilmStrip deferred image loading (images load only when the viewer opens).
-- **GPU-optimized interactions** &mdash; hardware-accelerated hover transforms with isolated compositing layers.
-- **View Transitions** &mdash; Astro SPA navigation with `AbortController`-based event listener lifecycle for components with closure state. Documented patterns in `CLAUDE.md`.
-- **Responsive** &mdash; hamburger mobile nav, adaptive gallery columns (3 &rarr; 2 &rarr; 1), mobile poetry grid, touch-friendly throughout.
-- **Monitoring** &mdash; Vercel Analytics + Speed Insights for traffic and performance tracking.
-
-### Internationalization
-
-- **Bilingual** &mdash; English (`/en/`) and Traditional Chinese (`/zh-cn/`). `prefixDefaultLocale` routing. All UI strings in a typed `i18n.ts` dictionary.
-
-## Tech Stack
-
-| Layer | Choice |
-|---|---|
-| Framework | [Astro v5](https://astro.build) |
-| Styling | [Tailwind CSS v3](https://tailwindcss.com) + `@astrojs/tailwind` |
-| Images | `astro:assets` + Sharp |
-| Fonts | Google Fonts (Cormorant Garamond, Zen Maru Gothic, Zen Kaku Gothic New, Caveat, Waiting for the Sunrise, Nothing You Could Do, Noto Sans SC) |
-| i18n | Astro built-in routing |
-| Screenshots | Playwright |
-| Deployment | [Vercel](https://vercel.com) |
-
-> [!IMPORTANT]
-> This project originally used `@tailwindcss/vite` (Tailwind CSS v4), but the Vite plugin silently failed to scan `.astro` template files for class names, producing zero utility classes at build time with no errors. Use `@astrojs/tailwind` with PostCSS and Tailwind v3.
-
-## Project Structure
-
-```
-src/
-├── admin/                  # Browser-based CMS (dev-only)
-│   └── api/                #   Auth, photo CRUD, upload handler
-├── assets/images/photos/   # Optimized photos (2400px JPEG)
-├── assets/maps/            # Generated line-art SVG maps (Hong Kong, Sichuan, …)
-├── components/
-│   ├── gallery/            # PhotoGrid, PhotoCard, LazyImage, FilterBar, FilmStrip, FeaturedWall
-│   ├── layout/             # BaseLayout, Header, Footer, SEO
-│   └── ui/                 # LanguageSwitcher
-├── content/photos/         # Photo Markdown entries (en/ + zh-cn/)
-├── lib/                    # i18n translations, photo data access
-├── pages/                  # Route pages (en/ + zh-cn/)
-├── plugins/                # Vite plugins (admin server middleware)
-└── styles/global.css       # Tailwind directives + custom styles
-scripts/
-├── screenshots.mjs         # Playwright — capture desktop + mobile screenshots
-├── social-cards.mjs        # Generate social-media-ready card images
-├── generate-maps.mjs       # Generate line-art SVG maps from OSM coastline/boundary data
-├── optimize-images.ts      # Sharp-based image pre-processor
-└── new-photo.ts            # Interactive photo entry scaffold
+```sh
+npm ci
+npm run dev
 ```
 
-## Getting Started
+Open [localhost:4321](http://localhost:4321/).
 
-```bash
-npm install
-npm run dev          # → http://localhost:4321
+## Manage photos
+
+Set `ADMIN_PASSWORD` in a local `.env` file, then open [the photo admin](http://localhost:4321/admin) while the development server is running. It supports batch uploads and edits. Uploads are compressed to JPEG, and each photo gets one Markdown entry per language.
+
+- Images live in `src/assets/images/photos/`. Photo entries live in `src/content/photos/en/` and `src/content/photos/zh-cn/`.
+- To remove a photo from the gallery and homepage, use **Delete** in the admin. It removes both language entries and deletes the image if no other photo entry references it. Keep a copy if the image is new and has never been committed.
+- If the admin offers to renumber the series, choose **Cancel** to keep the other titles and numbers. The selected photo has already been deleted by that point.
+- To remove a photo from the homepage only, clear its **Featured** setting.
+
+Check the changes with `git status --short`. Edits made in the admin take effect on the public site after you commit and push them.
+
+## Build and deploy
+
+```sh
+npm run verify:build
+npm run preview
 ```
 
-### Adding photos
-
-**Admin panel (recommended):**
-
-Open `http://localhost:4321/admin` while the dev server is running. Drag and drop photos, set metadata once for the batch, and the panel handles compression and bilingual `.md` file generation automatically.
-
-**CLI:**
-
-```bash
-npm run optimize-images -- <input-dir>
-npm run new-photo -- <filename.jpg> <slug>
-```
-
-### Generating screenshots
-
-```bash
-npm run dev                              # Start dev server first
-node scripts/screenshots.mjs             # Capture all pages → scripts/screenshots/
-node scripts/social-cards.mjs            # Generate styled card PNGs → scripts/screenshots/posts/
-```
-
-The showcase page at `scripts/screenshots/index.html` presents all screenshots in an editorial layout. Requires Playwright (included in dev dependencies).
-
-### Production build
-
-```bash
-npm run build      # → dist/
-```
-
-## Design tokens
-
-| Token | Value | Usage |
-|---|---|---|
-| `ink` | `#2d2d2d` | Primary text |
-| `paper` | `#fafaf9` | Background |
-| `muted` | `#8c8c8c` | Secondary text |
-| `accent` | `#7d9b76` | Sage green highlights |
-| Display | Zen Maru Gothic | Headings, navigation |
-| Body | Zen Kaku Gothic New | Body text, UI |
-| Logo J | Cormorant Garamond | Hero mark (thin serif italic) |
-| Logo &times; | Caveat / Waiting for the Sunrise / Nothing You Could Do | Cycling handwriting |
-
-## Deployment
-
-Deployed on [Vercel](https://vercel.com) at **[jtimes-visual.com](https://jtimes-visual.com)** with Cloudflare DNS. Pushes to `main` trigger automatic deploys (typically 1&ndash;2 minutes).
+The production build is written to `dist/`. Vercel deploys pushes to `main`. The admin runs with the local development server. The Traditional Chinese pages retain their existing `/zh-cn/` URLs and use the `zh-Hant` language tag.
 
 ## License
 
-MIT
+[MIT](LICENSE).

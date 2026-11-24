@@ -1,24 +1,11 @@
-import { defineCollection, z } from "astro:content";
+import { defineCollection } from "astro:content";
+import { photoMetadataSchema } from "../lib/photo-metadata";
 
 const photoCollection = defineCollection({
   type: "content",
   schema: ({ image }) =>
-    z.object({
+    photoMetadataSchema.extend({
       image: image(),
-      title: z.string(),
-      description: z.string().optional(),
-      camera: z.string().optional(),
-      lens: z.string().optional(),
-      settings: z.string().optional(),
-      location: z.string().optional(),
-      series: z.string().optional(),
-      tags: z.array(z.string()).optional(),
-      featured: z.boolean().default(false),
-      date: z.date(),
-      order: z.number().default(0),
-      instagramUrl: z.string().url().optional(),
-      threadsUrl: z.string().url().optional(),
-      xiaohongshuUrl: z.string().url().optional(),
     }),
 });
 

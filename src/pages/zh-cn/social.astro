@@ -10,12 +10,14 @@ const platforms = [
     handle: "@jtimes.visual",
     url: "https://www.instagram.com/jtimes.visual/",
     icon: "instagram",
+    language: "en",
   },
   {
     name: t(locale, "social.threads"),
     handle: "@jtimes.visual",
     url: "https://www.threads.net/@jtimes.visual",
     icon: "threads",
+    language: "en",
   },
   {
     name: t(locale, "social.xiaohongshu"),
@@ -105,11 +107,14 @@ const offsets = [
             )}
           </div>
 
-          <h3 class="text-sm font-medium text-ink group-hover:text-accent transition-colors duration-500 leading-tight text-center">
+          <h3
+            class:list={["text-sm font-medium text-ink group-hover:text-accent transition-colors duration-500 leading-tight text-center", { "font-brand": p.language === "en" }]}
+            lang={p.language}
+          >
             {p.name}
           </h3>
 
-          <p class="text-xs text-muted/40 font-light -mt-1">{p.handle}</p>
+          <p class="text-xs text-muted/40 font-light -mt-1 font-latin" lang="en">{p.handle}</p>
         </a>
       ))}
     </div>

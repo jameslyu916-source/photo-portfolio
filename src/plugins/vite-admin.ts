@@ -1,11 +1,13 @@
-import type { Plugin, ViteDevServer } from "vite";
+import type { AstroIntegration } from "astro";
+import type { IncomingMessage } from "node:http";
 import fs from "node:fs";
 import path from "node:path";
 import { createToken, verifyToken, getPassword, parseCookies } from "../admin/api/auth";
-import { listPhotos, getPhoto, createPhoto, updatePhoto, deletePhoto } from "../admin/api/photos";
+import { listPhotos, getPhoto, createPhoto, updatePhoto, deletePhoto, PhotoValidationError } from "../admin/api/photos";
 import { handleUpload, serveThumbnail } from "../admin/api/upload";
 
 const ADMIN_DIR = path.resolve("src/admin");
+type ViteDevServer = Parameters<NonNullable<AstroIntegration["hooks"]["astro:server:setup"]>>[0]["server"];
 
 function setCookie(res: any, name: string, value: string, maxAge: number) {
   res.setHeader(
@@ -20,12 +22,11 @@ function json(res: any, data: unknown, status = 200) {
   res.end(JSON.stringify(data));
 }
 
-function readBody(req: any): Promise<string> {
-  return new Promise((resolve) => {
-    let body = "";
-    req.on("data", (chunk: Buffer) => (body += chunk.toString()));
-    req.on("end", () => resolve(body));
-  });
+async function readBody(req: IncomingMessage): Promise<string> {
+  req.setEncoding("utf8");
+  let body = "";
+  for await (const chunk of req) body += chunk;
+  return body;
 }
 
 function requireAuth(req: any, res: any): boolean {
@@ -55,7 +56,7 @@ function serveStatic(res: any, filePath: string, contentType: string) {
   res.end(fs.readFileSync(filePath, "utf-8"));
 }
 
-export default function adminPlugin(): Plugin {
+export default function adminPlugin() {
   return {
     name: "vite-admin-plugin",
     configureServer(server: ViteDevServer) {
@@ -143,11 +144,11 @@ export default function adminPlugin(): Plugin {
               series: (result.fields.series ?? "").toLowerCase().replace(/\s+/g, "-"),
               featured: result.fields.featured === "true",
               date: result.fields.date,
-              order: parseInt(result.fields.order ?? "0"),
+              order: Number(result.fields.order ?? 0),
               instagramUrl: result.fields.instagramUrl,
               threadsUrl: result.fields.threadsUrl,
               xiaohongshuUrl: result.fields.xiaohongshuUrl,
-            });
+            }, result.image);
             json(res, { slug: result.slug, imageFilename: result.imageFilename }, 201);
             return;
           }
@@ -160,6 +161,10 @@ export default function adminPlugin(): Plugin {
 
           json(res, { error: "Not found" }, 404);
         } catch (err: any) {
+          if (err instanceof PhotoValidationError) {
+            json(res, { error: err.message }, 400);
+            return;
+          }
           console.error("[admin] Error:", err);
           json(res, { error: err.message ?? "Internal server error" }, 500);
         }

@@ -21,6 +21,8 @@
   :root {
     --font-sans: "Zen Kaku Gothic New", "Noto Sans SC", system-ui, sans-serif;
     --font-display: "Zen Maru Gothic", "M PLUS Rounded 1c", system-ui, sans-serif;
+    --font-brand: "Zen Maru Gothic", "M PLUS Rounded 1c", system-ui, sans-serif;
+    --font-latin: "Zen Kaku Gothic New", system-ui, sans-serif;
     --font-hand: "Caveat", cursive;
   }
 
@@ -84,6 +86,14 @@
       transition-duration: 0.01ms !important;
     }
   }
+}
+
+.font-brand {
+  font-family: var(--font-brand);
+}
+
+.font-latin {
+  font-family: var(--font-latin);
 }
 
 @layer components {

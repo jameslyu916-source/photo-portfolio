@@ -1,5 +1,5 @@
 ---
-import type { Locale } from "../../lib/i18n";
+import { languageTag, type Locale } from "../../lib/i18n";
 
 interface Props {
   currentLocale: Locale;
@@ -24,7 +24,8 @@ const targetHref = isLocalized
   href={targetHref}
   class="text-xs font-medium px-2.5 py-1 rounded-full border border-border
          text-muted hover:text-ink hover:border-ink transition-colors"
-  hreflang={targetLocale === "zh-cn" ? "zh-CN" : "en"}
+  hreflang={languageTag(targetLocale)}
+  lang={languageTag(targetLocale)}
 >
   {targetLabel}
 </a>

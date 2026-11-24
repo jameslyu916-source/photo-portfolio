@@ -29,7 +29,7 @@ const row2 = shuffled.slice(mid);
                 class="featured-photo"
                 style={`aspect-ratio: ${image.width} / ${image.height};`}
               >
-                <PhotoCard photo={photo} />
+                <PhotoCard photo={photo} sizes={`(max-width: 768px) ${20 * image.width / image.height}vh, ${34 * image.width / image.height}vh`} />
               </div>
             );
           })}
@@ -46,7 +46,7 @@ const row2 = shuffled.slice(mid);
                 class="featured-photo"
                 style={`aspect-ratio: ${image.width} / ${image.height};`}
               >
-                <PhotoCard photo={photo} />
+                <PhotoCard photo={photo} sizes={`(max-width: 768px) ${16 * image.width / image.height}vh, ${24 * image.width / image.height}vh`} />
               </div>
             );
           })}

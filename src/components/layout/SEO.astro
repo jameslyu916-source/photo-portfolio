@@ -1,9 +1,10 @@
 ---
+import { languageTag } from "../../lib/i18n";
+
 interface Props {
   title: string;
   description?: string;
   image?: string;
-  locale: string;
   canonicalPath: string;
 }
 
@@ -11,7 +12,6 @@ const {
   title,
   description = "Personal photography portfolio exploring landscapes, streets, and the spaces in between.",
   image,
-  locale,
   canonicalPath,
 } = Astro.props;
 
@@ -48,7 +48,7 @@ const structuredData = JSON.stringify({
 <meta name="description" content={description} />
 <link rel="canonical" href={canonicalURL} />
 <link rel="alternate" hreflang="en" href={enURL} />
-<link rel="alternate" hreflang="zh-CN" href={zhcnURL} />
+<link rel="alternate" hreflang={languageTag("zh-cn")} href={zhcnURL} />
 <link rel="alternate" hreflang="x-default" href={enURL} />
 
 <meta property="og:title" content={title} />
@@ -61,4 +61,4 @@ const structuredData = JSON.stringify({
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={ogImage} />
 
-<script type="application/ld+json" set:html={structuredData}></script>
+<script is:inline type="application/ld+json" set:html={structuredData}></script>

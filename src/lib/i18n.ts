@@ -1,5 +1,21 @@
 export type Locale = "en" | "zh-cn";
 
+export function languageTag(locale: string): "en" | "zh-Hant" {
+  return locale === "zh-cn" ? "zh-Hant" : "en";
+}
+
+const seriesLabels = new Map<string, Record<Locale, string>>([
+  ["between-tides", { en: "Between Tides", "zh-cn": "潮間" }],
+  ["december-liturgy", { en: "December Liturgy", "zh-cn": "十二月禮拜" }],
+  ["sightline", { en: "Sightline", "zh-cn": "視綫" }],
+  ["snow-vein", { en: "Snow Vein", "zh-cn": "雪脈" }],
+]);
+
+export function seriesLabel(series: string, locale: string): string {
+  return seriesLabels.get(series)?.[locale === "zh-cn" ? "zh-cn" : "en"]
+    ?? series.replace(/-/g, " ").replace(/\b[a-z]/g, (letter) => letter.toUpperCase());
+}
+
 export type UIStringKey =
   | "nav.home"
   | "nav.gallery"
@@ -19,6 +35,8 @@ export type UIStringKey =
   | "filmstrip.previous"
   | "filmstrip.next"
   | "filmstrip.close"
+  | "filmstrip.viewer"
+  | "nav.menu"
   | "filmstrip.goToPhoto";
 
 const translations: Record<Locale, Record<UIStringKey, string>> = {
@@ -42,6 +60,8 @@ const translations: Record<Locale, Record<UIStringKey, string>> = {
     "filmstrip.previous": "Previous",
     "filmstrip.next": "Next",
     "filmstrip.close": "Close",
+    "filmstrip.viewer": "Photo viewer",
+    "nav.menu": "Toggle menu",
     "filmstrip.goToPhoto": "Go to photo {n}",
   },
   "zh-cn": {
@@ -64,6 +84,8 @@ const translations: Record<Locale, Record<UIStringKey, string>> = {
     "filmstrip.previous": "上一張",
     "filmstrip.next": "下一張",
     "filmstrip.close": "關閉",
+    "filmstrip.viewer": "相片檢視器",
+    "nav.menu": "切換選單",
     "filmstrip.goToPhoto": "前往第 {n} 張照片",
   },
 };
