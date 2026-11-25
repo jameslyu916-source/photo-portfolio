@@ -58,6 +58,8 @@ export function getSeriesFromPhotos(photos: Photo[]): string[] {
 }
 
 const REGION_MAP: Record<string, string> = {
+  "germany": "germany",
+  "德國": "germany",
   "hong kong": "hong-kong",
   "stanley": "hong-kong",
   "kowloon": "hong-kong",

@@ -1,7 +1,9 @@
 import hkSvg from "../../assets/maps/hong-kong.svg?raw";
 import scSvg from "../../assets/maps/sichuan.svg?raw";
 
-const mapSvgs = { "hong-kong": hkSvg, sichuan: scSvg };
+import germanySvg from "../../assets/maps/germany.svg?raw";
+
+const mapSvgs = { "hong-kong": hkSvg, sichuan: scSvg, germany: germanySvg };
 
 function mountViewer(overlay) {
   const photosData = JSON.parse(overlay.dataset.photos);

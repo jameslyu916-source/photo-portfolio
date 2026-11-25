@@ -7,6 +7,7 @@ export function languageTag(locale: string): "en" | "zh-Hant" {
 const seriesLabels = new Map<string, Record<Locale, string>>([
   ["between-tides", { en: "Between Tides", "zh-cn": "潮間" }],
   ["december-liturgy", { en: "December Liturgy", "zh-cn": "十二月禮拜" }],
+  ["in-passing", { en: "In Passing", "zh-cn": "途徑" }],
   ["sightline", { en: "Sightline", "zh-cn": "視綫" }],
   ["snow-vein", { en: "Snow Vein", "zh-cn": "雪脈" }],
 ]);

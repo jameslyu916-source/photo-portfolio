@@ -357,6 +357,9 @@ export async function updatePhoto(
   const zhFields = {
     ...zhExisting,
     ...sharedFields,
+    location: meta.location === undefined || meta.location === (enExisting.location ?? "")
+      ? (zhExisting.location ?? sharedFields.location)
+      : sharedFields.location,
     title: merge(meta.titleZh || undefined, zhExisting.title, enFields.title),
     description: meta.descriptionZh !== undefined ? meta.descriptionZh : (zhExisting.description ?? ""),
     tags: meta.tagsZh?.length ? meta.tagsZh : (zhExisting.tags?.length ? zhExisting.tags : undefined),
